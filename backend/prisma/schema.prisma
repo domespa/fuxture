@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// UTENTI
+model User {
+  id                  String            @id @default(cuid())
+  email               String            @unique
+  firstName           String?
+  lastName            String?
+  passwordHashed      String
+  role                Role              @default(USER)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  posts               Post[]
+  emailCampaigns      EmailCampaign[]
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+// ARTICOLI
+model Post {
+  id                  String      @id @default(cuid())
+  title               String
+  slug                String      @unique
+  content             String      @db.Text
+  excerpt             String?     @db.Text
+  featuredImage       String?
+  images              String[]
+  status              PostStatus  @default(DRAFT)
+  isFeatured          Boolean     @default(false)
+  featuredAt          DateTime?
+  publishedAt         DateTime?
+  seoTitle            String?
+  seoDescr            String?
+  tags                String[]
+  views               Int         @default(0)
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  authorId            String
+  author              User        @relation(fields: [authorId], references: [id])
+  comments            Comment[]
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+}
+
+// COMMENTI
+model Comment {
+  id            String          @id @default(cuid())
+  content       String          @db.Text
+  authorName    String
+  authorEmail   String  
+  status        CommentStatus   @default(PENDING)
+  createdAt     DateTime        @default(now())
+  postID        String
+  post          Post            @relation(fields: [postID], references: [id], onDelete: Cascade)
+  parentId      String?
+  parent        Comment?        @relation("CommentReplies", fields: [parentId], references: [id])
+  replies       Comment[]       @relation("CommentReplies")
+}
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  SPAM
+  REJECTED
+}
+
+// ISCRITTI
+model Subscriber {
+  id                  String              @id @default(cuid())
+  email               String              @unique
+  name                String?
+  status              SubscriberStatus    @default(ACTIVE)
+  subscriberAt        DateTime            @default(now())
+  unsubscriberAt      DateTime?
+  source              String?
+  metadata            Json?
+  emailLogs           EmailLog[]           
+}
+
+enum SubscriberStatus {
+  ACTIVE
+  UNSUBSCRIBED
+  BOUNCED
+}
+
+// DEM
+model EmailCampaign {
+  id            String              @id @default(cuid())
+  subject       String
+  content       String              @db.Text
+  status        CampaignStatus      @default(DRAFT)
+  scheduledAt   DateTime?
+  sentAt        DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  createdById   String
+  createdBy     User                @relation(fields: [createdById], references: [id])
+  emailLogs     EmailLog[]
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENDING
+  SENT
+}
+
+model EmailLog {
+  id            String          @id @default(cuid())
+  status        EmailStatus     @default(SENT)
+  sentAt        DateTime        @default(now())
+  openedAt      DateTime?
+  clickedAt     DateTime?
+  errorMessage  String?
+  
+  campaignId    String
+  campaign      EmailCampaign   @relation(fields: [campaignId], references: [id])
+  
+  subscriberId  String
+  subscriber    Subscriber      @relation(fields: [subscriberId], references: [id])
+}
+
+enum EmailStatus {
+  SENT
+  DELIVERED
+  OPENED
+  CLICKED
+  BOUNCED
+  FAILED
+}

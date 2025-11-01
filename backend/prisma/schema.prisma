@@ -16,10 +16,13 @@ model User {
   lastName            String?
   passwordHashed      String
   role                Role              @default(USER)
+  age                 Int
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
   posts               Post[]
   emailCampaigns      EmailCampaign[]
+  acceptedTerms       Boolean           @default(false)
+  acceptedTermsAt     DateTime?
 }
 
 enum Role {

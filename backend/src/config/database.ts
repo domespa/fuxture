@@ -1,0 +1,17 @@
+import dotenv from "dotenv";
+import { PrismaClient } from "../generated/prisma";
+
+dotenv.config();
+
+if (!process.env.DATABASE_URL) {
+  throw new Error("URL DB undefined");
+}
+
+const prisma = new PrismaClient({
+  log:
+    process.env.NODE_ENV === "development"
+      ? ["query", "error", "warn"]
+      : ["error"],
+});
+
+export default prisma;

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { hashPassword, comparePassword } from "../utils/password";
-import { PrismaClient } from "../generated/prisma";
-
+import prisma from "../config/database";
 import { generateToken } from "../utils/jwt";
 import type {
   RegisterRequest,
@@ -9,7 +8,6 @@ import type {
   AuthResponse,
 } from "../types/auth.types";
 
-const prisma = new PrismaClient();
 // ====================================================================================================== //
 //                                              HELPER
 // ====================================================================================================== //
@@ -28,6 +26,7 @@ const createAuthResponse = (user: any, token: string): AuthResponse => {
 };
 // ====================================================================================================== //
 // ====================================================================================================== //
+
 // ====================================================================================================== //
 //                                              REGISTRAZIONE
 // ====================================================================================================== //

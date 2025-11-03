@@ -2,6 +2,7 @@ import express from "express";
 import authRoutes from "./routes/auth.routes";
 import uploadRoutes from "./routes/upload.routes";
 import path from "path";
+import postRoutes from "./routes/post.routes";
 
 // ====================================================================================================== //
 //                                              VARIABILI D'AMBIENTE
@@ -38,10 +39,13 @@ app.use("/auth", authRoutes);
 // UPLOAD FILE
 app.use("/upload", uploadRoutes);
 
+// POSTS
+app.use("/posts", postRoutes);
+
 // CHECK SERVER
 app.get("/", (req, res) => {
   res.json({
-    message: "SIAMO ONLINE😶‍🌫️",
+    message: "SIAMO ONLINE 😶‍🌫️",
     port: PORT,
     env: process.env.NODE_ENV,
   });

@@ -66,3 +66,32 @@ export const requireRole = (role: "USER" | "ADMIN") => {
 };
 // ====================================================================================================== //
 // ====================================================================================================== //
+
+// ====================================================================================================== //
+//                                    AUTHENTICATE TOKEN OPTIONAL
+// ====================================================================================================== //
+export const authenticateTokenOptional = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.split(" ")[1];
+
+  if (!token) {
+    next();
+    return;
+  }
+
+  try {
+    const decoded = verifyToken(token) as JwtPayload;
+    req.user = {
+      userId: decoded.userId,
+      email: decoded.email,
+      role: decoded.role,
+    };
+    next();
+  } catch (error) {
+    next();
+  }
+};

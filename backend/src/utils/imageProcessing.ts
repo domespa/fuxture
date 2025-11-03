@@ -65,15 +65,29 @@ export async function processImage(
       }
     }
 
-    // SALVIAMO TUTTO
-    await pipeline.toFile(finalOutputPath);
+    // Usiamo un file temporaneo se input === output
+    if (finalOutputPath === inputPath) {
+      const tempPath = `${inputPath}.tmp`;
 
-    // ELIMINIAMO QUELLO VECCHIO
-    if (outputPath && outputPath !== inputPath) {
+      // Salviamo nel file temporaneo
+      await pipeline.toFile(tempPath);
+
+      // Cancelliamo l'originale
       await fs.unlink(inputPath);
-    }
 
-    return finalOutputPath;
+      // Rinominiamo il temp con il nome originale
+      await fs.rename(tempPath, inputPath);
+
+      return inputPath;
+    } else {
+      // Se input e output sono diversi, procediamo normalmente
+      await pipeline.toFile(finalOutputPath);
+
+      // Eliminiamo il file originale
+      await fs.unlink(inputPath);
+
+      return finalOutputPath;
+    }
   } catch (error) {
     console.error("Error processing IMAGE:", error);
     throw new Error("Impossible to convert");

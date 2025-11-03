@@ -43,6 +43,8 @@ model Post {
   isFeatured          Boolean     @default(false)
   featuredAt          DateTime?
   publishedAt         DateTime?
+  scheduledAt         DateTime?
+  seoDescription      String?
   seoTitle            String?
   seoDescr            String?
   tags                String[]

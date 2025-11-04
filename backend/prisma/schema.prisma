@@ -64,17 +64,18 @@ enum PostStatus {
 
 // COMMENTI
 model Comment {
-  id            String          @id @default(cuid())
-  content       String          @db.Text
-  authorName    String
-  authorEmail   String  
-  status        CommentStatus   @default(PENDING)
-  createdAt     DateTime        @default(now())
-  postID        String
-  post          Post            @relation(fields: [postID], references: [id], onDelete: Cascade)
-  parentId      String?
-  parent        Comment?        @relation("CommentReplies", fields: [parentId], references: [id])
-  replies       Comment[]       @relation("CommentReplies")
+  id          String        @id @default(cuid())
+  content     String
+  authorName  String
+  authorEmail String
+  status      CommentStatus @default(PENDING)
+  postId      String
+  post        Post          @relation(fields: [postId], references: [id])
+  parentId    String?
+  parent      Comment?      @relation("CommentReplies", fields: [parentId], references: [id])
+  replies     Comment[]     @relation("CommentReplies")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt    
 }
 
 enum CommentStatus {

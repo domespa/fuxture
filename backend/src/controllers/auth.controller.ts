@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { hashPassword, comparePassword } from "../utils/password";
-import prisma from "../config/database";
+import { prisma } from "../config/database";
 import { generateToken } from "../utils/jwt";
 import type {
   RegisterRequest,

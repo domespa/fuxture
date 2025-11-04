@@ -1,5 +1,30 @@
-node_modules
-.env
-/src/generated/prisma
-uploads
+# Dependencies
+node_modules/
 
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Prisma generated
+src/generated/
+/src/generated/prisma
+
+# Uploads
+uploads/
+
+# Build output
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

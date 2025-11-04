@@ -1,8 +1,10 @@
 import express from "express";
+import cors from "cors";
 import authRoutes from "./routes/auth.routes";
 import uploadRoutes from "./routes/upload.routes";
 import path from "path";
 import postRoutes from "./routes/post.routes";
+import commentRoutes from "./routes/comment.routes";
 
 // ====================================================================================================== //
 //                                              VARIABILI D'AMBIENTE
@@ -18,6 +20,12 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    credentials: true,
+  })
+);
 // ====================================================================================================== //
 // ====================================================================================================== //
 
@@ -41,6 +49,9 @@ app.use("/upload", uploadRoutes);
 
 // POSTS
 app.use("/posts", postRoutes);
+
+// COMMENTS
+app.use("/comments", commentRoutes);
 
 // CHECK SERVER
 app.get("/", (req, res) => {

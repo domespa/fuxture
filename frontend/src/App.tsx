@@ -3,6 +3,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoutes";
+import AdminLayout from "./components/layout/AdminLayout";
 
 function App() {
   return (
@@ -20,10 +21,17 @@ function App() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <AdminLayout />
             </ProtectedRoute>
           }
-        />
+        >
+          {/* Nested routes */}
+          <Route index element={<Dashboard />} />
+          <Route path="posts" element={<div>Posts Page (TODO)</div>} />
+          <Route path="comments" element={<div>Comments Page (TODO)</div>} />
+          <Route path="users" element={<div>Users Page (TODO)</div>} />
+          <Route path="settings" element={<div>Settings Page (TODO)</div>} />
+        </Route>
 
         {/* 404 - Pagina non trovata */}
         <Route path="*" element={<Navigate to="/login" replace />} />

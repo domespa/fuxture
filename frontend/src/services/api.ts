@@ -4,7 +4,10 @@ import type {
   RegisterRequest,
   AuthResponse,
 } from "@/types/auth.types";
-import { config } from "process";
+import type {
+  CommentListResponse,
+  CommentStatus,
+} from "../../../backend/src/types/comment.types";
 
 // URL
 const API_BASE_URL =
@@ -47,3 +50,16 @@ export const authAPI = {
 };
 // ======================================================================================
 // ======================================================================================
+
+// ======================================================================================
+//                                  COMMENTS API PER BADGE
+// ======================================================================================
+export const commentsAPI = {
+  // PRENDIAMO PER STATUS
+  getCommentsCount: async (status: CommentStatus): Promise<number> => {
+    const response = await api.get<CommentListResponse>(`/comments`, {
+      params: { status, limit: 1 },
+    });
+    return response.data.total || 0;
+  },
+};

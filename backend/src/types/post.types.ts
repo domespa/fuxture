@@ -47,7 +47,7 @@ export interface UpdatePostRequest {
 export interface PostFilters {
   status?: PostStatus;
   tags?: string[];
-  search?: String;
+  search?: string;
   isFeatured?: boolean | string;
   authorId?: string;
   page?: number | string;

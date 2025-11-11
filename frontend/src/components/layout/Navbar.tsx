@@ -50,9 +50,7 @@ export default function Navbar({
             <Menu className="h-6 w-6" />
           </Button>
 
-          <h1 className="text-xl font-bold text-gray-800">
-            Blog Admin Dashboard
-          </h1>
+          <h1 className="text-xl font-bold text-gray-800">Pannelo Admin</h1>
         </div>
 
         {/* RIGHT SIDE: Notifications + User Dropdown */}

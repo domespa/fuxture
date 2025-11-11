@@ -4,13 +4,13 @@ import { Request, Response, NextFunction } from "express";
 //                                              HELPER
 // ====================================================================================================== //
 // VALIDAZIONE EMAIL
-const isValidEmail = (email: string): boolean => {
+export const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
 // VALIDAZIONE PASSWORD
-const isValidPassword = (password: string): boolean => {
+export const isValidPassword = (password: string): boolean => {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/; // MIN 8 CARATTERI - ALMENO 1 NUMERO - ALMENO 1 LETTEERA MINUSCOLA - ALMENO 1 LETTERA MAIUSCOLA
   return passwordRegex.test(password);
 };

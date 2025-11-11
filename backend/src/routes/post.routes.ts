@@ -15,12 +15,29 @@ import {
   requireRole,
   authenticateTokenOptional,
 } from "../middleware/auth.middleware";
+import { isSlugValid } from "../utils/slug.utils";
 
 const router = Router();
 
 // ====================================================================================================== //
 //                                   PUBLIC ROUTES
 // ====================================================================================================== //
+
+// SLUG
+// GET /posts/check-slug/:slug
+router.get("/check-slug/:slug", async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const available = await isSlugValid(slug);
+
+    res.json({ available });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Errore verifica slug",
+    });
+  }
+});
 
 // LISTA POST FILTRATI
 // POST /posts

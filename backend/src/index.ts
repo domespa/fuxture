@@ -5,6 +5,8 @@ import uploadRoutes from "./routes/upload.routes";
 import path from "path";
 import postRoutes from "./routes/post.routes";
 import commentRoutes from "./routes/comment.routes";
+import { startScheduler } from "./utils/Postscheduler";
+import subscriberRoutes from "./routes/subscriber.routes";
 
 // ====================================================================================================== //
 //                                              VARIABILI D'AMBIENTE
@@ -53,6 +55,9 @@ app.use("/posts", postRoutes);
 // COMMENTS
 app.use("/comments", commentRoutes);
 
+// ISCRITTI
+app.use("/subscribers", subscriberRoutes);
+
 // CHECK SERVER
 app.get("/", (req, res) => {
   res.json({
@@ -72,6 +77,7 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`👍 Server running on http://localhost:${PORT}`);
   console.log(`😒 Siamo in ${process.env.NODE_ENV}`);
+  startScheduler();
 });
 // ====================================================================================================== //
 // ====================================================================================================== //

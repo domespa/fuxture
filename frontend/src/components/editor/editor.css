@@ -1,0 +1,243 @@
+/* Stili per l'editor Tiptap */
+
+/* Container principale dell'editor */
+.tiptap-editor {
+  @apply border rounded-lg overflow-hidden bg-white;
+}
+
+/* Area di editing */
+.tiptap-editor .ProseMirror {
+  @apply p-4 min-h-[300px] max-h-[600px] overflow-y-auto outline-none;
+}
+
+/* Placeholder quando l'editor è vuoto */
+.tiptap-editor .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  @apply text-gray-400 float-left h-0 pointer-events-none;
+}
+
+/* Stili per i vari elementi HTML nell'editor */
+.tiptap-editor .ProseMirror h1 {
+  @apply text-3xl font-bold my-4;
+}
+
+.tiptap-editor .ProseMirror h2 {
+  @apply text-2xl font-bold my-3;
+}
+
+.tiptap-editor .ProseMirror h3 {
+  @apply text-xl font-bold my-2;
+}
+
+.tiptap-editor .ProseMirror p {
+  @apply my-2;
+}
+
+.tiptap-editor .ProseMirror ul {
+  @apply list-disc ml-6 my-2;
+}
+
+.tiptap-editor .ProseMirror ol {
+  @apply list-decimal ml-6 my-2;
+}
+
+.tiptap-editor .ProseMirror blockquote {
+  @apply border-l-4 border-gray-300 pl-4 my-2 italic;
+}
+
+.tiptap-editor .ProseMirror code {
+  @apply bg-gray-100 px-1 py-0.5 rounded text-sm font-mono;
+}
+
+.tiptap-editor .ProseMirror pre {
+  @apply bg-gray-900 text-white p-4 rounded my-2 overflow-x-auto;
+}
+
+.tiptap-editor .ProseMirror pre code {
+  @apply bg-transparent p-0;
+}
+
+.tiptap-editor .ProseMirror a {
+  @apply text-blue-600 underline cursor-pointer;
+}
+
+.tiptap-editor .ProseMirror hr {
+  @apply my-4 border-t-2 border-gray-300;
+}
+
+/* Focus styles */
+.tiptap-editor .ProseMirror:focus {
+  @apply outline-none;
+}
+
+/* Selezione testo */
+.tiptap-editor .ProseMirror ::selection {
+  @apply bg-blue-200;
+}
+
+/* Smooth cursor change su immagine */
+.tiptap-editor .ProseMirror img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Animation handle resize */
+.group:hover .cursor-nwse-resize {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* ================================
+   IMAGE NODE WRAPPER STYLES
+   ================================ */
+
+/* Base wrapper styles */
+.ProseMirror .img-wrapper {
+  display: block;
+  margin: 1rem 0;
+  max-width: 100%;
+}
+
+/* Selected image highlight (sul gruppo) */
+.ProseMirror .img-wrapper.selected-image {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  border-radius: 0.5rem;
+}
+
+/* Images inside wrapper */
+.ProseMirror .img-wrapper img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ================================
+   ALIGNMENT CLASSES
+   ================================ */
+
+/* Left align (default) */
+.ProseMirror .img-wrapper.img-align-left {
+  display: block;
+  margin-left: 0;
+  margin-right: auto;
+  max-width: fit-content;
+}
+
+/* Center align */
+.ProseMirror .img-wrapper.img-align-center {
+  display: flex;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.ProseMirror .img-wrapper.img-align-center > div {
+  display: inline-block;
+}
+
+/* Right align */
+.ProseMirror .img-wrapper.img-align-right {
+  display: block;
+  margin-left: auto;
+  margin-right: 0;
+  max-width: fit-content;
+}
+
+/* Full width */
+.ProseMirror .img-wrapper.img-align-full-width {
+  width: 100%;
+  max-width: 100%;
+  margin: 1.5rem 0;
+}
+
+.ProseMirror .img-wrapper.img-align-full-width img {
+  width: 100%;
+}
+
+/* ================================
+   FLOAT STYLES (text wrapping)
+   ================================ */
+
+/* Float left - text wraps on the right */
+.ProseMirror .img-wrapper.img-align-float-left {
+  float: left;
+  margin: 0.5rem 2rem 1.5rem 0;
+  max-width: 50%;
+}
+
+/* Float right - text wraps on the left */
+.ProseMirror .img-wrapper.img-align-float-right {
+  float: right;
+  margin: 0.5rem 0 1.5rem 2rem;
+  max-width: 50%;
+}
+
+/* ================================
+   RESPONSIVE - Mobile
+   ================================ */
+
+@media (max-width: 768px) {
+  .ProseMirror .img-wrapper.img-align-float-left,
+  .ProseMirror .img-wrapper.img-align-float-right {
+    float: none;
+    margin: 1rem auto;
+    max-width: 100%;
+    display: block;
+  }
+}
+
+/* ================================
+   IMAGE TOOLBAR STYLES
+   ================================ */
+
+.image-toolbar {
+  animation: fadeIn 0.15s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* DEBUG: evidenzia elementi nascosti */
+/* Rimuovi paragrafi vuoti dopo immagini float */
+.ProseMirror .img-wrapper.img-align-float-left + p:empty,
+.ProseMirror .img-wrapper.img-align-float-right + p:empty {
+  display: none;
+}
+
+/* Rimuovi br in paragrafi dopo immagini float */
+.ProseMirror .img-wrapper.img-align-float-left + p:has(> br:only-child),
+.ProseMirror .img-wrapper.img-align-float-right + p:has(> br:only-child) {
+  display: none;
+}
+
+/* Permetti ai paragrafi successivi di salire accanto all'immagine float */
+.ProseMirror .img-wrapper.img-align-float-left ~ p,
+.ProseMirror .img-wrapper.img-align-float-right ~ p {
+  clear: none !important;
+}
+
+/* Ma il primo paragrafo DOPO l'immagine non deve avere margin-top */
+.ProseMirror .img-wrapper.img-align-float-left + p,
+.ProseMirror .img-wrapper.img-align-float-right + p {
+  margin-top: 0;
+}

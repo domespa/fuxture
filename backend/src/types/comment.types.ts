@@ -1,5 +1,3 @@
-import { c } from "vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf";
-
 // ENUM STATO COMMENTI
 export enum CommentStatus {
   PENDING = "PENDING",

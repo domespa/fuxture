@@ -52,6 +52,16 @@ router.put(
   updateComment
 );
 
+// AGGIORNA STATUS COMMENTO
+// PATCH /comments/:id/status
+router.patch(
+  "/:id/status",
+  authenticateToken,
+  requireRole("ADMIN"),
+  validateUpdateComment,
+  updateComment
+);
+
 // ELIMINA COMMENTO
 // DELETE /comments/:id
 router.delete("/:id", authenticateToken, requireRole("ADMIN"), deleteComment);

@@ -89,7 +89,7 @@ export default function AdminLayout() {
     if (user) {
       fetchPendingComments;
 
-      // POLLING PER AGGIIORNARE IL BADHE OGNI 5 MINUTI
+      // POLLING PER AGGIIORNARE IL BADGE OGNI 5 MINUTI
       const interval = setInterval(fetchPendingComments, 500000);
       return () => clearInterval(interval);
     }

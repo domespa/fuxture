@@ -19,11 +19,12 @@ export interface EmailSendResult {
 // + EMAIL INSIEME
 export interface SendBatchEmailOptions {
   subject: string;
-  html: string;
+  html?: string;
   fromName?: string;
   recipients: Array<{
     email: string;
     subscriberId?: string;
+    html?: string;
   }>;
   campaignId?: string;
 }

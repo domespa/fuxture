@@ -7,12 +7,14 @@ import postRoutes from "./routes/post.routes";
 import commentRoutes from "./routes/comment.routes";
 import { startScheduler } from "./utils/Postscheduler";
 import subscriberRoutes from "./routes/subscriber.routes";
+import campaignRoutes from "./routes/campaign.routes";
 
 // ====================================================================================================== //
 //                                              VARIABILI D'AMBIENTE
 // ====================================================================================================== //
 import dotenv from "dotenv";
 dotenv.config();
+const API_PREFIX = process.env.API_PREFIX || "/api";
 // ====================================================================================================== //
 // ====================================================================================================== //
 
@@ -44,19 +46,22 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 //                                              ROTTE
 // ====================================================================================================== //
 // AUTH
-app.use("/auth", authRoutes);
+app.use(`${API_PREFIX}/auth`, authRoutes);
 
 // UPLOAD FILE
-app.use("/upload", uploadRoutes);
+app.use(`${API_PREFIX}/upload`, uploadRoutes);
 
 // POSTS
-app.use("/posts", postRoutes);
+app.use(`${API_PREFIX}/posts`, postRoutes);
 
 // COMMENTS
-app.use("/comments", commentRoutes);
+app.use(`${API_PREFIX}/comments`, commentRoutes);
 
 // ISCRITTI
-app.use("/subscribers", subscriberRoutes);
+app.use(`${API_PREFIX}/subscribers`, subscriberRoutes);
+
+// CAMPAGNE
+app.use(`${API_PREFIX}/campaigns`, campaignRoutes);
 
 // CHECK SERVER
 app.get("/", (req, res) => {
@@ -64,6 +69,7 @@ app.get("/", (req, res) => {
     message: "SIAMO ONLINE 😶‍🌫️",
     port: PORT,
     env: process.env.NODE_ENV,
+    apiPrefix: API_PREFIX,
   });
 });
 
@@ -77,6 +83,7 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`👍 Server running on http://localhost:${PORT}`);
   console.log(`😒 Siamo in ${process.env.NODE_ENV}`);
+  console.log(`🔗 API routes mounted at: ${API_PREFIX}`);
   startScheduler();
 });
 // ====================================================================================================== //

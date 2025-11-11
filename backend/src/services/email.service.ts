@@ -125,7 +125,7 @@ export const sendBatchEmails = async (
       sendEmail({
         to: recipient.email,
         subject,
-        html,
+        html: recipient.html || html!,
         fromName,
         campaignId,
         subscriberId: recipient.subscriberId,

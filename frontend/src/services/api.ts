@@ -7,6 +7,9 @@ import type {
 import type {
   CommentListResponse,
   CommentStatus,
+  CommentFilters,
+  CommentResponse,
+  UpdateCommentRequest,
 } from "../../../backend/src/types/comment.types";
 import {
   CreatePostRequest,
@@ -15,6 +18,14 @@ import {
   PostResponse,
   UpdatePostRequest,
 } from "../../../backend/src/types/post.types";
+import {
+  Campaign,
+  CampaignListResponse,
+  CreateCampaignRequest,
+  UpdateCampaignRequest,
+  CampaignFilters,
+  CampaignStatus,
+} from "@/types/campaign.types";
 
 // URL
 const API_BASE_URL =
@@ -55,22 +66,6 @@ export const authAPI = {
     return response.data;
   },
 };
-// ======================================================================================
-// ======================================================================================
-
-// ======================================================================================
-//                                  COMMENTS API PER BADGE
-// ======================================================================================
-export const commentsAPI = {
-  // PRENDIAMO PER STATUS
-  getCommentsCount: async (status: CommentStatus): Promise<number> => {
-    const response = await api.get<CommentListResponse>(`/comments`, {
-      params: { status, limit: 1 },
-    });
-    return response.data.total || 0;
-  },
-};
-
 // ======================================================================================
 // ======================================================================================
 
@@ -144,3 +139,152 @@ export const postsAPI = {
     }
   },
 };
+// ======================================================================================
+// ======================================================================================
+
+// ======================================================================================
+//                                  COMMENTS API
+// ======================================================================================
+export const commentsAPI = {
+  // OTTIENI TUTTI I COMMENTI CON FILTRI
+  getComments: async (
+    filters?: CommentFilters
+  ): Promise<CommentListResponse> => {
+    const response = await api.get<CommentListResponse>("/comments", {
+      params: filters,
+    });
+    return response.data;
+  },
+
+  // OTTIENI SINGOLO COMMENTO
+  getCommentById: async (id: string): Promise<CommentResponse> => {
+    const response = await api.get<{
+      success: boolean;
+      data: CommentResponse;
+    }>(`/comments/${id}`);
+    return response.data.data;
+  },
+
+  // AGGIORNA STATUS COMMENTO (approve/reject/spam)
+  updateCommentStatus: async (
+    id: string,
+    data: UpdateCommentRequest
+  ): Promise<CommentResponse> => {
+    const response = await api.patch<CommentResponse>(
+      `/comments/${id}/status`,
+      data
+    );
+    return response.data;
+  },
+
+  // ELIMINA COMMENTO
+  deleteComment: async (id: string): Promise<void> => {
+    await api.delete(`/comments/${id}`);
+  },
+
+  // CONTA COMMENTI PER STATUS (per badge nel menu)
+  getCommentsCount: async (status: CommentStatus): Promise<number> => {
+    const response = await api.get<CommentListResponse>("/comments", {
+      params: { status, limit: 1 },
+    });
+    return response.data.total || 0;
+  },
+};
+
+// ======================================================================================
+//                                  CAMPAIGNS API
+// ======================================================================================
+export const campaignsAPI = {
+  // OTTIENI TUTTE LE CAMPAGNE CON FILTRI
+  getCampaigns: async (
+    filters?: CampaignFilters
+  ): Promise<CampaignListResponse> => {
+    const response = await api.get<{
+      success: boolean;
+      data: CampaignListResponse;
+    }>("/campaigns", {
+      params: filters,
+    });
+
+    return response.data.data;
+  },
+
+  // OTTIENI SINGOLA CAMPAGNA
+  getCampaignById: async (id: string): Promise<Campaign> => {
+    const response = await api.get<{
+      success: boolean;
+      data: Campaign;
+    }>(`/campaigns/${id}`);
+    return response.data.data;
+  },
+
+  // CREA CAMPAGNA
+  createCampaign: async (data: CreateCampaignRequest): Promise<Campaign> => {
+    const response = await api.post<{
+      success: boolean;
+      message: string;
+      data: Campaign;
+    }>("/campaigns", data);
+    return response.data.data;
+  },
+
+  // UPDATE CAMPAGNA
+  updateCampaign: async (
+    id: string,
+    data: UpdateCampaignRequest
+  ): Promise<Campaign> => {
+    const response = await api.put<{
+      success: boolean;
+      message: string;
+      data: Campaign;
+    }>(`/campaigns/${id}`, data);
+    return response.data.data;
+  },
+
+  // DELETE CAMPAGNA
+  deleteCampaign: async (id: string): Promise<void> => {
+    await api.delete(`/campaigns/${id}`);
+  },
+
+  // INVIA CAMPAGNA (cambio status da DRAFT/SCHEDULED a SENDING)
+  sendCampaign: async (id: string): Promise<Campaign> => {
+    const response = await api.post<{
+      success: boolean;
+      message: string;
+      data: Campaign;
+    }>(`/campaigns/${id}/send`);
+    return response.data.data;
+  },
+
+  // INVIA EMAIL DI TEST
+  sendTestEmail: async (id: string, testEmail: string): Promise<void> => {
+    await api.post(`/campaigns/${id}/test`, { testEmail });
+  },
+
+  // OTTIENI STATISTICHE CAMPAGNA (quante email inviate/aperte/cliccate)
+  getCampaignStats: async (
+    id: string
+  ): Promise<{
+    sent: number;
+    delivered: number;
+    opened: number;
+    clicked: number;
+    bounced: number;
+    failed: number;
+  }> => {
+    const response = await api.get<{
+      success: boolean;
+      data: {
+        sent: number;
+        delivered: number;
+        opened: number;
+        clicked: number;
+        bounced: number;
+        failed: number;
+      };
+    }>(`/campaigns/${id}/stats`);
+    return response.data.data;
+  },
+};
+// ======================================================================================
+// ======================================================================================

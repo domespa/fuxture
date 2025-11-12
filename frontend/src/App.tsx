@@ -10,6 +10,9 @@ import { CreatePost } from "./components/editor/CreatePost";
 import { EditPost } from "./components/editor/EditPost";
 import Comments from "./pages/dashboard/Comments";
 import Campaigns from "./pages/dashboard/Campaigns";
+import CreateCampaing from "./pages/dashboard/CreateCampaign";
+import { EditCampaign } from "./pages/dashboard/EditCampaign";
+import { SendPreview } from "./components/campaigns/SendPreview";
 
 function App() {
   return (
@@ -62,13 +65,11 @@ function App() {
           <Route path="posts/edit/:id" element={<EditPost />} />
           <Route path="comments" element={<Comments />} />
           <Route path="campaigns" element={<Campaigns />} />
+          <Route path="campaigns/create" element={<CreateCampaing />} />
+          <Route path="campaigns/edit/:id" element={<EditCampaign />} />
           <Route
-            path="campaigns/create"
-            element={<div>Create Campaign (TODO)</div>}
-          />
-          <Route
-            path="campaigns/edit/:id"
-            element={<div>Edit Campaign (TODO)</div>}
+            path="/dashboard/campaigns/send-preview"
+            element={<SendPreview />}
           />
           <Route path="users" element={<div>Users Page (TODO)</div>} />
           <Route path="settings" element={<div>Settings Page (TODO)</div>} />

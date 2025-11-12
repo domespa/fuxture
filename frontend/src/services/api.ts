@@ -24,7 +24,6 @@ import {
   CreateCampaignRequest,
   UpdateCampaignRequest,
   CampaignFilters,
-  CampaignStatus,
 } from "@/types/campaign.types";
 
 // URL
@@ -233,7 +232,7 @@ export const campaignsAPI = {
     id: string,
     data: UpdateCampaignRequest
   ): Promise<Campaign> => {
-    const response = await api.put<{
+    const response = await api.patch<{
       success: boolean;
       message: string;
       data: Campaign;
@@ -284,6 +283,17 @@ export const campaignsAPI = {
       };
     }>(`/campaigns/${id}/stats`);
     return response.data.data;
+  },
+
+  // PREVIEW
+  sendPreviewEmail: async (data: {
+    toEmail: string;
+    subject: string;
+    content: string;
+    fromName?: string;
+  }) => {
+    const response = await api.post("/campaigns/send-preview", data);
+    return response.data;
   },
 };
 // ======================================================================================

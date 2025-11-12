@@ -560,3 +560,51 @@ export async function sendCampaign(req: Request, res: Response): Promise<void> {
 }
 // ====================================================================================================== //
 // ====================================================================================================== //
+
+// ====================================================================================================== //
+//                                      INVIA PW
+// ====================================================================================================== //
+export async function sendPreviewEmail(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    const { toEmail, subject, content, fromName } = req.body;
+
+    // VALIDAZIONI
+    if (!toEmail || !subject || !content) {
+      res.status(400).json({ error: "Campi obbligatori mancanti" });
+      return;
+    }
+
+    // FROM_NAME
+    const senderName =
+      fromName?.trim() || process.env.SMTP_FROM_NAME || "Fuxture";
+
+    // PLACEHOLDER PER PREVIEW
+    const previewUnsubscribeUrl = `${process.env.FRONTEND_URL}/unsubscribe/preview`;
+    const previewWebVersionUrl = `${process.env.FRONTEND_URL}/email/preview`;
+
+    const personalizedContent = content
+      .replace(/\{\{unsubscribe_url\}\}/g, previewUnsubscribeUrl)
+      .replace(/\{\{web_version_url\}\}/g, previewWebVersionUrl);
+
+    // INVIA EMAIL
+    await sendEmail({
+      to: toEmail,
+      subject: subject,
+      html: personalizedContent,
+      fromName: senderName,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Email preview inviata a ${toEmail}`,
+    });
+  } catch (error) {
+    console.error("Errore invio email preview:", error);
+    res
+      .status(500)
+      .json({ error: "Errore durante l'invio dell'email preview" });
+  }
+}

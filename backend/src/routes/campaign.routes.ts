@@ -7,6 +7,7 @@ import {
   deleteCampaign,
   sendTestEmail,
   sendCampaign,
+  sendPreviewEmail,
 } from "../controllers/campaign.controller";
 import {
   validateCreateCampaign,
@@ -19,6 +20,15 @@ const router = Router();
 // ====================================================================================================== //
 //                                    ADMIN CAMPAIGN ROUTES
 // ====================================================================================================== //
+
+// INVIA PW
+// POST /campaigns/send-preview
+router.post(
+  "/send-preview",
+  authenticateToken,
+  requireRole("ADMIN"),
+  sendPreviewEmail
+);
 
 // CREATE CAMPAIGN
 // POST /campaigns

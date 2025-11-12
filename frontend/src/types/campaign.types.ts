@@ -10,6 +10,7 @@ export interface Campaign {
   id: string;
   subject: string;
   content: string;
+  fromName: string | null;
   status: CampaignStatus;
   scheduledAt: string | null;
   sentAt: string | null;
@@ -32,6 +33,7 @@ export interface Campaign {
 export interface CreateCampaignRequest {
   subject: string;
   content: string;
+  fromName?: string;
   status: CampaignStatus;
   scheduledAt?: string;
 }
@@ -40,6 +42,7 @@ export interface CreateCampaignRequest {
 export interface UpdateCampaignRequest {
   subject?: string;
   content?: string;
+  fromName?: string;
   status?: CampaignStatus;
   scheduledAt?: string | null;
 }
@@ -65,4 +68,21 @@ export interface CampaignFilters {
   sortBy?: "createdAt" | "sentAt" | "subject";
   sortOrder?: "asc" | "desc";
   search?: string;
+}
+
+// FORM
+export interface CampaignFormData {
+  subject: string;
+  fromName: string;
+  content: string;
+  status: CampaignStatus;
+  scheduledAt: string;
+}
+// PROPS
+export interface CampaignFormProps {
+  initialData?: Campaign;
+  onSubmit: (data: CampaignFormData) => void;
+  isLoading: boolean;
+  onCancel: () => void;
+  mode?: "create" | "edit";
 }

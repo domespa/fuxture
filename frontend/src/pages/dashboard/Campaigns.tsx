@@ -17,6 +17,7 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
+  Mail,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { utcToLocal } from "../../lib/datetime";
@@ -78,7 +79,7 @@ export default function Campaigns() {
     setFilters((prev) => ({
       ...prev,
       status: status as CampaignStatus | "ALL",
-      page: 1, // Reset alla pagina 1
+      page: 1,
     }));
   };
 
@@ -164,7 +165,6 @@ export default function Campaigns() {
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "-";
     const localDate = utcToLocal(dateString);
-    // Formato: 15/03/2024 14:30
     const [datePart, timePart] = localDate.split("T");
     const [year, month, day] = datePart.split("-");
     return `${day}/${month}/${year} ${timePart}`;
@@ -180,7 +180,7 @@ export default function Campaigns() {
 
   return (
     <div className="space-y-6">
-      {/* HEADER */}
+      {/* HEADER - MODIFICATO */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Campagne Email</h1>
@@ -188,10 +188,24 @@ export default function Campaigns() {
             Gestisci le tue campagne di email marketing
           </p>
         </div>
-        <Button onClick={() => navigate("/dashboard/campaigns/create")}>
-          <Plus className="mr-2 h-4 w-4" />
-          Nuova Campagna
-        </Button>
+
+        {/* BOTTONI - MODIFICATO */}
+        <div className="flex gap-3">
+          {/* PW*/}
+          <Button
+            variant="outline"
+            onClick={() => navigate("/dashboard/campaigns/send-preview")}
+          >
+            <Mail className="mr-2 h-4 w-4" />
+            Invia per Approvazione
+          </Button>
+
+          {/* NUONA CAMPAGNA */}
+          <Button onClick={() => navigate("/dashboard/campaigns/create")}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nuova Campagna
+          </Button>
+        </div>
       </div>
 
       {/* FILTRI */}
@@ -285,7 +299,7 @@ export default function Campaigns() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        {/* SEND BUTTON (solo se DRAFT o SCHEDULED) */}
+                        {/* SEND BUTTON */}
                         {(campaign.status === CampaignStatus.DRAFT ||
                           campaign.status === CampaignStatus.SCHEDULED) && (
                           <Button
@@ -298,7 +312,7 @@ export default function Campaigns() {
                           </Button>
                         )}
 
-                        {/* EDIT BUTTON (solo se non SENT o SENDING) */}
+                        {/* EDIT BUTTON */}
                         {campaign.status !== CampaignStatus.SENT &&
                           campaign.status !== CampaignStatus.SENDING && (
                             <Button
@@ -314,7 +328,7 @@ export default function Campaigns() {
                             </Button>
                           )}
 
-                        {/* DELETE BUTTON (solo se DRAFT) */}
+                        {/* DELETE BUTTON */}
                         {campaign.status === CampaignStatus.DRAFT && (
                           <Button
                             size="sm"

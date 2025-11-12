@@ -25,6 +25,13 @@ import {
   UpdateCampaignRequest,
   CampaignFilters,
 } from "@/types/campaign.types";
+import type {
+  EmailList,
+  EmailListDetail,
+  CreateEmailListRequest,
+  UpdateEmailListRequest,
+  AddSubscribersToListRequest,
+} from "@/types/email-list.types";
 
 // URL
 const API_BASE_URL =
@@ -296,5 +303,89 @@ export const campaignsAPI = {
     return response.data;
   },
 };
+// ======================================================================================
+// ======================================================================================
+
+// ======================================================================================
+//                                  LISTE EMAIL
+// ======================================================================================
+export const emailListsAPI = {
+  // OTTIENI TUTTE LE LISTE
+  getEmailLists: async (): Promise<EmailList[]> => {
+    const response = await api.get<EmailList[]>("/email-lists");
+    return response.data;
+  },
+
+  // OTTIENI SINGOLA LISTA CON SUBSCRIBERS
+  getEmailListById: async (id: string): Promise<EmailListDetail> => {
+    const response = await api.get<EmailListDetail>(`/email-lists/${id}`);
+    return response.data;
+  },
+
+  // CREA LISTA
+  createEmailList: async (data: CreateEmailListRequest): Promise<EmailList> => {
+    const response = await api.post<EmailList>("/email-lists", data);
+    return response.data;
+  },
+
+  // AGGIORNA LISTA
+  updateEmailList: async (
+    id: string,
+    data: UpdateEmailListRequest
+  ): Promise<EmailList> => {
+    const response = await api.put<EmailList>(`/email-lists/${id}`, data);
+    return response.data;
+  },
+
+  // ELIMINA LISTA
+  deleteEmailList: async (id: string): Promise<void> => {
+    await api.delete(`/email-lists/${id}`);
+  },
+
+  // AGGIUNGI SUBSCRIBERS A LISTA
+  addSubscribersToList: async (
+    listId: string,
+    data: AddSubscribersToListRequest
+  ): Promise<{ message: string; addedCount: number }> => {
+    const response = await api.post<{ message: string; addedCount: number }>(
+      `/email-lists/${listId}/subscribers`,
+      data
+    );
+    return response.data;
+  },
+
+  // OTTIENI SUBSCRIBERS DI UNA LISTA
+  getListSubscribers: async (
+    listId: string
+  ): Promise<
+    {
+      id: string;
+      email: string;
+      name: string | null;
+      status: string;
+      subscribedAt: string;
+    }[]
+  > => {
+    const response = await api.get<
+      {
+        id: string;
+        email: string;
+        name: string | null;
+        status: string;
+        subscribedAt: string;
+      }[]
+    >(`/email-lists/${listId}/subscribers`);
+    return response.data;
+  },
+
+  // RIMUOVI SUBSCRIBER DA LISTA
+  removeSubscriberFromList: async (
+    listId: string,
+    subscriberId: string
+  ): Promise<void> => {
+    await api.delete(`/email-lists/${listId}/subscribers/${subscriberId}`);
+  },
+};
+
 // ======================================================================================
 // ======================================================================================

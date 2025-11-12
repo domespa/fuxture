@@ -9,7 +9,7 @@ export function validateCreateCampaign(
   res: Response,
   next: NextFunction
 ): void {
-  const { subject, content, fromName, status, scheduledAt } = req.body;
+  const { subject, content, fromName, status, scheduledAt, listIds } = req.body;
   const errors: { field: string; message: string }[] = [];
 
   // SUBJECT
@@ -54,6 +54,21 @@ export function validateCreateCampaign(
       errors.push({
         field: "fromName",
         message: "From name must not exceed 100 characters",
+      });
+    }
+  }
+
+  // LISTID
+  if (listIds !== undefined) {
+    if (!Array.isArray(listIds)) {
+      errors.push({ field: "listIds", message: "listIds must be an array" });
+    } else if (
+      listIds.length > 0 &&
+      !listIds.every((id) => typeof id === "string" && id.length > 0)
+    ) {
+      errors.push({
+        field: "listIds",
+        message: "All listIds must be valid strings",
       });
     }
   }

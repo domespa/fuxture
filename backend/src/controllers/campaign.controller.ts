@@ -69,7 +69,7 @@ async function buildCampaignResponse(
 // ====================================================================================================== //
 
 // ====================================================================================================== //
-//                                   CREA CAMPAGNA
+//                                       CREA CAMPAGNA
 // ====================================================================================================== //
 export async function createCampaign(
   req: Request,
@@ -78,6 +78,27 @@ export async function createCampaign(
   try {
     const data: CreateCampaignRequest = req.body;
     const createdById = req.user!.userId;
+
+    // VALIDAZIONE LISTE
+    if (data.listIds && data.listIds.length > 0) {
+      const existingLists = await prisma.emailList.findMany({
+        where: {
+          id: { in: data.listIds },
+        },
+        select: { id: true },
+      });
+
+      const existingIds = existingLists.map((list) => list.id);
+      const invalidIds = data.listIds.filter((id) => !existingIds.includes(id));
+
+      if (invalidIds.length > 0) {
+        res.status(400).json({
+          error: "Some list IDs are invalid",
+          invalidIds,
+        });
+        return;
+      }
+    }
 
     // PREPARA DATI
     const campaignData: Prisma.EmailCampaignCreateInput = {
@@ -91,6 +112,12 @@ export async function createCampaign(
       ...(data.status === CampaignStatus.SCHEDULED &&
         data.scheduledAt && {
           scheduledAt: new Date(data.scheduledAt),
+        }),
+      ...(data.listIds &&
+        data.listIds.length > 0 && {
+          targetLists: {
+            connect: data.listIds.map((id) => ({ id })),
+          },
         }),
     };
 
@@ -469,11 +496,70 @@ export async function sendCampaign(req: Request, res: Response): Promise<void> {
     }
 
     // PRENDI TUTTI I SUBSCRIBER ACTIVE
-    const subscribers = await prisma.subscriber.findMany({
-      where: {
-        status: SubscriberStatus.ACTIVE,
+    // RECUPERA SUBSCRIBERS
+    let subscribers;
+
+    // CHECK LISTE TARGETIZZATE
+    const campaignWithLists = await prisma.emailCampaign.findUnique({
+      where: { id },
+      include: {
+        targetLists: {
+          include: {
+            subscribers: {
+              include: {
+                subscriber: true,
+              },
+            },
+          },
+        },
       },
     });
+
+    if (
+      campaignWithLists?.targetLists &&
+      campaignWithLists.targetLists.length > 0
+    ) {
+      // CASO 1: CAMPAGNA CON LISTE
+      // RACCOGLI TUTI GLI ISCRTTI A QUELLA LISTA
+      const subscriberIds = new Set<string>();
+
+      campaignWithLists.targetLists.forEach((list) => {
+        list.subscribers.forEach((sub) => {
+          // SOLO ATTIVI
+          if (sub.subscriber.status === SubscriberStatus.ACTIVE) {
+            subscriberIds.add(sub.subscriber.id);
+          }
+        });
+      });
+
+      subscribers = await prisma.subscriber.findMany({
+        where: {
+          id: { in: Array.from(subscriberIds) },
+        },
+      });
+
+      console.log(
+        `Campaign targets ${campaignWithLists.targetLists.length} list(s), found ${subscribers.length} unique active subscribers`
+      );
+    } else {
+      // CASO 2: NESSUNA LISTA QUINDI INVIA A TUTTI GLI UTENTI ATTIVI
+      subscribers = await prisma.subscriber.findMany({
+        where: {
+          status: SubscriberStatus.ACTIVE,
+        },
+      });
+
+      console.log(
+        `Campaign targets ALL subscribers, found ${subscribers.length} active subscribers`
+      );
+    }
+
+    if (subscribers.length === 0) {
+      res.status(400).json({
+        error: "No active subscribers found for this campaign",
+      });
+      return;
+    }
 
     if (subscribers.length === 0) {
       res.status(400).json({

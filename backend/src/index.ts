@@ -8,6 +8,7 @@ import commentRoutes from "./routes/comment.routes";
 import { startScheduler } from "./utils/Postscheduler";
 import subscriberRoutes from "./routes/subscriber.routes";
 import campaignRoutes from "./routes/campaign.routes";
+import emailListRoutes from "./routes/email-list.routes";
 
 // ====================================================================================================== //
 //                                              VARIABILI D'AMBIENTE
@@ -62,6 +63,9 @@ app.use(`${API_PREFIX}/subscribers`, subscriberRoutes);
 
 // CAMPAGNE
 app.use(`${API_PREFIX}/campaigns`, campaignRoutes);
+
+// LISTE ISCRITTI
+app.use("/api/email-lists", emailListRoutes);
 
 // CHECK SERVER
 app.get("/", (req, res) => {

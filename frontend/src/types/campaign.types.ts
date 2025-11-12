@@ -36,6 +36,7 @@ export interface CreateCampaignRequest {
   fromName?: string;
   status: CampaignStatus;
   scheduledAt?: string;
+  listIds?: string[];
 }
 
 // REQUEST TYPE

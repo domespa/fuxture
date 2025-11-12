@@ -7,6 +7,7 @@ export interface CreateCampaignRequest {
   fromName?: string;
   status?: CampaignStatus;
   scheduledAt?: string;
+  listIds?: string[];
 }
 export interface UpdateCampaignRequest {
   subject?: string;

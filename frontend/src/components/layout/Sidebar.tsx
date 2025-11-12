@@ -7,6 +7,7 @@ import {
   Users,
   Settings,
   Mail,
+  ListChecks,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarProps, MenuItem } from "../../types/layout.types";
@@ -16,6 +17,7 @@ const menuItems: MenuItem[] = [
   { name: "Posts", path: "/dashboard/posts", icon: FileText },
   { name: "Comments", path: "/dashboard/comments", icon: MessageSquare },
   { name: "Campaigns", path: "/dashboard/campaigns", icon: Mail },
+  { name: "Email Lists", path: "/dashboard/email-lists", icon: ListChecks },
   { name: "Users", path: "/dashboard/users", icon: Users },
   { name: "Settings", path: "/dashboard/settings", icon: Settings },
 ];

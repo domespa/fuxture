@@ -95,16 +95,39 @@ model Subscriber {
   unsubscribedAt      DateTime?
   source              String?
   metadata            Json?
-  emailLogs           EmailLog[]       
-
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt    
+  emailLogs           EmailLog[]      
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt    
+  lists               SubscriberList[]
 }
 
 enum SubscriberStatus {
   ACTIVE
   UNSUBSCRIBED
   BOUNCED
+}
+
+// LISTE ISCRITTI
+model EmailList {
+  id              String            @id @default(cuid())
+  name            String            @unique
+  description     String?
+  isPublic        Boolean           @default(true) 
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  subscribers     SubscriberList[]
+  campaigns       EmailCampaign[]
+}
+
+model SubscriberList {
+  id              String      @id @default(cuid())
+  subscriberId    String
+  subscriber      Subscriber  @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+  listId          String
+  list            EmailList   @relation(fields: [listId], references: [id], onDelete: Cascade)
+  subscribedAt    DateTime    @default(now())
+  
+  @@unique([subscriberId, listId]) 
 }
 
 // DEM
@@ -121,6 +144,7 @@ model EmailCampaign {
   createdById   String
   createdBy     User                @relation(fields: [createdById], references: [id])
   emailLogs     EmailLog[]
+  targetLists     EmailList[]
 }
 
 enum CampaignStatus {

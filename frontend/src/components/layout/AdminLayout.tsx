@@ -2,8 +2,8 @@ import { useNavigate, Outlet } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
-import { NavbarUser } from "../../types/layout.types";
-import { commentsAPI } from "../../services/api";
+import { NavbarUser } from "@/types/layout.types";
+import { commentsAPI } from "@/services/api";
 import { useEffect, useState } from "react";
 import { CommentStatus } from "../../../../backend/src/types/comment.types";
 

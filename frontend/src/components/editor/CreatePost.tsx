@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { TiptapEditor } from "../../components/editor/TiptapEditor";
-import { postsAPI } from "../../services/api";
-import type { PostFormData, FormErrors } from "../../types/form.types";
+import { TiptapEditor } from "@/components/editor/TiptapEditor";
+import { postsAPI } from "@/services/api";
+import type { PostFormData, FormErrors } from "@/types/form.types";
 import {
   PostStatus,
   type CreatePostRequest,

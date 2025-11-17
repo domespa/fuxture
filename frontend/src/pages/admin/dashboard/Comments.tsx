@@ -4,7 +4,7 @@ import {
   CommentResponse,
   CommentStatus,
   CommentFilters,
-} from "../../../../backend/src/types/comment.types";
+} from "../../../../../backend/src/types/comment.types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";

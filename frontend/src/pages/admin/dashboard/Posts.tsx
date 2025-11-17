@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { postsAPI } from "../../services/api";
+import { postsAPI } from "@/services/api";
 import toast from "react-hot-toast";
 import {
   PostResponse,
   PostFilters,
   PostStatus,
-} from "../../../../backend/src/types/post.types";
+} from "../../../../../backend/src/types/post.types";
 
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -17,16 +17,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
+} from "@/components/ui/table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
-import { Checkbox } from "../../components/ui/checkbox";
-import { Badge } from "../../components/ui/badge";
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -34,7 +34,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../components/ui/dialog";
+} from "@/components/ui/dialog";
 
 export default function Posts() {
   const [posts, setPosts] = useState<PostResponse[]>([]);

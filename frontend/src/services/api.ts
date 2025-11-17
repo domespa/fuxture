@@ -389,3 +389,75 @@ export const emailListsAPI = {
 
 // ======================================================================================
 // ======================================================================================
+
+// ======================================================================================
+//                                  SUBSCRIBERS API
+// ======================================================================================
+export const subscribersAPI = {
+  // OTTIENI TUTTI I SUBSCRIBERS CON FILTRI
+  getSubscribers: async (filters?: {
+    status?: "ACTIVE" | "UNSUBSCRIBED" | "BOUNCED";
+    search?: string;
+    page?: number;
+    limit?: number;
+    sortBy?: "subscribedAt" | "email" | "createdAt";
+    sortOrder?: "asc" | "desc";
+  }): Promise<{
+    subscribers: {
+      id: string;
+      email: string;
+      name: string | null;
+      status: "ACTIVE" | "UNSUBSCRIBED" | "BOUNCED";
+      subscribedAt: string;
+      source: string | null;
+      createdAt: string;
+      updatedAt: string;
+    }[];
+    pagination: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+      hasNext: boolean;
+      hasPrev: boolean;
+    };
+    stats: {
+      totalActive: number;
+      totalUnsubscribed: number;
+      totalBounced: number;
+    };
+  }> => {
+    const response = await api.get("/subscribers", {
+      params: filters,
+    });
+    return response.data;
+  },
+
+  // CREA SUB
+  createSubscriber: async (data: {
+    email: string;
+    name?: string;
+    source?: string;
+  }): Promise<{
+    success: boolean;
+    message: string;
+    subscriber: {
+      id: string;
+      email: string;
+      name: string | null;
+      status: "ACTIVE" | "UNSUBSCRIBED" | "BOUNCED";
+      subscribedAt: string;
+      source: string | null;
+      createdAt: string;
+      updatedAt: string;
+    };
+  }> => {
+    const response = await api.post("/subscribers", data);
+    return response.data;
+  },
+
+  // ELIMINA SUB
+  deleteSubscriber: async (id: string): Promise<void> => {
+    await api.delete(`/subscribers/${id}`);
+  },
+};

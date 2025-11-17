@@ -2,18 +2,20 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
-import Dashboard from "./pages/dashboard/Dashboard";
+import Dashboard from "./pages/admin/dashboard/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import AdminLayout from "./components/layout/AdminLayout";
-import Posts from "./pages/dashboard/Posts";
+import DefaultLayout from "./components/layout/DefaultLayout";
+import Posts from "./pages/admin/dashboard/Posts";
 import { CreatePost } from "./components/editor/CreatePost";
 import { EditPost } from "./components/editor/EditPost";
-import Comments from "./pages/dashboard/Comments";
-import Campaigns from "./pages/dashboard/Campaigns";
-import CreateCampaing from "./pages/dashboard/CreateCampaign";
-import { EditCampaign } from "./pages/dashboard/EditCampaign";
+import Comments from "./pages/admin/dashboard/Comments";
+import Campaigns from "./pages/admin/dashboard/Campaigns";
+import CreateCampaing from "./pages/admin/dashboard/CreateCampaign";
+import { EditCampaign } from "./pages/admin/dashboard/EditCampaign";
 import { SendPreview } from "./components/campaigns/SendPreview";
-import EmailListsPage from "@/pages/dashboard/EmailLists";
+import EmailListsPage from "@/pages/admin/dashboard/EmailLists";
+import UsersPage from "./pages/admin/dashboard/UserPage";
 
 function App() {
   return (
@@ -44,7 +46,7 @@ function App() {
       />
       <Routes>
         {/* Redirect root a login */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<DefaultLayout />} />
 
         {/* Route pubbliche */}
         <Route path="/login" element={<Login />} />
@@ -73,7 +75,7 @@ function App() {
             element={<SendPreview />}
           />
           <Route path="email-lists" element={<EmailListsPage />} />
-          <Route path="users" element={<div>Users Page (TODO)</div>} />
+          <Route path="users" element={<UsersPage />} />
           <Route path="settings" element={<div>Settings Page (TODO)</div>} />
         </Route>
 

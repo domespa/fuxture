@@ -10,7 +10,7 @@ import {
   ListChecks,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SidebarProps, MenuItem } from "../../types/layout.types";
+import { SidebarProps, MenuItem } from "@/types/layout.types";
 
 const menuItems: MenuItem[] = [
   { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },

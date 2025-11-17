@@ -20,7 +20,7 @@ import {
   Mail,
 } from "lucide-react";
 import toast from "react-hot-toast";
-import { utcToLocal } from "../../lib/datetime";
+import { utcToLocal } from "@/lib/datetime";
 
 export default function Campaigns() {
   const navigate = useNavigate();

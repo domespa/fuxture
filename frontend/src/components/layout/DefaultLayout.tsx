@@ -1,7 +1,19 @@
+import { Outlet } from "react-router-dom";
+import Header from "../blog/components/Header";
+import Footer from "../blog/components/Footer";
+import CookieBanner from "../blog/components/CookieBanner";
 export default function DefaultLayout() {
   return (
-    <>
-      <h1 className="text-3xl font-bold">PAGINA HOMEPAGE</h1>
-    </>
+    <div className="flex flex-col min-h-screen">
+      <Header />
+
+      {/* Contenuto principale */}
+      <main className="flex-1">
+        <Outlet />
+      </main>
+
+      <Footer />
+      <CookieBanner />
+    </div>
   );
 }

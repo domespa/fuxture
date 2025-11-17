@@ -16,6 +16,8 @@ import { EditCampaign } from "./pages/admin/dashboard/EditCampaign";
 import { SendPreview } from "./components/campaigns/SendPreview";
 import EmailListsPage from "@/pages/admin/dashboard/EmailLists";
 import UsersPage from "./pages/admin/dashboard/UserPage";
+import CategoriesPage from "./pages/admin/dashboard/CategoriesPage";
+import TestNewsPage from "./pages/test/TestNewsPage";
 
 function App() {
   return (
@@ -51,6 +53,7 @@ function App() {
         {/* Route pubbliche */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/test-news" element={<TestNewsPage />} />
 
         {/* Route protette */}
         <Route
@@ -66,6 +69,7 @@ function App() {
           <Route path="posts" element={<Posts />} />
           <Route path="posts/create" element={<CreatePost />} />
           <Route path="posts/edit/:id" element={<EditPost />} />
+          <Route path="/dashboard/categories" element={<CategoriesPage />} />
           <Route path="comments" element={<Comments />} />
           <Route path="campaigns" element={<Campaigns />} />
           <Route path="campaigns/create" element={<CreateCampaing />} />

@@ -9,6 +9,8 @@ import { startScheduler } from "./utils/Postscheduler";
 import subscriberRoutes from "./routes/subscriber.routes";
 import campaignRoutes from "./routes/campaign.routes";
 import emailListRoutes from "./routes/email-list.routes";
+import categoryRoutes from "./routes/category.routes";
+import newsRoutes from "./routes/news.routes";
 
 // ====================================================================================================== //
 //                                              VARIABILI D'AMBIENTE
@@ -55,6 +57,9 @@ app.use(`${API_PREFIX}/upload`, uploadRoutes);
 // POSTS
 app.use(`${API_PREFIX}/posts`, postRoutes);
 
+// CATEGORIE
+app.use("/api/categories", categoryRoutes);
+
 // COMMENTS
 app.use(`${API_PREFIX}/comments`, commentRoutes);
 
@@ -65,7 +70,10 @@ app.use(`${API_PREFIX}/subscribers`, subscriberRoutes);
 app.use(`${API_PREFIX}/campaigns`, campaignRoutes);
 
 // LISTE ISCRITTI
-app.use("/api/email-lists", emailListRoutes);
+app.use(`${API_PREFIX}/email-lists`, emailListRoutes);
+
+// NEWS
+app.use(`${API_PREFIX}`, newsRoutes);
 
 // CHECK SERVER
 app.get("/", (req, res) => {

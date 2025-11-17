@@ -13,6 +13,7 @@ export interface PostFormData {
   seoTitle: string;
   seoDescription: string;
   tags: string[];
+  categoryId: string;
 }
 
 // ERRORI

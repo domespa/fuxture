@@ -18,6 +18,8 @@ import { Button } from "../ui/button";
 import { useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { localToUtc, utcToLocal } from "@/lib/datetime";
+import { categoriesAPI } from "@/services/api";
+import type { Category } from "@/types/category.types";
 
 export const EditPost = () => {
   // PRENDIAMO IL POST DA MODIFICARE
@@ -31,6 +33,7 @@ export const EditPost = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [tagInput, setTagInput] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
 
   // STATO FORM
   const [formData, setFormData] = useState<PostFormData>({
@@ -45,6 +48,7 @@ export const EditPost = () => {
     seoTitle: "",
     seoDescription: "",
     tags: [],
+    categoryId: "",
   });
 
   // STATO PER CONFERMARE L'USCITA DAL POST  SENZA PERDERE I SALVATAGGI
@@ -82,6 +86,7 @@ export const EditPost = () => {
           seoTitle: post.seoTitle || "",
           seoDescription: post.seoDescription || "",
           tags: post.tags || [],
+          categoryId: post.categoryId || "",
         });
 
         setLoadError(null);
@@ -105,6 +110,20 @@ export const EditPost = () => {
 
     fetchPost();
   }, [id]);
+
+  //  FETCH CATEGORIE
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await categoriesAPI.getCategories();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   // ============================================================
   //                    HANDLER CAMPI
@@ -198,6 +217,7 @@ export const EditPost = () => {
       if (formData.seoDescription)
         postData.seoDescription = formData.seoDescription;
       if (formData.tags.length > 0) postData.tags = formData.tags;
+      if (formData.categoryId) postData.categoryId = formData.categoryId;
       if (formData.scheduledAt)
         postData.scheduledAt = localToUtc(formData.scheduledAt);
 
@@ -429,6 +449,26 @@ export const EditPost = () => {
               ))}
             </div>
           )}
+        </div>
+
+        {/* CATEGORIA */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Categoria
+          </label>
+          <select
+            value={formData.categoryId}
+            onChange={(e) => handleChange("categoryId", e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="">Nessuna categoria</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.icon && `${cat.icon} `}
+                {cat.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* SEO Section (Collapsible) */}

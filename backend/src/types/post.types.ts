@@ -25,6 +25,7 @@ export interface CreatePostRequest {
   seoDescription?: string;
   tags?: string[];
   scheduledAt?: Date;
+  categoryId?: string;
 }
 
 // TIPO PER AGGIORNARE POST ESISTENTE
@@ -41,6 +42,7 @@ export interface UpdatePostRequest {
   tags?: string[];
   scheduledAt?: Date;
   isFeatured?: boolean;
+  categoryId?: string;
 }
 
 // TIPO PER CERCARE IL POST
@@ -83,8 +85,16 @@ export interface PostResponse {
     lastName: string;
     email: string;
   };
+  category?: {
+    id: string;
+    name: string;
+    slug: string;
+    color: string | null;
+    icon: string | null;
+  } | null;
   createdAt: Date;
   updatedAt: Date;
+  categoryId?: string;
 }
 
 // TIPO ER LISTA POST IMPAGINATI

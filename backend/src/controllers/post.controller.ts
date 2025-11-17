@@ -29,6 +29,7 @@ export async function createPost(req: Request, res: Response): Promise<void> {
   try {
     const data: CreatePostRequest = req.body;
     const authorId = req.user!.userId;
+    const { categoryId } = data;
 
     // 1. GESTIONE SLUG
     let slug: string;
@@ -76,6 +77,7 @@ export async function createPost(req: Request, res: Response): Promise<void> {
         seoDescription,
         tags: data.tags || [],
         authorId,
+        categoryId: categoryId || null,
       },
       include: {
         author: {
@@ -86,6 +88,7 @@ export async function createPost(req: Request, res: Response): Promise<void> {
             email: true,
           },
         },
+        category: true,
       },
     });
 
@@ -173,6 +176,7 @@ export async function getPosts(req: Request, res: Response): Promise<void> {
               email: true,
             },
           },
+          category: true,
         },
       }),
       prisma.post.count({ where }),
@@ -221,6 +225,7 @@ export async function getPostById(req: Request, res: Response): Promise<void> {
             email: true,
           },
         },
+        category: true,
       },
     });
 
@@ -294,6 +299,7 @@ export async function updatePost(req: Request, res: Response): Promise<void> {
       updateData.isFeatured = data.isFeatured;
       updateData.featuredAt = data.isFeatured ? new Date() : null;
     }
+    if (data.categoryId !== undefined) updateData.categoryId = data.categoryId;
 
     // SLUG
     if (data.slug !== undefined && data.slug !== existingPost.slug) {
@@ -334,6 +340,7 @@ export async function updatePost(req: Request, res: Response): Promise<void> {
             email: true,
           },
         },
+        category: true,
       },
     });
 

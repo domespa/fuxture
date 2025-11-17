@@ -8,6 +8,7 @@ import {
   Settings,
   Mail,
   ListChecks,
+  FolderTree,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarProps, MenuItem } from "@/types/layout.types";
@@ -15,6 +16,7 @@ import { SidebarProps, MenuItem } from "@/types/layout.types";
 const menuItems: MenuItem[] = [
   { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
   { name: "Posts", path: "/dashboard/posts", icon: FileText },
+  { name: "Categories", path: "/dashboard/categories", icon: FolderTree },
   { name: "Comments", path: "/dashboard/comments", icon: MessageSquare },
   { name: "Campaigns", path: "/dashboard/campaigns", icon: Mail },
   { name: "Email Lists", path: "/dashboard/email-lists", icon: ListChecks },

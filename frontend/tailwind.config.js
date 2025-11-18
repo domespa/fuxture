@@ -50,6 +50,11 @@ export default {
           4: "hsl(var(--chart-4))",
           5: "hsl(var(--chart-5))",
         },
+        fuxture: {
+          dark: "#1F2937", // Grigio scuro
+          primary: "#1D315E", // Blu navy principale
+          light: "#F8FAFC", // Bianco/grigio chiarissimo
+        },
       },
       keyframes: {
         "slide-up": {

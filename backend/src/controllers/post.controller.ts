@@ -133,6 +133,11 @@ export async function getPosts(req: Request, res: Response): Promise<void> {
       }
     }
 
+    // FILTRO CATEGORIA
+    if (filters.categoryId) {
+      where.categoryId = filters.categoryId;
+    }
+
     // FILTRO TAGS
     if (filters.tags && filters.tags.length > 0) {
       where.tags = {
@@ -388,3 +393,62 @@ export async function deletePost(req: Request, res: Response): Promise<void> {
 }
 // ====================================================================================================== //
 // ====================================================================================================== //
+
+// ====================================================================================================== //
+//                                   OTTIENI POST PER SLUG
+// ====================================================================================================== //
+export const getPostBySlug = async (req: Request, res: Response) => {
+  try {
+    const { slug } = req.params;
+
+    const post = await prisma.post.findUnique({
+      where: { slug },
+      include: {
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            color: true,
+            icon: true,
+          },
+        },
+      },
+    });
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Post non trovato",
+      });
+    }
+
+    // INCREMENTIAMO VIEWS
+    await prisma.post.update({
+      where: { id: post.id },
+      data: { views: { increment: 1 } },
+    });
+
+    res.json({
+      success: true,
+      data: {
+        ...post,
+        views: post.views + 1,
+      },
+    });
+  } catch (error) {
+    console.error("Errore nel recupero del post per slug:", error);
+    res.status(500).json({
+      success: false,
+      message: "Errore nel recupero del post",
+    });
+  }
+};

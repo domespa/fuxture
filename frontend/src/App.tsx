@@ -18,6 +18,9 @@ import EmailListsPage from "@/pages/admin/dashboard/EmailLists";
 import UsersPage from "./pages/admin/dashboard/UserPage";
 import CategoriesPage from "./pages/admin/dashboard/CategoriesPage";
 import TestNewsPage from "./pages/test/TestNewsPage";
+import HomePage from "./pages/HomePage";
+import BlogPage from "./pages/BlogPage";
+import PostDetailPage from "./pages/PostDetailPage";
 
 function App() {
   return (
@@ -47,10 +50,12 @@ function App() {
         }}
       />
       <Routes>
-        {/* Redirect root a login */}
-        <Route path="/" element={<DefaultLayout />} />
-
         {/* Route pubbliche */}
+        <Route path="/" element={<DefaultLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="posts" element={<BlogPage />} />
+          <Route path="posts/:slug" element={<PostDetailPage />} />
+        </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/test-news" element={<TestNewsPage />} />

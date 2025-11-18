@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Facebook, Twitter, Instagram, Linkedin, Mail } from "lucide-react";
+import { Linkedin, Mail } from "lucide-react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -38,7 +38,7 @@ export default function Footer() {
             <h4 className="text-white font-bold text-lg mb-4">Chi Sono</h4>
             <p className="text-sm text-gray-400 leading-relaxed">
               Benvenuto sul mio blog! Qui condivido pensieri, guide e
-              riflessioni su [tuo argomento]. Seguimi per rimanere aggiornato!
+              riflessioni su gnammete. Seguimi per rimanere aggiornato!
             </p>
           </div>
           {/* Quick Links Column */}

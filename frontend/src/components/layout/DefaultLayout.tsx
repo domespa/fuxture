@@ -6,12 +6,9 @@ export default function DefaultLayout() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-
-      {/* Contenuto principale */}
       <main className="flex-1">
         <Outlet />
       </main>
-
       <Footer />
       <CookieBanner />
     </div>

@@ -149,6 +149,15 @@ export const postsAPI = {
       return false;
     }
   },
+
+  // OTTIENI POST PER SLUG
+  getPostBySlug: async (slug: string): Promise<PostResponse> => {
+    const response = await api.get<{
+      success: boolean;
+      data: PostResponse;
+    }>(`/posts/slug/${slug}`);
+    return response.data.data;
+  },
 };
 // ======================================================================================
 // ======================================================================================

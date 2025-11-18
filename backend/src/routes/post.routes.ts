@@ -3,6 +3,7 @@ import {
   createPost,
   getPosts,
   getPostById,
+  getPostBySlug,
   updatePost,
   deletePost,
 } from "../controllers/post.controller";
@@ -16,6 +17,7 @@ import {
   authenticateTokenOptional,
 } from "../middleware/auth.middleware";
 import { isSlugValid } from "../utils/slug.utils";
+import { createCommentOnPost } from "../controllers/comment.controller";
 
 const router = Router();
 
@@ -39,6 +41,10 @@ router.get("/check-slug/:slug", async (req, res) => {
   }
 });
 
+// OTTIENI POST PER SLUG
+// GET /posts/slug/:slug
+router.get("/slug/:slug", getPostBySlug);
+
 // LISTA POST FILTRATI
 // POST /posts
 router.get("/", authenticateTokenOptional, getPosts);
@@ -46,6 +52,10 @@ router.get("/", authenticateTokenOptional, getPosts);
 // OTTIENI SINGOLO POST
 // GET /posts/:id
 router.get("/:id", authenticateTokenOptional, getPostById);
+
+// CREA COMMENTO SU POST
+// POST /posts/:id/comments
+router.post("/:id/comments", createCommentOnPost);
 
 // ====================================================================================================== //
 // ====================================================================================================== //

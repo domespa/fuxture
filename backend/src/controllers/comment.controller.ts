@@ -47,6 +47,73 @@ export const createComment = async (
 // ====================================================================================================== //
 
 // ====================================================================================================== //
+//                                CONTROLLER: CREATE COMMENTO SU POST
+// ====================================================================================================== //
+export const createCommentOnPost = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id: postId } = req.params;
+    const { content, authorName, authorEmail } = req.body;
+
+    // VALIDAZIONE
+    if (!content || !authorName || !authorEmail) {
+      res.status(400).json({
+        success: false,
+        message: "Compila tutti i campi obbligatori",
+      });
+      return;
+    }
+
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+    });
+
+    if (!post) {
+      res.status(404).json({
+        success: false,
+        message: "Post non trovato",
+      });
+      return;
+    }
+
+    if (post.status !== "PUBLISHED") {
+      res.status(400).json({
+        success: false,
+        message: "Non è possibile commentare questo post",
+      });
+      return;
+    }
+
+    // STATO PENDING
+    const comment = await prisma.comment.create({
+      data: {
+        content: content.trim(),
+        authorName: authorName.trim(),
+        authorEmail: authorEmail.toLowerCase().trim(),
+        status: CommentStatus.PENDING,
+        postId,
+      },
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Commento inviato! Sarà visibile dopo l'approvazione.",
+      data: comment,
+    });
+  } catch (error) {
+    console.error("Errore nella creazione del commento:", error);
+    res.status(500).json({
+      success: false,
+      message: "Errore nell'invio del commento",
+    });
+  }
+};
+// ====================================================================================================== //
+// ====================================================================================================== //
+
+// ====================================================================================================== //
 //                                CONTROLLER: GET COMMENTI FILTRATI E IMPAGINATI
 // ====================================================================================================== //
 export const getComments = async (

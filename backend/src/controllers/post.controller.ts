@@ -439,10 +439,7 @@ export const getPostBySlug = async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      data: {
-        ...post,
-        views: post.views + 1,
-      },
+      data: post,
     });
   } catch (error) {
     console.error("Errore nel recupero del post per slug:", error);

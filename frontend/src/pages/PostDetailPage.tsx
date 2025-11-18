@@ -313,27 +313,6 @@ export default function PostDetailPage() {
           </div>
         )}
 
-        {/* Author Bio */}
-        <div className="mt-12 p-8 bg-white rounded-2xl shadow-lg">
-          <h3 className="text-2xl font-bold mb-4" style={{ color: "#1F2937" }}>
-            Sull'autore
-          </h3>
-          <div className="flex items-start gap-4">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center flex-shrink-0">
-              <User className="w-10 h-10 text-gray-600" />
-            </div>
-            <div>
-              <h4
-                className="font-bold text-xl mb-2"
-                style={{ color: "#1F2937" }}
-              >
-                {post.author.firstName} {post.author.lastName}
-              </h4>
-              <p className="text-gray-600">{post.author.email}</p>
-            </div>
-          </div>
-        </div>
-
         {/* Comments CTA */}
         <div className="mt-12 text-center">
           <button
@@ -347,7 +326,7 @@ export default function PostDetailPage() {
         </div>
       </article>
 
-      {/* COMMENTS SIDEBAR - Stile HuffPost */}
+      {/* COMMENTS SIDEBAR */}
       <div
         className={`fixed top-0 right-0 h-full w-full md:w-[500px] bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${
           commentsOpen ? "translate-x-0" : "translate-x-full"

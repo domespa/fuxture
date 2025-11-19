@@ -87,10 +87,10 @@ export default function AdminLayout() {
     };
 
     if (user) {
-      fetchPendingComments;
+      fetchPendingComments();
 
-      // POLLING PER AGGIIORNARE IL BADGE OGNI 5 MINUTI
-      const interval = setInterval(fetchPendingComments, 500000);
+      // POLLING PER AGGIIORNARE IL BADGE OGNI 3 MINUTI
+      const interval = setInterval(fetchPendingComments, 30000);
       return () => clearInterval(interval);
     }
   }, [user]);

@@ -184,7 +184,7 @@ export default function PostDetailPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F8FAFC" }}>
-      {/* HEADER con breadcrumb */}
+      {/* HEADER */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -240,21 +240,14 @@ export default function PostDetailPage() {
         </h1>
 
         {/* Excerpt */}
-        {post.excerpt && (
+        {/* {post.excerpt && (
           <p className="text-xl text-gray-600 mb-8 leading-relaxed">
             {post.excerpt}
           </p>
-        )}
+        )} */}
 
         {/* Meta Info */}
         <div className="flex flex-wrap items-center gap-6 py-6 border-y border-gray-200 mb-8">
-          <div className="flex items-center gap-2">
-            <User className="w-5 h-5 text-gray-400" />
-            <span className="font-semibold" style={{ color: "#1F2937" }}>
-              {post.author.firstName} {post.author.lastName}
-            </span>
-          </div>
-
           <div className="flex items-center gap-2 text-gray-600">
             <Calendar className="w-5 h-5" />
             <span>{formatDate(post.publishedAt)}</span>
@@ -277,7 +270,7 @@ export default function PostDetailPage() {
         </div>
 
         {/* Featured Image */}
-        {post.featuredImage && (
+        {/* {post.featuredImage && (
           <div className="mb-12 rounded-2xl overflow-hidden shadow-2xl">
             <img
               src={post.featuredImage}
@@ -285,7 +278,7 @@ export default function PostDetailPage() {
               className="w-full h-auto"
             />
           </div>
-        )}
+        )} */}
 
         {/* Content */}
         <div

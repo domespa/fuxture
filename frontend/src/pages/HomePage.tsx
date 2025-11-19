@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { categoriesAPI } from "@/services/api";
 import type { Category } from "@/types/category.types";
 import { Link } from "react-router-dom";
-import { Home, TrendingUp, BookOpen, Star, ChevronRight } from "lucide-react";
+import { TrendingUp, BookOpen, Star, ChevronRight } from "lucide-react";
 import NewsWidget from "@/components/blog/components/NewsWidget";
 import BlogPostsSlider from "@/components/blog/components/BlogPostsSlider";
 
@@ -26,7 +26,6 @@ export default function HomePage() {
   };
 
   const staticMenuItems = [
-    { name: "Home", slug: "/", icon: Home },
     { name: "Ultimi Articoli", slug: "/posts", icon: TrendingUp },
     { name: "Più Popolari", slug: "/posts?sort=popular", icon: Star },
     { name: "Tutti gli Articoli", slug: "/posts/all", icon: BookOpen },
@@ -81,7 +80,7 @@ export default function HomePage() {
               Informazione. Ispirazione. Innovazione.
             </p>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-10 mb-12">
               {staticMenuItems.map((item, index) => (
                 <Link
                   key={item.slug}

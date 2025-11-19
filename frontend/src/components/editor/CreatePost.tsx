@@ -215,8 +215,6 @@ export const CreatePost = () => {
         content: formData.content,
         status: formData.status,
       };
-
-      // Aggiungi campi opzionali solo se compilati
       if (formData.slug) postData.slug = formData.slug;
       if (formData.excerpt) postData.excerpt = formData.excerpt;
       if (formData.featuredImage)
@@ -227,8 +225,9 @@ export const CreatePost = () => {
         postData.seoDescription = formData.seoDescription;
       if (formData.tags.length > 0) postData.tags = formData.tags;
       if (formData.categoryId) postData.categoryId = formData.categoryId;
-      if (formData.scheduledAt)
+      if (formData.status === "SCHEDULED" && formData.scheduledAt) {
         postData.scheduledAt = localToUtc(formData.scheduledAt);
+      }
 
       // Chiamata API
       const response = await postsAPI.createPost(postData);
@@ -385,6 +384,48 @@ export const CreatePost = () => {
           <p className="text-sm text-gray-500 mt-1">
             {formData.excerpt.length}/160 caratteri
           </p>
+        </div>
+
+        {/* Featured Image Field */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Immagine in Evidenza
+          </label>
+          <input
+            type="url"
+            value={formData.featuredImage}
+            onChange={(e) => handleChange("featuredImage", e.target.value)}
+            placeholder="https://example.com/image.jpg"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          <p className="text-sm text-gray-500 mt-1">
+            URL dell'immagine principale del post (opzionale)
+          </p>
+
+          {/* Preview dell'immagine */}
+          {formData.featuredImage && (
+            <div className="mt-3">
+              <p className="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+              <div className="relative w-full max-w-md border-2 border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <img
+                  src={formData.featuredImage}
+                  alt="Preview"
+                  className="w-full aspect-video object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                    const parent = e.currentTarget.parentElement;
+                    if (parent && !parent.querySelector(".error-message")) {
+                      const errorDiv = document.createElement("div");
+                      errorDiv.className =
+                        "error-message flex items-center justify-center h-48 bg-red-50 text-red-600 text-sm";
+                      errorDiv.textContent = "⚠️ Immagine non valida";
+                      parent.appendChild(errorDiv);
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Status Field */}

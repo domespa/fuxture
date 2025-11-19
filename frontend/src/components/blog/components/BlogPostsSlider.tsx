@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react";
 import { postsAPI } from "@/services/api";
 import type { PostResponse, PostStatus } from "@/types/post.types";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Calendar,
-  FileText,
-  ExternalLink,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function BlogPostsSlider() {
@@ -15,6 +9,7 @@ export default function BlogPostsSlider() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
 
   const fetchPosts = async () => {
     try {
@@ -56,6 +51,10 @@ export default function BlogPostsSlider() {
     }, 5000);
     return () => clearInterval(interval);
   }, [posts.length]);
+
+  const handleImageError = (index: number) => {
+    setImageErrors((prev) => new Set([...prev, index]));
+  };
 
   const nextPost = () => {
     setCurrentIndex((prev) => (prev + 1) % posts.length);
@@ -113,6 +112,7 @@ export default function BlogPostsSlider() {
   }
 
   const currentPost = posts[currentIndex];
+  const hasImageError = imageErrors.has(currentIndex);
 
   return (
     <div className="bg-white shadow-lg overflow-hidden max-h-[1000px] flex flex-col">
@@ -129,18 +129,17 @@ export default function BlogPostsSlider() {
       {/* Slider Content */}
       <div className="relative flex-1 flex flex-col">
         <div className="h-[250px] bg-gray-900 relative overflow-hidden flex-shrink-0">
-          {currentPost.featuredImage ? (
+          {currentPost.featuredImage && !hasImageError ? (
             <img
+              key={`${currentPost.id}-${currentIndex}`}
               src={currentPost.featuredImage}
               alt={currentPost.title}
               className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-              }}
+              onError={() => handleImageError(currentIndex)}
             />
           ) : (
-            <div className="flex-1 p-4 flex flex-col justify-between overflow-hidden">
-              <FileText className="w-16 h-16 text-white/50" />
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
+              <FileText className="w-16 h-16 text-white/30" />
             </div>
           )}
         </div>
@@ -151,17 +150,15 @@ export default function BlogPostsSlider() {
               {currentPost.category?.name || "Generale"}
             </div>
 
-            {/* Titolo */}
             <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2">
               {currentPost.title}
             </h3>
 
-            {/* Descrizione */}
             <p className="text-gray-600 line-clamp-3 leading-snug text-sm">
               {currentPost.excerpt || ""}
             </p>
           </div>
-          {/* Footer con data e link */}
+
           <div className="flex items-center justify-between pt-3 border-t border-gray-100 flex-shrink-0 mt-2 mb-8">
             <div className="flex items-center gap-2">
               <Calendar className="w-3 h-3 text-gray-400" />
@@ -174,7 +171,7 @@ export default function BlogPostsSlider() {
               className="text-blue-600 font-semibold text-xs hover:text-blue-700 transition-colors flex items-center gap-1"
             >
               Leggi
-              <ExternalLink className="w-3 h-3" />
+              <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
         </div>
@@ -194,6 +191,7 @@ export default function BlogPostsSlider() {
           <ChevronRight className="w-6 h-6 text-gray-700" />
         </button>
       </div>
+
       {posts.length > 1 && (
         <div className="flex justify-center gap-2 py-2 flex-shrink-0">
           {posts.slice(0, 5).map((_, index) => (

@@ -6,6 +6,7 @@ import {
   getPostBySlug,
   updatePost,
   deletePost,
+  toggleFeatured,
 } from "../controllers/post.controller";
 import {
   validateCreatePost,
@@ -80,6 +81,15 @@ router.put(
   requireRole("ADMIN"),
   validateUpdatePost,
   updatePost
+);
+
+// OGGLE FEATURED
+// PATCH /posts/:id/featured
+router.patch(
+  "/:id/featured",
+  authenticateToken,
+  requireRole("ADMIN"),
+  toggleFeatured
 );
 
 // ELIMINA POST

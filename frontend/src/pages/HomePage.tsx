@@ -59,15 +59,15 @@ export default function HomePage() {
         <div className="relative z-10 container mx-auto px-4 py-16 md:py-24">
           <div className="text-center max-w-4xl mx-auto">
             <div className="mb-6 animate-fade-in">
-              <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-4 tracking-tight">
-                Fux
-                <span
-                  style={{ color: "#1D315E" }}
-                  className="bg-white px-3 rounded-lg"
-                >
-                  ture
-                </span>
-              </h1>
+              <div className="flex justify-center mb-6">
+                <div className="w-32 h-32 md:w-40 md:h-40 transform hover:scale-105 transition-transform duration-300">
+                  <img
+                    className="rounded-full w-full h-full object-cover shadow-2xl ring-4 ring-white/20"
+                    src="/logo.png"
+                    alt="Fuxture Logo"
+                  />
+                </div>
+              </div>
               <div
                 className="h-1 w-32 mx-auto rounded-full"
                 style={{

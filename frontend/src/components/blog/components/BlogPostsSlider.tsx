@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { postsAPI } from "@/services/api";
 import type { PostResponse, PostStatus } from "@/types/post.types";
-import { ChevronLeft, ChevronRight, Calendar, FileText } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+  FileText,
+  ExternalLink,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function BlogPostsSlider() {
@@ -18,6 +24,7 @@ export default function BlogPostsSlider() {
 
       const response = await postsAPI.getPosts({
         status: "PUBLISHED" as PostStatus,
+        isFeatured: true,
         limit: 5,
         sortBy: "publishedAt",
         sortOrder: "desc",
@@ -115,19 +122,18 @@ export default function BlogPostsSlider() {
   const hasImageError = imageErrors.has(currentIndex);
 
   return (
-    <div className="bg-white shadow-lg overflow-hidden max-h-[1000px] flex flex-col">
+    <div className="bg-white shadow-lg overflow-hidden rounded-lg h-[600px] flex flex-col">
       {/* Header */}
       <div className="bg-gray-800 px-6 py-4 flex-shrink-0">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-white">
-            <FileText className="w-6 h-6" />
-            <h2 className="text-2xl font-bold">I Nostri Articoli</h2>
-          </div>
+        <div className="flex items-center gap-2 text-white">
+          <FileText className="w-6 h-6" />
+          <h2 className="text-2xl font-bold">I Nostri Articoli</h2>
         </div>
       </div>
 
       {/* Slider Content */}
       <div className="relative flex-1 flex flex-col">
+        {/* Immagine */}
         <div className="h-[250px] bg-gray-900 relative overflow-hidden flex-shrink-0">
           {currentPost.featuredImage && !hasImageError ? (
             <img
@@ -144,64 +150,71 @@ export default function BlogPostsSlider() {
           )}
         </div>
 
-        <div className="h-1/2 p-4 flex flex-col justify-between overflow-hidden">
-          <div className="flex-1 overflow-hidden min-h-0">
-            <div className="text-xs text-blue-600 font-bold mb-1">
-              {currentPost.category?.name || "Generale"}
-            </div>
-
-            <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2">
-              {currentPost.title}
-            </h3>
-
-            <p className="text-gray-600 line-clamp-3 leading-snug text-sm">
-              {currentPost.excerpt || ""}
-            </p>
+        {/* Contenuto */}
+        <div className="h-[250px] p-6 flex flex-col">
+          {/* Categoria */}
+          <div className="text-xs text-blue-600 font-bold mb-2 flex-shrink-0">
+            {currentPost.category?.name || "Generale"}
           </div>
 
-          <div className="flex items-center justify-between pt-3 border-t border-gray-100 flex-shrink-0 mt-2 mb-8">
+          {/* Titolo */}
+          <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 h-14 flex-shrink-0">
+            {currentPost.title}
+          </h3>
+
+          {/* Descrizione */}
+          <p className="text-gray-600 text-sm mb-4 flex-1">
+            {(currentPost.excerpt || "Nessuna descrizione disponibile").length >
+            150
+              ? `${currentPost.excerpt?.substring(0, 150)} . . .`
+              : currentPost.excerpt || "Nessuna descrizione disponibile"}
+          </p>
+
+          {/* Footer */}
+          <div className="flex items-center justify-between pt-4 border-t border-gray-200 flex-shrink-0">
             <div className="flex items-center gap-2">
-              <Calendar className="w-3 h-3 text-gray-400" />
+              <Calendar className="w-4 h-4 text-gray-400" />
               <span className="text-xs text-gray-500">
                 {formatDate(currentPost.publishedAt)}
               </span>
             </div>
             <Link
               to={`/posts/${currentPost.slug}`}
-              className="text-blue-600 font-semibold text-xs hover:text-blue-700 transition-colors flex items-center gap-1"
+              className="text-blue-600 font-semibold text-sm hover:text-blue-700 transition-colors flex items-center gap-1"
             >
               Leggi
-              <ChevronRight className="w-3 h-3" />
+              <ExternalLink className="w-4 h-4" />
             </Link>
           </div>
         </div>
 
         <button
           onClick={prevPost}
-          className="absolute left-2 top-1/3 -translate-y-1/2 bg-white/90 hover:bg-white p-2 shadow-lg transition-all z-10"
+          className="absolute left-4 top-[125px] -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all z-10"
           aria-label="Articolo precedente"
         >
-          <ChevronLeft className="w-6 h-6 text-gray-700" />
+          <ChevronLeft className="w-5 h-5 text-gray-700" />
         </button>
         <button
           onClick={nextPost}
-          className="absolute right-2 top-1/3 -translate-y-1/2 bg-white/90 hover:bg-white p-2 shadow-lg transition-all z-10"
+          className="absolute right-4 top-[125px] -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all z-10"
           aria-label="Articolo successivo"
         >
-          <ChevronRight className="w-6 h-6 text-gray-700" />
+          <ChevronRight className="w-5 h-5 text-gray-700" />
         </button>
       </div>
 
+      {/* Indicatori */}
       {posts.length > 1 && (
-        <div className="flex justify-center gap-2 py-2 flex-shrink-0">
+        <div className="flex justify-center gap-2 py-4 flex-shrink-0 bg-white border-t">
           {posts.slice(0, 5).map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all ${
+              className={`h-2 rounded-full transition-all ${
                 index === currentIndex
-                  ? "bg-blue-500 w-6"
-                  : "bg-gray-300 hover:bg-gray-400"
+                  ? "bg-blue-500 w-8"
+                  : "bg-gray-300 hover:bg-gray-400 w-2"
               }`}
               aria-label={`Vai all'articolo ${index + 1}`}
             />

@@ -363,6 +363,48 @@ export async function updatePost(req: Request, res: Response): Promise<void> {
 // ====================================================================================================== //
 
 // ====================================================================================================== //
+//                                   TOGGLE FEATURED
+// ====================================================================================================== //
+export const toggleFeatured = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const post = await prisma.post.findUnique({
+      where: { id },
+    });
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        error: "Post not found",
+      });
+    }
+
+    const updatedPost = await prisma.post.update({
+      where: { id },
+      data: {
+        isFeatured: !post.isFeatured,
+        featuredAt: !post.isFeatured ? new Date() : null,
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Featured status updated",
+      data: updatedPost,
+    });
+  } catch (error) {
+    console.error("Error toggling featured:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to update featured status",
+    });
+  }
+};
+// ====================================================================================================== //
+// ====================================================================================================== //
+
+// ====================================================================================================== //
 //                                   DELETE POST
 // ====================================================================================================== //
 export async function deletePost(req: Request, res: Response): Promise<void> {

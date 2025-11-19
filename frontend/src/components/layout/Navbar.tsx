@@ -2,6 +2,7 @@ import { Menu, Bell, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavbarProps } from "@/types/layout.types";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar({
   toggleSidebar,
@@ -10,6 +11,7 @@ export default function Navbar({
 }: NavbarProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   // USIAMO USEFFECT PER CHIUDERE DROPDOWN SE CLICK FUORI DAL MENU
   useEffect(() => {
@@ -36,6 +38,11 @@ export default function Navbar({
     window.location.href = "/login";
   };
 
+  // REDIRECT
+  const handleBellClick = () => {
+    navigate("/dashboard/comments");
+  };
+
   return (
     <nav className="sticky top-0 z-40 w-full border-b bg-white shadow-sm">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
@@ -56,10 +63,20 @@ export default function Navbar({
         {/* RIGHT SIDE: Notifications + User Dropdown */}
         <div className="flex items-center gap-2">
           {/* Notifications Badge */}
-          <Button variant="ghost" size="icon" className="relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative"
+            onClick={handleBellClick}
+            title={
+              pendingCommentsCount > 0
+                ? `${pendingCommentsCount} commenti in attesa`
+                : "Nessun commento in attesa"
+            }
+          >
             <Bell className="h-5 w-5" />
             {pendingCommentsCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white animate-pulse">
                 {pendingCommentsCount}
               </span>
             )}

@@ -135,22 +135,22 @@ export default function NewsWidget() {
   const currentArticle = news[currentIndex];
 
   return (
-    <div className="bg-white shadow-lg overflow-hidden h-[600px] flex flex-col">
+    <div className="bg-white shadow-lg overflow-hidden rounded-lg h-[600px] flex flex-col">
       {/* Header */}
       <div className="bg-gray-800 px-6 py-4 flex-shrink-0">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-white">
-            <Newspaper className="w-6 h-6" />
-            <h2 className="text-2xl font-bold">Ultime Notizie</h2>
-          </div>
+        <div className="flex items-center gap-2 text-white">
+          <Newspaper className="w-6 h-6" />
+          <h2 className="text-2xl font-bold">Ultime Notizie</h2>
         </div>
       </div>
 
       {/* Slider Content */}
       <div className="relative flex-1 flex flex-col">
+        {/* Immagine */}
         <div className="h-[250px] bg-gray-900 relative overflow-hidden flex-shrink-0">
           {currentArticle.urlToImage ? (
             <img
+              key={currentIndex}
               src={currentArticle.urlToImage}
               alt={currentArticle.title}
               className="w-full h-full object-cover"
@@ -159,32 +159,36 @@ export default function NewsWidget() {
               }}
             />
           ) : (
-            <div className="flex-1 p-4 flex flex-col justify-between overflow-hidden">
-              <Newspaper className="w-16 h-16 text-white/50" />
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
+              <Newspaper className="w-16 h-16 text-white/30" />
             </div>
           )}
         </div>
 
-        <div className="h-1/2 p-4 flex flex-col justify-between overflow-hidden">
-          <div className="flex-1 overflow-hidden min-h-0">
-            <div className="text-xs text-red-600 font-bold mb-1">
-              {currentArticle.source.name}
-            </div>
-
-            {/* Titolo */}
-            <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2">
-              {currentArticle.title}
-            </h3>
-
-            {/* Descrizione */}
-            <p className="text-gray-600 line-clamp-3 leading-snug text-sm">
-              {currentArticle.description || ""}
-            </p>
+        {/* Contenuto */}
+        <div className="h-[250px] p-6 flex flex-col">
+          {/* Fonte */}
+          <div className="text-xs text-red-600 font-bold mb-2 flex-shrink-0">
+            {currentArticle.source.name}
           </div>
-          {/* Footer con data e link */}
-          <div className="flex items-center justify-between pt-3 border-t border-gray-100 flex-shrink-0 mt-2 mb-8">
+
+          {/* Titolo */}
+          <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 h-14 flex-shrink-0">
+            {currentArticle.title}
+          </h3>
+
+          {/* Descrizione */}
+          <p className="text-gray-600 text-sm mb-4 flex-1">
+            {(currentArticle.description || "Nessuna descrizione disponibile")
+              .length > 150
+              ? `${currentArticle.description?.substring(0, 150)} . . .`
+              : currentArticle.description || "Nessuna descrizione disponibile"}
+          </p>
+
+          {/* Footer */}
+          <div className="flex items-center justify-between pt-4 border-t border-gray-200 flex-shrink-0">
             <div className="flex items-center gap-2">
-              <Calendar className="w-3 h-3 text-gray-400" />
+              <Calendar className="w-4 h-4 text-gray-400" />
               <span className="text-xs text-gray-500">
                 {formatDate(currentArticle.publishedAt)}
               </span>
@@ -193,39 +197,41 @@ export default function NewsWidget() {
               href={currentArticle.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-red-600 font-semibold text-xs hover:text-red-700 transition-colors flex items-center gap-1"
+              className="text-red-600 font-semibold text-sm hover:text-red-700 transition-colors flex items-center gap-1"
             >
               Leggi
-              <ExternalLink className="w-3 h-3" />
+              <ExternalLink className="w-4 h-4" />
             </a>
           </div>
         </div>
 
         <button
           onClick={prevNews}
-          className="absolute left-2 top-1/3 -translate-y-1/2 bg-white/90 hover:bg-white p-2 shadow-lg transition-all z-10"
+          className="absolute left-4 top-[125px] -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all z-10"
           aria-label="Notizia precedente"
         >
-          <ChevronLeft className="w-6 h-6 text-gray-700" />
+          <ChevronLeft className="w-5 h-5 text-gray-700" />
         </button>
         <button
           onClick={nextNews}
-          className="absolute right-2 top-1/3 -translate-y-1/2 bg-white/90 hover:bg-white p-2 shadow-lg transition-all z-10"
+          className="absolute right-4 top-[125px] -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all z-10"
           aria-label="Notizia successiva"
         >
-          <ChevronRight className="w-6 h-6 text-gray-700" />
+          <ChevronRight className="w-5 h-5 text-gray-700" />
         </button>
       </div>
+
+      {/* Indicatori */}
       {news.length > 1 && (
-        <div className="flex justify-center gap-2 py-2 flex-shrink-0">
+        <div className="flex justify-center gap-2 py-4 flex-shrink-0 bg-white border-t">
           {news.slice(0, 5).map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all ${
+              className={`h-2 rounded-full transition-all ${
                 index === currentIndex
-                  ? "bg-red-500 w-6"
-                  : "bg-gray-300 hover:bg-gray-400"
+                  ? "bg-red-500 w-8"
+                  : "bg-gray-300 hover:bg-gray-400 w-2"
               }`}
               aria-label={`Vai alla notizia ${index + 1}`}
             />

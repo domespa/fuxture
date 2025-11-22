@@ -1,42 +1,47 @@
-import { useEffect, useRef, useState } from "react";
 import { NodeViewWrapper, NodeViewProps } from "@tiptap/react";
+import { useEffect, useRef, useState } from "react";
 
 export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
   const imageRef = useRef<HTMLImageElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const [isResizing, setIsResizing] = useState(false);
-  const [currentWidth, setCurrentWidth] = useState<number>(0);
-  const [currentHeight, setCurrentHeight] = useState<number>(0);
+  const [dimensions, setDimensions] = useState({
+    width: node.attrs.width || 0,
+    height: node.attrs.height || 0,
+  });
   const aspectRatio = useRef<number>(1);
+  const isInitialized = useRef(false);
 
-  // Inizializza dimensioni al caricamento immagine
   useEffect(() => {
     const img = imageRef.current;
-    if (!img) return;
+    if (!img || isInitialized.current) return;
 
     const handleLoad = () => {
       const naturalWidth = img.naturalWidth;
       const naturalHeight = img.naturalHeight;
       aspectRatio.current = naturalWidth / naturalHeight;
 
-      // Se non ci sono dimensioni salvate, usa quelle naturali (max 800px width)
-      if (!node.attrs.width) {
+      const savedWidth = node.attrs.width;
+      const savedHeight = node.attrs.height;
+
+      console.log("🔍 ImageResizer mounted with:", { savedWidth, savedHeight });
+
+      if (savedWidth && savedHeight) {
+        console.log("✅ Using saved dimensions:", { savedWidth, savedHeight });
+        setDimensions({
+          width: savedWidth,
+          height: savedHeight,
+        });
+        aspectRatio.current = savedWidth / savedHeight;
+      } else {
+        console.log("⚠️ No saved dimensions, using default");
         const initialWidth = Math.min(naturalWidth, 800);
         const initialHeight = Math.round(initialWidth / aspectRatio.current);
 
-        setCurrentWidth(initialWidth);
-        setCurrentHeight(initialHeight);
-
-        updateAttributes({
-          width: initialWidth,
-          height: initialHeight,
-        });
-      } else {
-        // Usa dimensioni salvate
-        setCurrentWidth(node.attrs.width);
-        setCurrentHeight(node.attrs.height);
-        aspectRatio.current = node.attrs.width / node.attrs.height;
+        setDimensions({ width: initialWidth, height: initialHeight });
+        updateAttributes({ width: initialWidth, height: initialHeight });
       }
+
+      isInitialized.current = true;
     };
 
     if (img.complete) {
@@ -47,11 +52,6 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
     }
   }, [node.attrs.src]);
 
-  // Aggiorna il componente quando cambiano gli attributi (incluso align)
-  useEffect(() => {
-    // Force re-render quando cambia l'allineamento
-  }, [node.attrs.align, node.attrs.width, node.attrs.height]);
-
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -59,34 +59,34 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
     setIsResizing(true);
 
     const startX = e.clientX;
-    const startWidth = currentWidth;
+    const startWidth = dimensions.width;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
-      // Calcola la differenza dal punto di partenza
       const deltaX = moveEvent.clientX - startX;
-
-      // Nuova larghezza = larghezza iniziale + movimento mouse
       let newWidth = startWidth + deltaX;
 
-      // Limiti: min 100px, max 1200px (o max larghezza naturale)
-      const maxWidth = Math.min(imageRef.current?.naturalWidth || 1200, 1200);
-      newWidth = Math.max(100, Math.min(newWidth, maxWidth));
+      const MIN_WIDTH = 50;
+      const MAX_WIDTH = 2000;
 
-      // Calcola altezza proporzionale
+      const maxWidth = Math.min(
+        imageRef.current?.naturalWidth || MAX_WIDTH,
+        MAX_WIDTH
+      );
+
+      newWidth = Math.max(MIN_WIDTH, Math.min(newWidth, maxWidth));
       const newHeight = Math.round(newWidth / aspectRatio.current);
 
-      // Aggiorna SOLO lo state locale (per fluidità)
-      setCurrentWidth(newWidth);
-      setCurrentHeight(newHeight);
+      setDimensions({ width: newWidth, height: newHeight });
     };
 
     const handleMouseUp = () => {
       setIsResizing(false);
 
-      // Solo ALLA FINE salva nel node (evita troppi update)
+      console.log("💾 Saving dimensions:", dimensions);
+
       updateAttributes({
-        width: currentWidth,
-        height: currentHeight,
+        width: dimensions.width,
+        height: dimensions.height,
       });
 
       document.removeEventListener("mousemove", handleMouseMove);
@@ -97,50 +97,60 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
     document.addEventListener("mouseup", handleMouseUp);
   };
 
+  // const handleImageClick = (e: React.MouseEvent) => {
+  //   const link = node.attrs.link;
+  //   if (link) {
+  //     e.preventDefault();
+  //     window.open(link, "_blank", "noopener,noreferrer");
+  //   }
+  // };
+
+  const align = node.attrs.align || "left";
+  const hasLink = !!node.attrs.link && node.attrs.link.trim() !== "";
+
   return (
     <NodeViewWrapper
-      ref={containerRef}
-      className={`img-wrapper img-align-${node.attrs.align || "left"}`}
-      data-align={node.attrs.align || "left"}
-      style={{
-        maxWidth: "100%",
-      }}
+      className={`image-node-wrapper align-${align}`}
+      data-align={align}
     >
-      {/* Wrapper per gestire hover e selezione */}
-      <div className="relative inline-block">
+      <div className="image-container">
         <img
           ref={imageRef}
           src={node.attrs.src}
           alt={node.attrs.alt || ""}
           title={node.attrs.title || ""}
-          className="block rounded-lg transition-shadow duration-200"
           style={{
-            width: currentWidth ? `${currentWidth}px` : "auto",
-            height: currentHeight ? `${currentHeight}px` : "auto",
+            width: dimensions.width ? `${dimensions.width}px` : "auto",
+            height: dimensions.height ? `${dimensions.height}px` : "auto",
             maxWidth: "100%",
-            cursor: "default",
+            display: "block",
+            cursor: hasLink ? "pointer" : "default",
           }}
           draggable={false}
+          // onClick={handleImageClick}
         />
 
-        {/* Resize Handle - Visibile solo on hover */}
+        {hasLink && (
+          <div
+            className="image-link-indicator"
+            title={`Link a: ${node.attrs.link}`}
+          >
+            🔗
+          </div>
+        )}
+
         <div
+          className="resize-handle"
           onMouseDown={handleMouseDown}
-          className="absolute bottom-0 right-0 w-5 h-5 bg-blue-500 border-2 border-white rounded-full cursor-nwse-resize hidden group-hover:block transition-all shadow-lg hover:scale-110"
-          style={{ transform: "translate(30%, 30%)" }}
           title="Trascina per ridimensionare"
         />
 
-        {/* Border quando hover (feedback visivo) */}
-        <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-400 rounded-lg pointer-events-none transition-colors duration-200" />
+        {isResizing && (
+          <div className="resize-tooltip">
+            {Math.round(dimensions.width)} × {Math.round(dimensions.height)}px
+          </div>
+        )}
       </div>
-
-      {/* Tooltip dimensioni durante resize */}
-      {isResizing && (
-        <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-3 py-1.5 rounded-md text-sm font-medium whitespace-nowrap shadow-lg z-10">
-          {Math.round(currentWidth)} × {Math.round(currentHeight)}px
-        </div>
-      )}
     </NodeViewWrapper>
   );
 };

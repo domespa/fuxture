@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { TiptapEditor } from "@/components/editor/TiptapEditor";
+import { TiptapEditor } from "./TiptapEditor";
 import { postsAPI } from "@/services/api";
 import type { PostFormData, FormErrors } from "@/types/form.types";
 import {
@@ -446,7 +446,7 @@ export const CreatePost = () => {
           </select>
         </div>
 
-        {/* Scheduled Date (solo se status = SCHEDULED) */}
+        {/* Scheduled Date */}
         {formData.status === "SCHEDULED" && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">

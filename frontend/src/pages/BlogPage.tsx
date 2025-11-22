@@ -7,7 +7,6 @@ import {
   Search,
   Calendar,
   Eye,
-  User,
   Clock,
   TrendingUp,
   Sparkles,
@@ -223,18 +222,18 @@ export default function BlogPage() {
       >
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="flex justify-center mb-6">
-              <div className="w-32 h-32 md:w-40 md:h-40 transform hover:scale-105 transition-transform duration-300">
+            <div className="flex justify-center">
+              {/* <div className="w-32 h-32 md:w-30 md:h-30 transform hover:scale-105 transition-transform duration-300">
                 <img
                   className="rounded-full w-full h-full object-cover shadow-2xl ring-4 ring-white/20"
                   src="/logo.png"
                   alt="Fuxture Logo"
                 />
-              </div>
+              </div> */}
             </div>
-            <p className="text-xl md:text-2xl text-gray-200 mb-8 font-light">
+            {/* <p className="text-xl md:text-2xl text-gray-200 mb-8 font-light">
               Articoli, guide e approfondimenti sul mondo che ci circonda
-            </p>
+            </p> */}
 
             {/* Search Bar */}
             <div className="relative max-w-2xl mx-auto">
@@ -368,7 +367,7 @@ export default function BlogPage() {
           ) : (
             <>
               <div
-                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-200 ${
+                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 transition-all duration-200 ${
                   isLoading
                     ? "opacity-50 blur-sm pointer-events-none"
                     : "opacity-100 blur-0"

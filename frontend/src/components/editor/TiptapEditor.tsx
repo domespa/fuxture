@@ -1,14 +1,21 @@
-import { useEditor, EditorContent, ReactNodeViewRenderer } from "@tiptap/react";
+import {
+  useEditor,
+  EditorContent,
+  ReactNodeViewRenderer,
+  BubbleMenu,
+} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import { MenuBar } from "./MenuBar";
 import "./editor.css";
-import { ResizableImage } from "./extensions/ResizableImage";
+import { ResizableImage } from "./ResizableImage";
 import { ImageResizer } from "./ImageResizer";
 import { ImageToolbar } from "./ImageToolbar";
-import { useEffect, useState } from "react";
+import { LinkBubble } from "./LinkBubble";
+import { useEffect, useState, useRef, memo } from "react";
+import { NodeSelection } from "@tiptap/pm/state";
 
 interface TiptapEditorProps {
   content: string;
@@ -16,10 +23,7 @@ interface TiptapEditorProps {
   placeholder?: string;
 }
 
-// ====================================================================================================== //
-//                                          COMPONENTE
-// ====================================================================================================== //
-export const TiptapEditor = ({
+const TiptapEditorComponent = ({
   content,
   onChange,
   placeholder = "Inizia a scrivere...",
@@ -27,60 +31,42 @@ export const TiptapEditor = ({
   const [showImageToolbar, setShowImageToolbar] = useState(false);
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
   const [currentImageAlign, setCurrentImageAlign] = useState<string>("left");
-  // CONFIGURAZIONE EDITOR CON USEEDITORHOOK
+  const editorContainerRef = useRef<HTMLDivElement>(null);
+  const initialContentRef = useRef<string | null>(null);
+
   const editor = useEditor({
     extensions: [
-      // TITOLO
       StarterKit.configure({
-        heading: {
-          levels: [1, 2, 3],
-        },
-        link: false,
+        heading: { levels: [1, 2, 3] },
       }),
-
-      // ALLINEAMENTO DEL TESTO
       TextAlign.configure({
         types: ["heading", "paragraph"],
         alignments: ["left", "center", "right"],
       }),
-
-      // LINK CLICCABILI
       Link.configure({
-        openOnClick: true,
+        openOnClick: false,
         HTMLAttributes: {
           target: "_blank",
-          rel: "nopener noreferrer",
+          rel: "noopener noreferrer",
+          class: "editor-link",
         },
       }),
-
-      // IMMAGINI
       ResizableImage.configure({
         inline: false,
-        HTMLAttributes: {
-          class: "editor-image",
-        },
+        HTMLAttributes: {},
       }).extend({
         addNodeView() {
           return ReactNodeViewRenderer(ImageResizer);
         },
       }),
-
-      // PLACEHOLDER
-      Placeholder.configure({
-        placeholder: placeholder,
-      }),
+      Placeholder.configure({ placeholder }),
     ],
-
-    // CONTENUTO INIZIALE PRESO DAL BE
     content: content,
-
-    // CALLBACK QUANDO CAMBIA IL CONTENUTO
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
+      console.log("🔍 HTML SALVATO:", html);
       onChange(html);
     },
-
-    // OPZIONI EDITOR
     editorProps: {
       attributes: {
         class:
@@ -90,8 +76,10 @@ export const TiptapEditor = ({
   });
 
   useEffect(() => {
-    if (editor && content && editor.getHTML() !== content) {
+    if (!editor || !content) return;
+    if (initialContentRef.current !== content) {
       editor.commands.setContent(content);
+      initialContentRef.current = content;
     }
   }, [editor, content]);
 
@@ -100,74 +88,111 @@ export const TiptapEditor = ({
 
     const updateImageToolbar = () => {
       const { selection } = editor.state;
-      const { from } = selection;
+      let node = null;
+      let pos = selection.from;
 
-      // TROVIAMO IL NODO
-      const node = editor.state.doc.nodeAt(from);
+      if (selection instanceof NodeSelection) {
+        node = selection.node;
+        pos = selection.from;
+      } else {
+        node = editor.state.doc.nodeAt(selection.from);
+      }
 
-      // CONTROLLIAMO SE è UN IMMAGINI
       if (node && node.type.name === "resizableImage") {
-        // TROVIAMO L'ELEMENT DEL DOM
-        const imageElement = editor.view.nodeDOM(from) as HTMLElement;
+        const imageElement = editor.view.nodeDOM(pos) as HTMLElement;
+        if (!imageElement || !editorContainerRef.current) return;
 
-        if (imageElement) {
-          const rect = imageElement.getBoundingClientRect();
+        const imgRect = imageElement.getBoundingClientRect();
+        const containerRect =
+          editorContainerRef.current.getBoundingClientRect();
 
-          setToolbarPosition({
-            top: rect.top - 50,
-            left: rect.left + rect.width / 2,
-          });
-          // CALCOLIAMO LA POSIZIONE
-          setToolbarPosition({
-            top: rect.top - 50, // 50PX SOPRA
-            left: rect.left + rect.width / 2, // CENTRATO ORIZZ.
-          });
+        setToolbarPosition({
+          top: imgRect.top - containerRect.top - 50,
+          left: imgRect.left - containerRect.left + imgRect.width / 2,
+        });
 
-          // OTTENIAMO ALLINEAMENTO CORRENTE
-          const align = node.attrs.align || "left";
-          setCurrentImageAlign(align);
-
-          setShowImageToolbar(true);
-        }
+        setCurrentImageAlign(node.attrs.align || "left");
+        setShowImageToolbar(true);
       } else {
         setShowImageToolbar(false);
       }
     };
 
-    // AGGIORNIAMO QUANDO CAMBIAMO LA POSIZIONE
     editor.on("selectionUpdate", updateImageToolbar);
-    editor.on("update", updateImageToolbar);
-
     const editorElement = editor.view.dom;
     editorElement.addEventListener("scroll", updateImageToolbar);
-    window.addEventListener("scroll", updateImageToolbar);
 
-    // PULIAMO
     return () => {
       editor.off("selectionUpdate", updateImageToolbar);
-      editor.off("update", updateImageToolbar);
       editorElement.removeEventListener("scroll", updateImageToolbar);
-      window.removeEventListener("scroll", updateImageToolbar);
     };
   }, [editor]);
 
+  const handleRemoveLink = () => {
+    editor.chain().focus().extendMarkRange("link").unsetMark("link").run();
+  };
+
   return (
-    <div className="tiptap-editor">
-      {/* Toolbar con bottoni */}
+    <div
+      className="tiptap-editor"
+      ref={editorContainerRef}
+      style={{ position: "relative" }}
+    >
       <MenuBar editor={editor} />
+
+      {/* Link Bubble Menu */}
+      {editor && (
+        <BubbleMenu
+          editor={editor}
+          tippyOptions={{ duration: 100, placement: "bottom" }}
+          shouldShow={({ editor, state }) => {
+            return editor.isActive("link");
+          }}
+        >
+          <LinkBubble
+            editor={editor}
+            url={editor.getAttributes("link").href || ""}
+            onRemove={handleRemoveLink}
+          />
+        </BubbleMenu>
+      )}
 
       {/* Image Toolbar */}
       {showImageToolbar && editor && (
-        <ImageToolbar
-          editor={editor}
-          top={toolbarPosition.top}
-          left={toolbarPosition.left}
-          currentAlign={currentImageAlign}
-        />
+        <div
+          style={{
+            position: "absolute",
+            top: `${toolbarPosition.top}px`,
+            left: `${toolbarPosition.left}px`,
+            transform: "translateX(-50%)",
+            zIndex: 50,
+          }}
+        >
+          <ImageToolbar editor={editor} currentAlign={currentImageAlign} />
+        </div>
       )}
 
-      {/* Area di editing */}
       <EditorContent editor={editor} />
     </div>
   );
 };
+
+export const TiptapEditor = memo(
+  TiptapEditorComponent,
+  (prevProps, nextProps) => {
+    const contentChanged = prevProps.content !== nextProps.content;
+    const placeholderChanged = prevProps.placeholder !== nextProps.placeholder;
+
+    if (contentChanged || placeholderChanged) {
+      console.log("🔄 TiptapEditor re-render:", {
+        contentChanged,
+        placeholderChanged,
+      });
+      return false;
+    }
+
+    return true;
+  }
+);
+
+TiptapEditor.displayName = "TiptapEditor";

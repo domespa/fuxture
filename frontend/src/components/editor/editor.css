@@ -1,22 +1,25 @@
-/* Stili per l'editor Tiptap */
-
-/* Container principale dell'editor */
+/* ================================
+   EDITOR CONTAINER
+   ================================ */
 .tiptap-editor {
   @apply border rounded-lg overflow-hidden bg-white;
 }
 
-/* Area di editing */
 .tiptap-editor .ProseMirror {
   @apply p-4 min-h-[300px] max-h-[600px] overflow-y-auto outline-none;
 }
 
-/* Placeholder quando l'editor è vuoto */
+/* ================================
+   PLACEHOLDER
+   ================================ */
 .tiptap-editor .ProseMirror p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   @apply text-gray-400 float-left h-0 pointer-events-none;
 }
 
-/* Stili per i vari elementi HTML nell'editor */
+/* ================================
+   TEXT ELEMENTS
+   ================================ */
 .tiptap-editor .ProseMirror h1 {
   @apply text-3xl font-bold my-4;
 }
@@ -65,132 +68,238 @@
   @apply my-4 border-t-2 border-gray-300;
 }
 
-/* Focus styles */
-.tiptap-editor .ProseMirror:focus {
-  @apply outline-none;
-}
-
-/* Selezione testo */
-.tiptap-editor .ProseMirror ::selection {
-  @apply bg-blue-200;
-}
-
-/* Smooth cursor change su immagine */
-.tiptap-editor .ProseMirror img {
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-/* Animation handle resize */
-.group:hover .cursor-nwse-resize {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
-
 /* ================================
-   IMAGE NODE WRAPPER STYLES
+   IMAGE NODE WRAPPER (Editor Only)
+   Usato solo nell'editor per UI
    ================================ */
-
-/* Base wrapper styles */
-.ProseMirror .img-wrapper {
-  display: block;
+.tiptap-editor .image-node-wrapper {
   margin: 1rem 0;
   max-width: 100%;
 }
 
-/* Selected image highlight (sul gruppo) */
-.ProseMirror .img-wrapper.selected-image {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-  border-radius: 0.5rem;
+.tiptap-editor .image-node-wrapper.align-left {
+  display: block;
+  text-align: left;
 }
 
-/* Images inside wrapper */
-.ProseMirror .img-wrapper img {
-  max-width: 100%;
-  height: auto;
+.tiptap-editor .image-node-wrapper.align-center {
   display: block;
+  text-align: center;
+}
+
+.tiptap-editor .image-node-wrapper.align-right {
+  display: block;
+  text-align: right;
+}
+
+.tiptap-editor .image-node-wrapper.align-float-left {
+  float: left;
+  margin: 0.5rem 2rem 1rem 0;
+  max-width: 50%;
+}
+
+.tiptap-editor .image-node-wrapper.align-float-right {
+  float: right;
+  margin: 0.5rem 0 1rem 2rem;
+  max-width: 50%;
 }
 
 /* ================================
-   ALIGNMENT CLASSES
+   IMAGE CONTAINER (Editor Only)
+   ================================ */
+.tiptap-editor .image-container {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.tiptap-editor .image-container img {
+  display: block;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.tiptap-editor .image-container:hover img {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ================================
+   RESIZE HANDLE (Editor Only)
+   ================================ */
+.tiptap-editor .resize-handle {
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  background: #3b82f6;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: nwse-resize;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tiptap-editor .image-container:hover .resize-handle {
+  opacity: 1;
+}
+
+.tiptap-editor .resize-handle:hover {
+  background: #2563eb;
+  transform: scale(1.1);
+}
+
+/* ================================
+   RESIZE TOOLTIP (Editor Only)
+   ================================ */
+.tiptap-editor .resize-tooltip {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  z-index: 20;
+  pointer-events: none;
+}
+
+/* ================================
+   IMAGE TOOLBAR (Editor Only)
+   ================================ */
+.image-toolbar {
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.image-toolbar .toolbar-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #1f2937;
+  border-radius: 8px;
+  padding: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.image-toolbar .toolbar-button {
+  padding: 8px;
+  border-radius: 6px;
+  background: transparent;
+  color: #d1d5db;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-toolbar .toolbar-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.image-toolbar .toolbar-button.active {
+  background: #3b82f6;
+  color: white;
+}
+
+.image-toolbar .toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 4px;
+}
+
+.image-toolbar .delete-button {
+  color: #ef4444;
+}
+
+.image-toolbar .delete-button:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #dc2626;
+}
+
+/* ================================
+   BASE IMAGE STYLES (Frontend)
+   ================================ */
+.post-content img.blog-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease;
+  margin: 1rem 0;
+}
+
+.post-content img.blog-image:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* ================================
+   IMAGE ALIGNMENT (Frontend)
    ================================ */
 
-/* Left align (default) */
-.ProseMirror .img-wrapper.img-align-left {
+/* Left align */
+.post-content img.align-left {
   display: block;
   margin-left: 0;
   margin-right: auto;
-  max-width: fit-content;
 }
 
 /* Center align */
-.ProseMirror .img-wrapper.img-align-center {
-  display: flex;
-  justify-content: center;
+.post-content img.align-center {
+  display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 100%;
-}
-
-.ProseMirror .img-wrapper.img-align-center > div {
-  display: inline-block;
 }
 
 /* Right align */
-.ProseMirror .img-wrapper.img-align-right {
+.post-content img.align-right {
   display: block;
   margin-left: auto;
   margin-right: 0;
-  max-width: fit-content;
 }
 
-/* Full width */
-.ProseMirror .img-wrapper.img-align-full-width {
-  width: 100%;
-  max-width: 100%;
-  margin: 1.5rem 0;
-}
-
-.ProseMirror .img-wrapper.img-align-full-width img {
-  width: 100%;
-}
-
-/* ================================
-   FLOAT STYLES (text wrapping)
-   ================================ */
-
-/* Float left - text wraps on the right */
-.ProseMirror .img-wrapper.img-align-float-left {
+/* Float left - testo scorre a destra */
+.post-content img.align-float-left {
   float: left;
   margin: 0.5rem 2rem 1.5rem 0;
   max-width: 50%;
 }
 
-/* Float right - text wraps on the left */
-.ProseMirror .img-wrapper.img-align-float-right {
+/* Float right - testo scorre a sinistra */
+.post-content img.align-float-right {
   float: right;
   margin: 0.5rem 0 1.5rem 2rem;
   max-width: 50%;
 }
 
 /* ================================
-   RESPONSIVE - Mobile
+   RESPONSIVE (Frontend)
    ================================ */
-
 @media (max-width: 768px) {
-  .ProseMirror .img-wrapper.img-align-float-left,
-  .ProseMirror .img-wrapper.img-align-float-right {
+  .post-content img.align-float-left,
+  .post-content img.align-float-right {
     float: none;
     margin: 1rem auto;
     max-width: 100%;
@@ -199,45 +308,298 @@
 }
 
 /* ================================
-   IMAGE TOOLBAR STYLES
+   TEXT ELEMENTS (Frontend)
    ================================ */
-
-.image-toolbar {
-  animation: fadeIn 0.15s ease-in;
+.post-content h1 {
+  @apply text-3xl font-bold my-4;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
+.post-content h2 {
+  @apply text-2xl font-bold my-3;
 }
 
-/* DEBUG: evidenzia elementi nascosti */
-/* Rimuovi paragrafi vuoti dopo immagini float */
-.ProseMirror .img-wrapper.img-align-float-left + p:empty,
-.ProseMirror .img-wrapper.img-align-float-right + p:empty {
-  display: none;
+.post-content h3 {
+  @apply text-xl font-bold my-2;
 }
 
-/* Rimuovi br in paragrafi dopo immagini float */
-.ProseMirror .img-wrapper.img-align-float-left + p:has(> br:only-child),
-.ProseMirror .img-wrapper.img-align-float-right + p:has(> br:only-child) {
-  display: none;
+.post-content p {
+  @apply my-2;
 }
 
-/* Permetti ai paragrafi successivi di salire accanto all'immagine float */
-.ProseMirror .img-wrapper.img-align-float-left ~ p,
-.ProseMirror .img-wrapper.img-align-float-right ~ p {
-  clear: none !important;
+.post-content ul {
+  @apply list-disc ml-6 my-2;
 }
 
-/* Ma il primo paragrafo DOPO l'immagine non deve avere margin-top */
-.ProseMirror .img-wrapper.img-align-float-left + p,
-.ProseMirror .img-wrapper.img-align-float-right + p {
-  margin-top: 0;
+.post-content ol {
+  @apply list-decimal ml-6 my-2;
+}
+
+.post-content blockquote {
+  @apply border-l-4 border-gray-300 pl-4 my-2 italic;
+}
+
+.post-content code {
+  @apply bg-gray-100 px-1 py-0.5 rounded text-sm font-mono;
+}
+
+.post-content pre {
+  @apply bg-gray-900 text-white p-4 rounded my-2 overflow-x-auto;
+}
+
+.post-content pre code {
+  @apply bg-transparent p-0;
+}
+
+.post-content a {
+  @apply text-blue-600 underline cursor-pointer;
+}
+
+.post-content hr {
+  @apply my-4 border-t-2 border-gray-300;
+}
+
+.link-input-container {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  align-items: center;
+}
+
+.link-input {
+  flex: 1;
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+
+.link-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.link-button-save {
+  padding: 6px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.link-button-save:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.link-button-save:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.link-button-cancel {
+  padding: 6px 16px;
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.link-button-cancel:hover {
+  background: #e5e7eb;
+}
+
+.image-link-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(59, 130, 246, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.image-node-wrapper img[style*="cursor: pointer"]:hover {
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+/* Link wrapper per immagini cliccabili */
+.image-link-wrapper {
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+}
+
+.image-link-wrapper:hover {
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+/* Link wrapper per immagini cliccabili */
+.image-link-wrapper {
+  text-decoration: none;
+  line-height: 0; /* ✅ Rimuove spazi extra */
+}
+
+/* ✅ Applica gli stili di allineamento al wrapper quando ha un link */
+.image-link-wrapper.align-left {
+  display: block;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.image-link-wrapper.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.image-link-wrapper.align-right {
+  display: block;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.image-link-wrapper.align-float-left {
+  display: inline-block;
+  float: left;
+  margin: 0 1rem 1rem 0;
+}
+
+.image-link-wrapper.align-float-right {
+  display: inline-block;
+  float: right;
+  margin: 0 0 1rem 1rem;
+}
+
+/* L'immagine dentro il link deve essere block */
+.image-link-wrapper img {
+  display: block;
+}
+/* ============================================ */
+/*           LINK BUBBLE MENU                   */
+/* ============================================ */
+
+.link-bubble {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  max-width: 400px;
+}
+
+.link-bubble.editing {
+  padding: 6px;
+}
+
+.link-bubble-url {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.link-bubble-url:hover {
+  text-decoration: underline;
+}
+
+.link-bubble-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  border-left: 1px solid #e5e7eb;
+  padding-left: 8px;
+}
+
+.link-bubble-button {
+  padding: 6px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.link-bubble-button:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.link-bubble-button.delete:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.link-bubble-button.save {
+  background: #3b82f6;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 6px 12px;
+}
+
+.link-bubble-button.save:hover {
+  background: #2563eb;
+}
+
+.link-bubble-button.cancel {
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 16px;
+  padding: 6px 12px;
+}
+
+.link-bubble-button.cancel:hover {
+  background: #e5e7eb;
+}
+
+.link-bubble-input {
+  flex: 1;
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  min-width: 250px;
+}
+
+.link-bubble-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Link non cliccabili nell'editor */
+.ProseMirror a {
+  color: #3b82f6;
+  text-decoration: underline;
+  cursor: text;
+  pointer-events: none;
+}
+
+.ProseMirror a:hover {
+  color: #2563eb;
 }

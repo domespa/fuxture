@@ -21,6 +21,10 @@ import TestNewsPage from "./pages/test/TestNewsPage";
 import HomePage from "./pages/HomePage";
 import BlogPage from "./pages/BlogPage";
 import PostDetailPage from "./pages/PostDetailPage";
+import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
+import CookiePolicy from "./pages/legal/CookiePolicy";
+import Terms from "./pages/legal/Terms";
+import ScrollToTop from "./components/blog/components/ScrollToTop";
 
 function App() {
   return (
@@ -49,12 +53,16 @@ function App() {
           },
         }}
       />
+      <ScrollToTop />
       <Routes>
         {/* Route pubbliche */}
         <Route path="/" element={<DefaultLayout />}>
           <Route index element={<HomePage />} />
           <Route path="posts" element={<BlogPage />} />
           <Route path="posts/:slug" element={<PostDetailPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/cookie-policy" element={<CookiePolicy />} />
+          <Route path="/terms" element={<Terms />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

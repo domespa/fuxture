@@ -15,6 +15,7 @@ import {
   Send,
   AlertCircle,
 } from "lucide-react";
+import "./post-content.css"; // ← IMPORTA IL CSS PER IL RENDERING DEI POST!
 
 export default function PostDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -84,7 +85,6 @@ export default function PostDetailPage() {
       setSubmitError(null);
       setSubmitSuccess(false);
 
-      // Crea il commento tramite API pubblica (senza autenticazione)
       await api.post(`/posts/${post.id}/comments`, {
         content: newComment,
         authorName: commentAuthor,
@@ -96,7 +96,6 @@ export default function PostDetailPage() {
       setCommentEmail("");
       setSubmitSuccess(true);
 
-      // Mostra messaggio di successo
       setTimeout(() => {
         setSubmitSuccess(false);
       }, 5000);
@@ -239,13 +238,6 @@ export default function PostDetailPage() {
           {post.title}
         </h1>
 
-        {/* Excerpt */}
-        {/* {post.excerpt && (
-          <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-            {post.excerpt}
-          </p>
-        )} */}
-
         {/* Meta Info */}
         <div className="flex flex-wrap items-center gap-6 py-6 border-y border-gray-200 mb-8">
           <div className="flex items-center gap-2 text-gray-600">
@@ -269,20 +261,9 @@ export default function PostDetailPage() {
           </button>
         </div>
 
-        {/* Featured Image */}
-        {/* {post.featuredImage && (
-          <div className="mb-12 rounded-2xl overflow-hidden shadow-2xl">
-            <img
-              src={post.featuredImage}
-              alt={post.title}
-              className="w-full h-auto"
-            />
-          </div>
-        )} */}
-
         {/* Content */}
         <div
-          className="prose prose-lg max-w-none mb-12"
+          className="post-content prose prose-lg max-w-none mb-12"
           style={{ color: "#1F2937" }}
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
@@ -319,14 +300,13 @@ export default function PostDetailPage() {
         </div>
       </article>
 
-      {/* COMMENTS SIDEBAR */}
+      {/* COMMENTS SIDEBAR - (resto del codice invariato) */}
       <div
         className={`fixed top-0 right-0 h-full w-full md:w-[500px] bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${
           commentsOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="h-full flex flex-col">
-          {/* Header */}
           <div
             className="px-6 py-5 flex items-center justify-between"
             style={{ backgroundColor: "#1F2937" }}
@@ -342,7 +322,6 @@ export default function PostDetailPage() {
             </button>
           </div>
 
-          {/* Subtitle */}
           <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
             <p className="text-sm text-gray-600">
               Fuxture crede nel valore del confronto tra diverse opinioni.
@@ -350,7 +329,6 @@ export default function PostDetailPage() {
             </p>
           </div>
 
-          {/* Comment Form */}
           <div className="px-6 py-6 border-b border-gray-200 bg-white">
             <form onSubmit={handleSubmitComment}>
               {submitSuccess && (
@@ -406,9 +384,7 @@ export default function PostDetailPage() {
             </form>
           </div>
 
-          {/* Comments List */}
           <div className="flex-1 overflow-y-auto">
-            {/* Sort Options */}
             <div className="px-6 py-3 bg-white border-b border-gray-200 sticky top-0">
               <div className="flex items-center justify-between">
                 <span
@@ -420,7 +396,6 @@ export default function PostDetailPage() {
               </div>
             </div>
 
-            {/* Comments */}
             <div className="px-6 py-4">
               {commentsLoading ? (
                 <div className="text-center py-12">
@@ -475,7 +450,6 @@ export default function PostDetailPage() {
             </div>
           </div>
 
-          {/* Footer */}
           <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 text-center">
             <p className="text-xs text-gray-500">
               Con tecnologia{" "}
@@ -487,7 +461,6 @@ export default function PostDetailPage() {
         </div>
       </div>
 
-      {/* Overlay */}
       {commentsOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40"

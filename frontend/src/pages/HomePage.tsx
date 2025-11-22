@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { TrendingUp, BookOpen, Star, ChevronRight } from "lucide-react";
 import NewsWidget from "@/components/blog/components/NewsWidget";
 import BlogPostsSlider from "@/components/blog/components/BlogPostsSlider";
+import BreakingNewsBar from "@/components/blog/components/BreakingNewsBar";
 
 export default function HomePage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -33,6 +34,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F8FAFC" }}>
+      <BreakingNewsBar />
       {/* HERO SECTION */}
       <div
         className="relative bg-cover bg-center bg-fixed overflow-hidden"

@@ -16,7 +16,7 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { useNavigate, useParams } from "react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { localToUtc, utcToLocal } from "@/lib/datetime";
 import { categoriesAPI } from "@/services/api";
 import type { Category } from "@/types/category.types";
@@ -54,6 +54,9 @@ export const EditPost = () => {
   // STATO PER CONFERMARE L'USCITA DAL POST  SENZA PERDERE I SALVATAGGI
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
+
+  // REF per debounce
+  const debounceTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // CARICAMENTO POST DA MODIFICARE
   useEffect(() => {
@@ -125,6 +128,15 @@ export const EditPost = () => {
     fetchCategories();
   }, []);
 
+  // CLEANUP debounce timer
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
   // ============================================================
   //                    HANDLER CAMPI
   // ============================================================
@@ -148,6 +160,28 @@ export const EditPost = () => {
       });
     }
   };
+
+  const handleContentChange = useCallback((html: string) => {
+    // Cancella il timer precedente
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      queueMicrotask(() => {
+        setFormData((prev) => ({
+          ...prev,
+          content: html,
+        }));
+        setHasUnsavedChanges(true);
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors.content;
+          return newErrors;
+        });
+      });
+    }, 0);
+  }, []);
 
   // TAG
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -351,7 +385,7 @@ export const EditPost = () => {
           </label>
           <TiptapEditor
             content={formData.content}
-            onChange={(html) => handleChange("content", html)}
+            onChange={handleContentChange}
             placeholder="Scrivi il contenuto del tuo post..."
           />
           {errors.content && (

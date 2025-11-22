@@ -19,58 +19,55 @@ import {
   AlignRight,
   Minus,
 } from "lucide-react";
-import TextAlign from "@tiptap/extension-text-align";
-import StarterKit from "@tiptap/starter-kit";
 
 interface MenuBarProps {
   editor: Editor | null;
 }
 
-// ====================================================================================================== //
-//                                          COMPONENTE
-// ====================================================================================================== //
 export const MenuBar = ({ editor }: MenuBarProps) => {
-  // SE NON è PRONTO NON RITORNIAMO NULL
   if (!editor) {
     return null;
   }
 
-  // ============== HELPER ========== //
-  // AGGIUNGERE LINK
   const setLink = () => {
     const previousUrl = editor.getAttributes("link").href;
+    let url = window.prompt("Inserisci URL:", previousUrl);
 
-    const url = window.prompt("Inserisci URL:", previousUrl);
-
-    // SE L'UTENTE CANCELLA NON FACCIAMO NULL
     if (url === null) {
       return;
     }
 
-    // SE URL è VUOTO LO RIMUOVIAMO
     if (url === "") {
-      editor.chain().focus().extendMarkRange("link").unsetMark("link").run(); // CHAIN (INIZIA CATENA DI COMANDI) - FOCUS (METTE FOCUS SU EDITOR) - EXTENDMARKRANGE (ESTENDE LA SEZIONE A "LINK") - UNSETMARK(RIMUOVERE IL "LINK") - RUN ESEGUE LA CATENA DI COMANDI
+      editor.chain().focus().extendMarkRange("link").unsetMark("link").run();
       return;
-    } else {
+    }
+
+    // VALIDAZIONE URL
+    if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
+      url = "https://" + url;
+    }
+
+    editor
+      .chain()
+      .focus()
+      .extendMarkRange("link")
+      .setMark("link", { href: url })
+      .run();
+  };
+
+  const addImage = () => {
+    const url = window.prompt("Inserisci URL immagine:");
+
+    if (url) {
       editor
         .chain()
         .focus()
-        .extendMarkRange("link")
-        .setMark("link", { href: url })
+        .setImage({
+          src: url,
+        })
         .run();
     }
   };
-  //====================//
-
-  // AGGIUNGERE IMMAGINE
-  const addImage = () => {
-    const url = window.prompt("Inserisci URL imamgine:");
-
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
-    }
-  };
-  //====================//
 
   return (
     <div className="border-b bg-gray-50 p-2 flex flex-wrap gap-1">

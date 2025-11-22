@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Linkedin, Mail } from "lucide-react";
+import NewsletterForm from "./Newsletterform";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -8,27 +9,18 @@ export default function Footer() {
     <footer className="bg-gray-900 text-gray-300 mt-auto">
       {/* Newsletter Section */}
       <div className="bg-gray-800 py-8 px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <h3 className="text-2xl font-bold text-white mb-3">
-            Iscriviti alla Newsletter
-          </h3>
-          <p className="text-gray-400 mb-6">
-            Ricevi i migliori articoli direttamente nella tua inbox
-          </p>
-          <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder="La tua email"
-              className="flex-1 px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            <button
-              type="submit"
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
-            >
-              Iscriviti
-            </button>
-          </form>
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-6">
+            <h3 className="text-2xl font-bold text-white mb-3">
+              📬 Iscriviti alla Newsletter
+            </h3>
+            <p className="text-gray-400">
+              Ricevi i migliori articoli direttamente nella tua inbox
+            </p>
+          </div>
+          <div className="max-w-2xl mx-auto">
+            <NewsletterForm />
+          </div>
         </div>
       </div>
       <div className="py-12 px-8">

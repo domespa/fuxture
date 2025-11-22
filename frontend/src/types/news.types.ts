@@ -25,7 +25,6 @@ export interface NewsCache {
   timestamp: number | null;
   category: string;
 }
-
 // ========================================
 // BREAKING NEWS TYPES
 // ========================================

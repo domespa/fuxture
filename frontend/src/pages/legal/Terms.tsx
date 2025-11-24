@@ -17,7 +17,7 @@ export default function Terms() {
             Termini e Condizioni di Utilizzo
           </h1>
           <p className="text-gray-600">
-            Ultimo aggiornamento: <strong>[DATA]</strong>
+            Ultimo aggiornamento: <strong>24/11/2025</strong>
           </p>
           <p className="text-sm text-gray-500 mt-2">
             Regolamento per l'utilizzo di questo sito web
@@ -126,26 +126,27 @@ export default function Terms() {
             <p className="text-gray-700 mb-4">
               Questi Termini e Condizioni ("Termini") disciplinano l'accesso e
               l'utilizzo del sito web{" "}
-              <strong>[NOME_BLOG] ([DOMINIO_SITO])</strong> (il "Sito"), gestito
-              da:
+              <strong>Fuxture (https://fuxture.net/)</strong> (il "Sito"),
+              gestito da:
             </p>
             <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
               <p className="text-gray-700 mb-2">
-                <strong>Titolare:</strong> [IL TUO NOME COMPLETO]
+                <strong>Titolare:</strong> Domenico Spampinato
               </p>
               <p className="text-gray-700 mb-2">
-                <strong>P.IVA:</strong> [LA TUA P.IVA] (Regime Forfettario)
+                <strong>P.IVA:</strong> IT01937400891 (Regime Forfettario)
               </p>
               <p className="text-gray-700 mb-2">
-                <strong>Sede:</strong> [IL TUO INDIRIZZO], Catania (CT), Italia
+                <strong>Sede:</strong> via Frat. Cervi, 11, Carlentini (SR),
+                Italia
               </p>
               <p className="text-gray-700">
                 <strong>Email:</strong>{" "}
                 <a
-                  href="mailto:[TUA_EMAIL]"
+                  href="mailto:info@fuxture.net"
                   className="text-blue-600 hover:underline"
                 >
-                  [TUA_EMAIL]
+                  info@fuxture.net
                 </a>
               </p>
             </div>
@@ -245,15 +246,15 @@ export default function Terms() {
               <li>Codice sorgente e struttura tecnica</li>
             </ul>
             <p className="text-gray-700 mb-4">
-              sono di proprietà esclusiva di <strong>[IL TUO NOME]</strong> o
-              dei rispettivi titolari e sono protetti dalle leggi italiane ed
-              internazionali sul diritto d'autore e sulla proprietà
-              intellettuale.
+              sono di proprietà esclusiva di{" "}
+              <strong>Domenico Spampinato</strong> o dei rispettivi titolari e
+              sono protetti dalle leggi italiane ed internazionali sul diritto
+              d'autore e sulla proprietà intellettuale.
             </p>
 
             <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-600">
               <h3 className="font-bold text-blue-900 mb-3">
-                © Copyright [ANNO] - [IL TUO NOME]
+                © Copyright 2025 - Domenico Spampinato
               </h3>
               <p className="text-gray-700 text-sm mb-3">
                 Tutti i diritti riservati. È vietata la riproduzione, anche
@@ -440,10 +441,10 @@ export default function Terms() {
                 cliccando sul link "Unsubscribe" presente in ogni email, oppure
                 contattandoci all'indirizzo{" "}
                 <a
-                  href="mailto:[TUA_EMAIL]"
+                  href="mailto:info@fuxture.net"
                   className="text-blue-600 hover:underline"
                 >
-                  [TUA_EMAIL]
+                  info@fuxture.net
                 </a>
                 .
               </p>
@@ -683,23 +684,22 @@ export default function Terms() {
               </p>
               <div className="bg-white/10 p-6 rounded-lg backdrop-blur-sm space-y-2">
                 <p>
-                  <strong>Nome:</strong> [IL TUO NOME COMPLETO]
+                  <strong>Nome:</strong> Domenico Spampinato
                 </p>
                 <p>
-                  <strong>P.IVA:</strong> [LA TUA P.IVA]
+                  <strong>P.IVA:</strong> IT01937400891
                 </p>
                 <p>
                   <strong>Email:</strong>{" "}
                   <a
-                    href="mailto:[TUA_EMAIL]"
+                    href="mailto:info@fuxture.net"
                     className="hover:underline font-mono"
                   >
-                    [TUA_EMAIL]
+                    info@fuxture.net
                   </a>
                 </p>
                 <p>
-                  <strong>Indirizzo:</strong> [IL TUO INDIRIZZO], Catania (CT),
-                  Italia
+                  <strong>Località:</strong> Carlentini (SR), Italia
                 </p>
               </div>
               <div className="mt-6 pt-6 border-t border-white/20">
@@ -722,7 +722,7 @@ export default function Terms() {
               Utilizzo.
             </p>
             <p className="text-sm text-gray-600">
-              Ultimo aggiornamento: <strong>[DATA]</strong>
+              Ultimo aggiornamento: <strong>24/11/2025</strong>
             </p>
           </div>
         </div>

@@ -17,11 +17,6 @@ export default function Navbar() {
           </Link>
         </li>
         <li>
-          <Link to="/about" className={isActive("/about")}>
-            Chi Sono
-          </Link>
-        </li>
-        <li>
           <Link to="/contact" className={isActive("/contact")}>
             Contatti
           </Link>

@@ -26,7 +26,7 @@ export default function PrivacyPolicy() {
             Privacy Policy
           </h1>
           <p className="text-gray-600">
-            Ultimo aggiornamento: <strong>[DATA]</strong>
+            Ultimo aggiornamento: <strong>24/11/2025</strong>
           </p>
           <p className="text-sm text-gray-500 mt-2">
             Conforme al Regolamento UE 2016/679 (GDPR)
@@ -125,25 +125,24 @@ export default function PrivacyPolicy() {
             </div>
             <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
               <p className="text-gray-700 mb-3">
-                <strong>Nome e Cognome:</strong> [IL TUO NOME COMPLETO]
+                <strong>Nome e Cognome:</strong> Domenico Spampinato
               </p>
               <p className="text-gray-700 mb-3">
-                <strong>Partita IVA:</strong> [LA TUA P.IVA]
+                <strong>Partita IVA:</strong> IT01937400891
               </p>
               <p className="text-gray-700 mb-3">
                 <strong>Regime fiscale:</strong> Forfettario
               </p>
               <p className="text-gray-700 mb-3">
-                <strong>Indirizzo:</strong> [IL TUO INDIRIZZO], Catania (CT),
-                Italia
+                <strong>Località:</strong> Carlentini, Italia
               </p>
               <p className="text-gray-700 mb-0">
                 <strong>Email:</strong>{" "}
                 <a
-                  href="mailto:[TUA_EMAIL]"
+                  href="mailto:info@fuxture.net"
                   className="text-blue-600 hover:underline"
                 >
-                  [TUA_EMAIL]
+                  info@fuxture.net
                 </a>
               </p>
             </div>
@@ -601,10 +600,10 @@ export default function PrivacyPolicy() {
                 contattarci via email all'indirizzo:
               </p>
               <a
-                href="mailto:[TUA_EMAIL]"
+                href="mailto:info@fuxture.net"
                 className="inline-block bg-white text-blue-600 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors"
               >
-                📧 [TUA_EMAIL]
+                📧 info@fuxture.net
               </a>
               <p className="text-sm mt-4 opacity-90">
                 Ti risponderemo entro <strong>30 giorni</strong> dalla
@@ -766,21 +765,20 @@ export default function PrivacyPolicy() {
                 <p>
                   <strong>Email:</strong>{" "}
                   <a
-                    href="mailto:[TUA_EMAIL]"
+                    href="mailto:info@fuxture.net"
                     className="hover:underline font-mono"
                   >
-                    [TUA_EMAIL]
+                    info@fuxture.net
                   </a>
                 </p>
                 <p>
-                  <strong>Nome:</strong> [IL TUO NOME COMPLETO]
+                  <strong>Nome:</strong> Domenico Spampinato
                 </p>
                 <p>
-                  <strong>P.IVA:</strong> [LA TUA P.IVA]
+                  <strong>P.IVA:</strong> IT01937400891
                 </p>
                 <p>
-                  <strong>Indirizzo:</strong> [IL TUO INDIRIZZO], Catania (CT),
-                  Italia
+                  <strong>Località:</strong> Carlentini, Italia
                 </p>
               </div>
             </div>

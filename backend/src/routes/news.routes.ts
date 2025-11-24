@@ -232,7 +232,7 @@ router.get("/news", async (req: Request, res: Response) => {
 
 // STATO CACHE
 // GET /news/status
-router.get("/api/news/status", (req: Request, res: Response) => {
+router.get("/news/status", (req: Request, res: Response) => {
   const now = Date.now();
   const cacheAge = newsCache.timestamp ? now - newsCache.timestamp : null;
   const isValid = cacheAge ? cacheAge < CACHE_DURATION : false;
@@ -254,7 +254,7 @@ router.get("/api/news/status", (req: Request, res: Response) => {
 
 // REFRESH
 // POST /news/refresh
-router.post("/api/news/refresh", async (req, res) => {
+router.post("/news/refresh", async (req, res) => {
   console.log("🔄 Manual cache refresh requested");
   newsCache = { data: null, timestamp: null, category: "general" };
   res.json({

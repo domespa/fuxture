@@ -34,8 +34,7 @@ export default function NewsWidget() {
   const [error, setError] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const API_URL =
-    import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+  const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
   const fetchNews = async () => {
     try {

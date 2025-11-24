@@ -1,9 +1,4 @@
-import {
-  useEditor,
-  EditorContent,
-  ReactNodeViewRenderer,
-  BubbleMenu,
-} from "@tiptap/react";
+import { useEditor, EditorContent, ReactNodeViewRenderer } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import Link from "@tiptap/extension-link";
@@ -29,6 +24,12 @@ const TiptapEditorComponent = ({
   placeholder = "Inizia a scrivere...",
 }: TiptapEditorProps) => {
   const [showImageToolbar, setShowImageToolbar] = useState(false);
+  const [showLinkBubble, setShowLinkBubble] = useState(false);
+  const [linkBubblePosition, setLinkBubblePosition] = useState({
+    top: 0,
+    left: 0,
+  });
+  const [currentLinkUrl, setCurrentLinkUrl] = useState("");
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
   const [currentImageAlign, setCurrentImageAlign] = useState<string>("left");
   const editorContainerRef = useRef<HTMLDivElement>(null);
@@ -86,6 +87,53 @@ const TiptapEditorComponent = ({
   useEffect(() => {
     if (!editor) return;
 
+    const updateLinkBubble = () => {
+      const { selection, doc } = editor.state;
+      const { from } = selection;
+
+      // LINK ATTIVO?
+      if (editor.isActive("link")) {
+        const linkMark = doc
+          .resolve(from)
+          .marks()
+          .find((mark) => mark.type.name === "link");
+
+        if (linkMark && editorContainerRef.current) {
+          const url = linkMark.attrs.href;
+          setCurrentLinkUrl(url);
+
+          // POSIZIONE DEL BUBBLE
+          const { view } = editor;
+          const start = view.coordsAtPos(from);
+          const containerRect =
+            editorContainerRef.current.getBoundingClientRect();
+
+          setLinkBubblePosition({
+            top: start.top - containerRect.top + 30,
+            left: start.left - containerRect.left,
+          });
+
+          setShowLinkBubble(true);
+        } else {
+          setShowLinkBubble(false);
+        }
+      } else {
+        setShowLinkBubble(false);
+      }
+    };
+
+    editor.on("selectionUpdate", updateLinkBubble);
+    editor.on("transaction", updateLinkBubble);
+
+    return () => {
+      editor.off("selectionUpdate", updateLinkBubble);
+      editor.off("transaction", updateLinkBubble);
+    };
+  }, [editor]);
+
+  useEffect(() => {
+    if (!editor) return;
+
     const updateImageToolbar = () => {
       const { selection } = editor.state;
       let node = null;
@@ -129,8 +177,15 @@ const TiptapEditorComponent = ({
   }, [editor]);
 
   const handleRemoveLink = () => {
-    editor.chain().focus().extendMarkRange("link").unsetMark("link").run();
+    if (editor) {
+      editor.chain().focus().extendMarkRange("link").unsetMark("link").run();
+      setShowLinkBubble(false);
+    }
   };
+
+  if (!editor) {
+    return null;
+  }
 
   return (
     <div
@@ -140,25 +195,26 @@ const TiptapEditorComponent = ({
     >
       <MenuBar editor={editor} />
 
-      {/* Link Bubble Menu */}
-      {editor && (
-        <BubbleMenu
-          editor={editor}
-          tippyOptions={{ duration: 100, placement: "bottom" }}
-          shouldShow={({ editor, state }) => {
-            return editor.isActive("link");
+      {/* Link Bubble */}
+      {showLinkBubble && (
+        <div
+          style={{
+            position: "absolute",
+            top: `${linkBubblePosition.top}px`,
+            left: `${linkBubblePosition.left}px`,
+            zIndex: 50,
           }}
         >
           <LinkBubble
             editor={editor}
-            url={editor.getAttributes("link").href || ""}
+            url={currentLinkUrl}
             onRemove={handleRemoveLink}
           />
-        </BubbleMenu>
+        </div>
       )}
 
       {/* Image Toolbar */}
-      {showImageToolbar && editor && (
+      {showImageToolbar && (
         <div
           style={{
             position: "absolute",

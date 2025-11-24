@@ -17,7 +17,7 @@ export default function CookiePolicy() {
             Cookie Policy
           </h1>
           <p className="text-gray-600">
-            Ultimo aggiornamento: <strong>[DATA]</strong>
+            Ultimo aggiornamento: <strong>24/11/2025</strong>
           </p>
           <p className="text-sm text-gray-500 mt-2">
             Informativa sull'uso dei cookie conforme alla normativa europea
@@ -644,14 +644,15 @@ export default function CookiePolicy() {
                 <p className="mb-2">
                   <strong>Email:</strong>{" "}
                   <a
-                    href="mailto:[TUA_EMAIL]"
+                    href="mailto:info@fuxture.net
+"
                     className="hover:underline font-mono"
                   >
-                    [TUA_EMAIL]
+                    info@fuxture.net
                   </a>
                 </p>
                 <p>
-                  <strong>Nome:</strong> [IL TUO NOME COMPLETO]
+                  <strong>Nome:</strong> Domenico Spampinato
                 </p>
               </div>
             </div>

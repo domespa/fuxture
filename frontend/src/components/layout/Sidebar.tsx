@@ -54,7 +54,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="flex h-16 items-center justify-between border-b border-gray-800 px-4">
           <div className="flex items-center gap-2">
             <FileText className="h-6 w-6 text-blue-500" />
-            <span className="text-lg font-bold">AAA</span>
+            <span className="text-lg font-bold">Fuxture</span>
           </div>
 
           {/* Close button (solo mobile) */}

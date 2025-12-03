@@ -18,13 +18,15 @@ import {
   AlignCenter,
   AlignRight,
   Minus,
+  FileCode,
 } from "lucide-react";
 
 interface MenuBarProps {
   editor: Editor | null;
+  onOpenHtmlModal: () => void;
 }
 
-export const MenuBar = ({ editor }: MenuBarProps) => {
+export const MenuBar = ({ editor, onOpenHtmlModal }: MenuBarProps) => {
   if (!editor) {
     return null;
   }
@@ -256,6 +258,16 @@ export const MenuBar = ({ editor }: MenuBarProps) => {
           title="Aggiungi immagine"
         >
           <Image size={18} />
+        </button>
+
+        {/* 🆕 PULSANTE HTML - NUOVO! */}
+        <button
+          type="button"
+          onClick={onOpenHtmlModal}
+          className="p-2 rounded hover:bg-green-100 bg-green-50 text-green-700 hover:text-green-800 transition-colors"
+          title="Inserisci codice HTML (banner, widget, iframe)"
+        >
+          <FileCode size={18} />
         </button>
       </div>
 

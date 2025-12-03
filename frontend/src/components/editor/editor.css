@@ -488,6 +488,7 @@
 .image-link-wrapper img {
   display: block;
 }
+
 /* ============================================ */
 /*           LINK BUBBLE MENU                   */
 /* ============================================ */
@@ -602,4 +603,133 @@
 
 .ProseMirror a:hover {
   color: #2563eb;
+}
+
+/* ============================================ */
+/*    🆕 CUSTOM HTML (BANNER, WIDGET, IFRAME)   */
+/* ============================================ */
+
+/* Stili per HTML custom inserito nell'editor e nel frontend */
+.tiptap-editor .custom-html-block,
+.post-content .custom-html-block {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  position: relative;
+}
+
+/* Indicatore nell'editor che è HTML custom */
+.tiptap-editor .ProseMirror .custom-html-block {
+  background: #f0f9ff;
+  border: 2px dashed #3b82f6;
+  border-radius: 8px;
+}
+
+.tiptap-editor .ProseMirror .custom-html-block::before {
+  content: "📝 Codice HTML";
+  position: absolute;
+  top: -12px;
+  left: 12px;
+  background: #3b82f6;
+  color: white;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Rimuovi il badge e il bordo nel frontend */
+.post-content .custom-html-block {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.post-content .custom-html-block::before {
+  display: none;
+}
+
+/* Stili per iframe inseriti */
+.tiptap-editor iframe,
+.post-content iframe {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  display: block;
+  border: 1px solid #e5e7eb;
+}
+
+/* Responsive iframe wrapper (16:9) */
+.tiptap-editor .iframe-wrapper,
+.post-content .iframe-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  background: #f3f4f6;
+}
+
+.tiptap-editor .iframe-wrapper iframe,
+.post-content .iframe-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Stili per banner pubblicitari */
+.tiptap-editor .ad-banner,
+.post-content .ad-banner {
+  margin: 2rem auto;
+  text-align: center;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Script tags (vengono eseguiti nel browser) */
+.tiptap-editor script,
+.post-content script {
+  display: none !important;
+}
+
+/* Preview HTML nel modal */
+.html-preview {
+  min-height: 50px;
+}
+
+.html-preview iframe {
+  max-width: 100%;
+  border: none;
+}
+
+/* Widget social media */
+.tiptap-editor .social-widget,
+.post-content .social-widget {
+  margin: 1.5rem auto;
+  max-width: 550px;
+}
+
+/* Responsive per HTML custom */
+@media (max-width: 768px) {
+  .tiptap-editor .custom-html-block,
+  .post-content .custom-html-block {
+    padding: 0.5rem;
+  }
+
+  .tiptap-editor iframe,
+  .post-content iframe {
+    max-height: 300px;
+  }
+
+  .post-content .ad-banner {
+    min-height: 80px;
+  }
 }

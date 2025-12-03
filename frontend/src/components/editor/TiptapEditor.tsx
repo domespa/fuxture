@@ -9,6 +9,7 @@ import { ResizableImage } from "./ResizableImage";
 import { ImageResizer } from "./ImageResizer";
 import { ImageToolbar } from "./ImageToolbar";
 import { LinkBubble } from "./LinkBubble";
+import { HtmlModal } from "./HtmlModal";
 import { useEffect, useState, useRef, memo } from "react";
 import { NodeSelection } from "@tiptap/pm/state";
 
@@ -25,6 +26,7 @@ const TiptapEditorComponent = ({
 }: TiptapEditorProps) => {
   const [showImageToolbar, setShowImageToolbar] = useState(false);
   const [showLinkBubble, setShowLinkBubble] = useState(false);
+  const [isHtmlModalOpen, setIsHtmlModalOpen] = useState(false);
   const [linkBubblePosition, setLinkBubblePosition] = useState({
     top: 0,
     left: 0,
@@ -183,6 +185,15 @@ const TiptapEditorComponent = ({
     }
   };
 
+  // HANDLER PER INSERIRE HTML RAW
+  const insertHtmlCode = (html: string) => {
+    if (editor) {
+      // Inserisce l'HTML raw nell'editor
+      editor.chain().focus().insertContent(html).run();
+      console.log("✅ HTML inserito:", html);
+    }
+  };
+
   if (!editor) {
     return null;
   }
@@ -193,7 +204,10 @@ const TiptapEditorComponent = ({
       ref={editorContainerRef}
       style={{ position: "relative" }}
     >
-      <MenuBar editor={editor} />
+      <MenuBar
+        editor={editor}
+        onOpenHtmlModal={() => setIsHtmlModalOpen(true)}
+      />
 
       {/* Link Bubble */}
       {showLinkBubble && (
@@ -229,6 +243,13 @@ const TiptapEditorComponent = ({
       )}
 
       <EditorContent editor={editor} />
+
+      {/* Modal HTML */}
+      <HtmlModal
+        isOpen={isHtmlModalOpen}
+        onClose={() => setIsHtmlModalOpen(false)}
+        onInsert={insertHtmlCode}
+      />
     </div>
   );
 };

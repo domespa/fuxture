@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { categoriesAPI } from "@/services/api";
 import type { Category } from "@/types/category.types";
 import { Link } from "react-router-dom";
-import { TrendingUp, BookOpen, Star, ChevronRight } from "lucide-react";
+import { TrendingUp, Star, ChevronRight } from "lucide-react";
 import NewsWidget from "@/components/blog/components/NewsWidget";
 import BlogPostsSlider from "@/components/blog/components/BlogPostsSlider";
 import BreakingNewsBar from "@/components/blog/components/BreakingNewsBar";

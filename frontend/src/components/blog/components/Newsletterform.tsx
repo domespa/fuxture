@@ -1,15 +1,12 @@
 import { useState, FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { Mail, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
-import { subscribersAPI } from "@/services/api";
 
 export interface NewsletterFormProps {
   variant?: "footer" | "inline";
 }
 
-export default function NewsletterForm({
-  variant = "footer",
-}: NewsletterFormProps) {
+export default function NewsletterForm({}: NewsletterFormProps) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
@@ -40,12 +37,6 @@ export default function NewsletterForm({
     setIsLoading(true);
 
     try {
-      const data = await subscribersAPI.createSubscriber({
-        email: email.trim(),
-        name: name.trim() || undefined,
-        source: "footer_form",
-      });
-
       // Successo!
       setStatus("success");
       setEmail("");

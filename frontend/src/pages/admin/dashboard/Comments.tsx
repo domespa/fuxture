@@ -7,14 +7,14 @@ import {
 } from "../../../../../backend/src/types/comment.types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, XCircle, AlertTriangle, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function Comments() {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [loading, setLoading] = useState(false);
-  const [totalComments, setTotalComments] = useState(0);
+  const [, setTotalComments] = useState(0);
   const [filters, setFilters] = useState<CommentFilters>({
     page: 1,
     limit: 10,

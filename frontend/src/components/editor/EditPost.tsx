@@ -29,7 +29,7 @@ export const EditPost = () => {
   // STATI DI CARICAMENTO
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [originalPost, setOriginalPost] = useState<PostResponse | null>(null);
+  const [, setOriginalPost] = useState<PostResponse | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [tagInput, setTagInput] = useState("");

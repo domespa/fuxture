@@ -5,7 +5,6 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["fuxture"]
 }
 
 // UTENTI
@@ -24,14 +23,14 @@ model User {
   acceptedTerms       Boolean           @default(false)
   acceptedTermsAt     DateTime?
 
-  @@schema("blog")
+  
 }
 
 enum Role {
   ADMIN
   USER
 
-  @@schema("blog")
+  
 }
 
 // ARTICOLI
@@ -61,7 +60,7 @@ model Post {
   categoryId          String?   
   category            Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
-  @@schema("blog")
+  
 }
 
 enum PostStatus {
@@ -69,7 +68,7 @@ enum PostStatus {
   PUBLISHED
   SCHEDULED
 
-  @@schema("blog")
+  
 }
 
 // CATEGORIE
@@ -87,7 +86,7 @@ model Category {
   
   posts       Post[]
 
-  @@schema("blog")
+  
 }
 
 // COMMENTI
@@ -105,7 +104,7 @@ model Comment {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  @@schema("blog")
+  
 }
 
 enum CommentStatus {
@@ -114,7 +113,7 @@ enum CommentStatus {
   SPAM
   REJECTED
 
-  @@schema("blog")
+  
 }
 
 // ISCRITTI
@@ -132,7 +131,7 @@ model Subscriber {
   updatedAt           DateTime            @updatedAt    
   lists               SubscriberList[]
 
-  @@schema("blog")
+  
 }
 
 enum SubscriberStatus {
@@ -140,7 +139,7 @@ enum SubscriberStatus {
   UNSUBSCRIBED
   BOUNCED
 
-  @@schema("blog")
+  
 }
 
 // LISTE ISCRITTI
@@ -154,7 +153,7 @@ model EmailList {
   subscribers     SubscriberList[]
   campaigns       EmailCampaign[]
 
-  @@schema("blog")
+  
 }
 
 model SubscriberList {
@@ -166,7 +165,7 @@ model SubscriberList {
   subscribedAt    DateTime    @default(now())
   
   @@unique([subscriberId, listId])
-  @@schema("blog")
+  
 }
 
 // DEM
@@ -185,7 +184,7 @@ model EmailCampaign {
   emailLogs     EmailLog[]
   targetLists   EmailList[]
 
-  @@schema("blog")
+  
 }
 
 enum CampaignStatus {
@@ -194,7 +193,7 @@ enum CampaignStatus {
   SENDING
   SENT
 
-  @@schema("blog")
+  
 }
 
 model EmailLog {
@@ -211,7 +210,7 @@ model EmailLog {
   subscriberId  String?
   subscriber    Subscriber?      @relation(fields: [subscriberId], references: [id])
 
-  @@schema("blog")
+  
 }
 
 enum EmailStatus {
@@ -221,6 +220,4 @@ enum EmailStatus {
   CLICKED
   BOUNCED
   FAILED
-
-  @@schema("blog")
 }

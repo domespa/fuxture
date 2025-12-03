@@ -1,4 +1,4 @@
-import { CampaignStatus } from "../generated/prisma";
+import { CampaignStatus } from "@prisma/client";
 
 // TIPI PER RICHIESTE
 export interface CreateCampaignRequest {

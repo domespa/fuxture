@@ -7,7 +7,7 @@ import {
   CampaignListResponse,
   CampaignResponse,
 } from "../types/campaign.types";
-import { CampaignStatus, SubscriberStatus, Prisma } from "../generated/prisma";
+import { CampaignStatus, SubscriberStatus, Prisma } from "@prisma/client";
 import { sendBatchEmails, sendEmail } from "../services/email.service";
 
 // ====================================================================================================== //

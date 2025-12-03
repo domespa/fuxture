@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/database";
-import type { Subscriber, Prisma } from "../generated/prisma";
+import type { Subscriber, Prisma } from "@prisma/client";
 import type {
   CreateSubscriberRequest,
   UpdateSubscriberRequest,

@@ -1,5 +1,5 @@
-import type { Subscriber } from "../generated/prisma";
-import type { $Enums } from "../generated/prisma";
+import type { Subscriber } from "@prisma/client";
+import type { $Enums } from "@prisma/client";
 
 export type SubscriberStatus = $Enums.SubscriberStatus;
 

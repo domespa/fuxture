@@ -1,4 +1,4 @@
-import { EmailLog, EmailCampaign } from "../generated/prisma";
+import { EmailLog, EmailCampaign } from "@prisma/client";
 
 // EMAIL SINGOLA
 export interface SendEmailOptions {

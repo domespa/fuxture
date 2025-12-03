@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { SubscriberStatus } from "../generated/prisma";
+import { SubscriberStatus } from "@prisma/client";
 import { isValidEmail } from "./validation.middleware";
 
 // ====================================================================================================== //

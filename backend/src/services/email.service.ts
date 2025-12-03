@@ -7,7 +7,7 @@ import {
   SendBatchEmailOptions,
   BatchEmailResult,
 } from "../types/email.types";
-import { EmailStatus } from "../generated/prisma";
+import { EmailStatus } from "@prisma/client";
 
 // TRANSPORTER
 const transporter = nodemailer.createTransport({

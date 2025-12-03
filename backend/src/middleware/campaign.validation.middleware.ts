@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { CampaignStatus } from "../generated/prisma";
+import { CampaignStatus } from "@prisma/client";
 
 // ====================================================================================================== //
 //                                VALIDAZIONE CREAZIONE CAMPAGNA

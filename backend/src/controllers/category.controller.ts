@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/database";
-import type { Category, Prisma } from "../generated/prisma";
+import type { Category, Prisma } from "@prisma/client";
 import type {
   CreateCategoryRequest,
   UpdateCategoryRequest,

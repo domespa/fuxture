@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { register, login } from "../controllers/auth.controller";
+import { login } from "../controllers/auth.controller";
 import {
   validateLogin,
   validateRegister,
@@ -16,7 +16,7 @@ const router = Router();
 // ====================================================================================================== //
 // REGISTRAZIONE NUOVE UTENTE
 // POST /auth/register
-router.post("/register", validateRegister, register);
+// router.post("/register", validateRegister, register);
 
 // LOGIN UTENTE
 // POST /auth/login

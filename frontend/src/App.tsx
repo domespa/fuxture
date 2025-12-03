@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
+// import Register from "./pages/auth/Register";
 import Dashboard from "./pages/admin/dashboard/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import AdminLayout from "./components/layout/AdminLayout";
@@ -67,7 +67,7 @@ function App() {
           <Route path="/terms" element={<Terms />} />
         </Route>
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        {/* <Route path="/register" element={<Register />} /> */}
         <Route path="/test-news" element={<TestNewsPage />} />
 
         {/* Route protette */}

@@ -12,6 +12,7 @@ import emailListRoutes from "./routes/email-list.routes";
 import categoryRoutes from "./routes/category.routes";
 import newsRoutes from "./routes/news.routes";
 import breakingNewsRoutes from "./routes/breaking-news.routes";
+import contactRoutes from "./routes/contact.routes";
 
 // ====================================================================================================== //
 //                                              VARIABILI D'AMBIENTE
@@ -76,6 +77,9 @@ app.use(`${API_PREFIX}/email-lists`, emailListRoutes);
 // NEWS
 app.use(`${API_PREFIX}`, newsRoutes);
 app.use(`${API_PREFIX}/breaking-news`, breakingNewsRoutes);
+
+// SEND EMAIL
+app.use(`${API_PREFIX}/contact`, contactRoutes);
 
 // CHECK SERVER
 app.get("/", (req, res) => {

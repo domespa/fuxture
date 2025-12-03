@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-import Header from "../blog/components/Header";
 import Footer from "../blog/components/Footer";
 import CookieBanner from "../blog/components/CookieBanner";
 export default function DefaultLayout() {

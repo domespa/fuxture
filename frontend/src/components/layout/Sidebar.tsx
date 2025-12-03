@@ -5,7 +5,6 @@ import {
   FileText,
   MessageSquare,
   Users,
-  Settings,
   Mail,
   ListChecks,
   FolderTree,
@@ -21,7 +20,6 @@ const menuItems: MenuItem[] = [
   { name: "Campaigns", path: "/dashboard/campaigns", icon: Mail },
   { name: "Email Lists", path: "/dashboard/email-lists", icon: ListChecks },
   { name: "Users", path: "/dashboard/users", icon: Users },
-  { name: "Settings", path: "/dashboard/settings", icon: Settings },
 ];
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {

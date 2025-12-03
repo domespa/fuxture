@@ -25,6 +25,7 @@ import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import CookiePolicy from "./pages/legal/CookiePolicy";
 import Terms from "./pages/legal/Terms";
 import ScrollToTop from "./components/blog/components/ScrollToTop";
+import ContactPage from "./pages/ContactPage";
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
           <Route path="posts/:slug" element={<PostDetailPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/cookie-policy" element={<CookiePolicy />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/terms" element={<Terms />} />
         </Route>
         <Route path="/login" element={<Login />} />
@@ -93,7 +95,6 @@ function App() {
           />
           <Route path="email-lists" element={<EmailListsPage />} />
           <Route path="users" element={<UsersPage />} />
-          <Route path="settings" element={<div>Settings Page (TODO)</div>} />
         </Route>
 
         {/* 404 - Pagina non trovata */}

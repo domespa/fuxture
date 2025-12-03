@@ -29,7 +29,7 @@ export default function HomePage() {
   const staticMenuItems = [
     { name: "Ultimi Articoli", slug: "/posts", icon: TrendingUp },
     { name: "Più Popolari", slug: "/posts?sort=popular", icon: Star },
-    { name: "Tutti gli Articoli", slug: "/posts/all", icon: BookOpen },
+    // { name: "Tutti gli Articoli", slug: "/posts/all", icon: BookOpen },
   ];
 
   return (
@@ -82,7 +82,7 @@ export default function HomePage() {
               Informazione. Ispirazione. Innovazione.
             </p>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-10 mb-12">
+            <div className="grid grid-cols-2 md:grid-cols-2 gap-10 mb-12">
               {staticMenuItems.map((item, index) => (
                 <Link
                   key={item.slug}
@@ -228,10 +228,6 @@ export default function HomePage() {
                       >
                         {category.name}
                       </h3>
-
-                      <p className="text-sm text-gray-500 group-hover:text-gray-700 transition-colors duration-300">
-                        Scopri di più
-                      </p>
 
                       <ChevronRight
                         className="w-5 h-5 text-gray-400 group-hover:translate-x-2 transition-all duration-300 absolute bottom-6 right-6"

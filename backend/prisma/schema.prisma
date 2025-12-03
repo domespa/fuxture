@@ -1,11 +1,11 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["fuxture"]
 }
 
 // UTENTI
@@ -23,11 +23,15 @@ model User {
   emailCampaigns      EmailCampaign[]
   acceptedTerms       Boolean           @default(false)
   acceptedTermsAt     DateTime?
+
+  @@schema("blog")
 }
 
 enum Role {
   ADMIN
   USER
+
+  @@schema("blog")
 }
 
 // ARTICOLI
@@ -55,13 +59,17 @@ model Post {
   author              User        @relation(fields: [authorId], references: [id])
   comments            Comment[]
   categoryId          String?   
-  category            Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull) 
+  category            Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@schema("blog")
 }
 
 enum PostStatus {
   DRAFT
   PUBLISHED
   SCHEDULED
+
+  @@schema("blog")
 }
 
 // CATEGORIE
@@ -78,6 +86,8 @@ model Category {
   updatedAt   DateTime  @updatedAt
   
   posts       Post[]
+
+  @@schema("blog")
 }
 
 // COMMENTI
@@ -93,7 +103,9 @@ model Comment {
   parent      Comment?      @relation("CommentReplies", fields: [parentId], references: [id])
   replies     Comment[]     @relation("CommentReplies")
   createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt    
+  updatedAt   DateTime      @updatedAt
+
+  @@schema("blog")
 }
 
 enum CommentStatus {
@@ -101,6 +113,8 @@ enum CommentStatus {
   APPROVED
   SPAM
   REJECTED
+
+  @@schema("blog")
 }
 
 // ISCRITTI
@@ -117,12 +131,16 @@ model Subscriber {
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt    
   lists               SubscriberList[]
+
+  @@schema("blog")
 }
 
 enum SubscriberStatus {
   ACTIVE
   UNSUBSCRIBED
   BOUNCED
+
+  @@schema("blog")
 }
 
 // LISTE ISCRITTI
@@ -135,6 +153,8 @@ model EmailList {
   updatedAt       DateTime          @updatedAt
   subscribers     SubscriberList[]
   campaigns       EmailCampaign[]
+
+  @@schema("blog")
 }
 
 model SubscriberList {
@@ -145,7 +165,8 @@ model SubscriberList {
   list            EmailList   @relation(fields: [listId], references: [id], onDelete: Cascade)
   subscribedAt    DateTime    @default(now())
   
-  @@unique([subscriberId, listId]) 
+  @@unique([subscriberId, listId])
+  @@schema("blog")
 }
 
 // DEM
@@ -162,7 +183,9 @@ model EmailCampaign {
   createdById   String
   createdBy     User                @relation(fields: [createdById], references: [id])
   emailLogs     EmailLog[]
-  targetLists     EmailList[]
+  targetLists   EmailList[]
+
+  @@schema("blog")
 }
 
 enum CampaignStatus {
@@ -170,6 +193,8 @@ enum CampaignStatus {
   SCHEDULED
   SENDING
   SENT
+
+  @@schema("blog")
 }
 
 model EmailLog {
@@ -185,6 +210,8 @@ model EmailLog {
   
   subscriberId  String?
   subscriber    Subscriber?      @relation(fields: [subscriberId], references: [id])
+
+  @@schema("blog")
 }
 
 enum EmailStatus {
@@ -194,4 +221,6 @@ enum EmailStatus {
   CLICKED
   BOUNCED
   FAILED
+
+  @@schema("blog")
 }

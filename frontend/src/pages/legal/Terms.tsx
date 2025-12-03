@@ -134,7 +134,7 @@ export default function Terms() {
                 <strong>Titolare:</strong> Domenico Spampinato
               </p>
               <p className="text-gray-700 mb-2">
-                <strong>P.IVA:</strong> IT01937400891 (Regime Forfettario)
+                <strong>P.IVA:</strong> IT01937400891
               </p>
               <p className="text-gray-700 mb-2">
                 <strong>Sede:</strong> via Frat. Cervi, 11, Carlentini (SR),

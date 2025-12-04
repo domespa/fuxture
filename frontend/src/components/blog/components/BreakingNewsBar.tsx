@@ -59,10 +59,11 @@ export default function BreakingNewsBar() {
     >
       <div className="flex items-center gap-4 px-6 py-3">
         {/* Badge BREAKING NEWS */}
-        <div className="flex-shrink-0 flex items-center gap-2 bg-red-600 px-3 py-1 rounded">
+        <div className="flex-shrink-0 flex items-center gap-1.5 bg-red-600 px-2 py-0.5 rounded">
           <span className="text-red-600 text-xs animate-pulse">🔴</span>
           <span className="text-white font-bold text-xs uppercase tracking-wide">
-            Breaking News
+            <span className="sm:hidden">Live</span>
+            <span className="hidden sm:inline">Breaking News</span>
           </span>
         </div>
 

@@ -43,13 +43,11 @@ export default function PostDetailPage() {
   }, [post, commentsOpen]);
 
   // CARICA I BANNER AWIN DOPO IL RENDERING DEL CONTENUTO
-  // Modifica l'useEffect dei banner così:
   useEffect(() => {
     if (!post) return;
 
     console.log("🔍 Post content HTML:", post.content);
 
-    // Trova tutti i placeholder dei banner Awin
     const bannerPlaceholders = document.querySelectorAll(
       'span[data-type="awin-banner"]',
     );
@@ -57,8 +55,6 @@ export default function PostDetailPage() {
     console.log("🔍 Banner placeholders trovati:", bannerPlaceholders.length);
 
     bannerPlaceholders.forEach((placeholder, index) => {
-      console.log(`🔍 Placeholder ${index}:`, placeholder);
-
       const scriptUrl = placeholder.getAttribute("scripturl");
       const iframeUrl = placeholder.getAttribute("iframeurl");
       const width = placeholder.getAttribute("width") || "300";
@@ -73,58 +69,41 @@ export default function PostDetailPage() {
         align,
       });
 
-      if (scriptUrl && iframeUrl) {
-        console.log(`✅ Creando banner ${index}...`);
+      if (iframeUrl) {
+        console.log(`✅ Creando iframe per banner ${index}...`);
 
-        // Crea il container per il banner
-        const container = document.createElement("div");
-        container.className = "awin-banner-public";
-        container.style.display = "inline-block";
-        container.style.maxWidth = "100%";
-        container.style.verticalAlign = "top";
-
-        // Applica stili di allineamento
-        if (align === "left") {
-          container.style.float = "left";
-          container.style.marginRight = "20px";
-          container.style.marginBottom = "10px";
-        } else if (align === "right") {
-          container.style.float = "right";
-          container.style.marginLeft = "20px";
-          container.style.marginBottom = "10px";
-        } else if (align === "center") {
-          container.style.margin = "20px auto";
-          container.style.display = "block";
-          container.style.textAlign = "center";
-        }
-
-        // Carica lo script Awin
-        const script = document.createElement("script");
-        script.src = scriptUrl;
-        script.async = true;
-        script.onload = () => console.log(`✅ Script ${index} caricato!`);
-        script.onerror = () =>
-          console.error(`❌ Errore caricamento script ${index}`);
-        container.appendChild(script);
-
-        // Fallback iframe
-        const noscript = document.createElement("noscript");
+        // USA DIRETTAMENTE L'IFRAME
         const iframe = document.createElement("iframe");
         iframe.src = iframeUrl;
         iframe.width = width;
         iframe.height = height;
         iframe.style.border = "0";
         iframe.style.display = "block";
+        iframe.style.maxWidth = "100%";
         iframe.setAttribute("frameborder", "0");
         iframe.setAttribute("scrolling", "no");
-        noscript.appendChild(iframe);
-        container.appendChild(noscript);
 
-        // Sostituisci il placeholder con il banner reale
-        placeholder.replaceWith(container);
-        console.log(`✅ Banner ${index} sostituito!`);
-      } else {
-        console.error(`❌ Banner ${index} - attributi mancanti`);
+        // Applica stili di allineamento
+        if (align === "left") {
+          iframe.style.float = "left";
+          iframe.style.marginRight = "20px";
+          iframe.style.marginBottom = "10px";
+        } else if (align === "right") {
+          iframe.style.float = "right";
+          iframe.style.marginLeft = "20px";
+          iframe.style.marginBottom = "10px";
+        } else if (align === "center") {
+          iframe.style.margin = "20px auto";
+          iframe.style.display = "block";
+        }
+
+        iframe.onload = () => console.log(`✅ Iframe ${index} caricato!`);
+        iframe.onerror = () =>
+          console.error(`❌ Errore caricamento iframe ${index}`);
+
+        // Sostituisci il placeholder con l'iframe
+        placeholder.replaceWith(iframe);
+        console.log(`✅ Iframe ${index} sostituito!`);
       }
     });
   }, [post]);

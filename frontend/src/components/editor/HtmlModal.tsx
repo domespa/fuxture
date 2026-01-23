@@ -11,9 +11,46 @@ export const HtmlModal = ({ isOpen, onClose, onInsert }: HtmlModalProps) => {
   const [htmlCode, setHtmlCode] = useState("");
   const [showPreview, setShowPreview] = useState(false);
 
+  const parseAwinCode = (html: string) => {
+    const scriptMatch = html.match(/src="([^"]+awin1\.com[^"]+)"/);
+    const iframeMatch = html.match(/iframe[^>]+src="([^"]+)"/);
+    const widthMatch = html.match(/width="(\d+)"/);
+    const heightMatch = html.match(/height="(\d+)"/);
+
+    if (scriptMatch) {
+      return {
+        isAwin: true,
+        scriptUrl: scriptMatch[1],
+        iframeUrl: iframeMatch ? iframeMatch[1] : scriptMatch[1] + "&iframe=1",
+        width: widthMatch ? widthMatch[1] : "1080",
+        height: heightMatch ? heightMatch[1] : "1920",
+      };
+    }
+
+    return { isAwin: false };
+  };
+
   const handleInsert = () => {
     if (htmlCode.trim()) {
-      onInsert(htmlCode);
+      const awinData = parseAwinCode(htmlCode);
+
+      if (awinData.isAwin) {
+        onInsert(
+          JSON.stringify({
+            type: "awinBanner",
+            attrs: {
+              scriptUrl: awinData.scriptUrl,
+              iframeUrl: awinData.iframeUrl,
+              width: awinData.width,
+              height: awinData.height,
+            },
+          }),
+        );
+      } else {
+        // HTML normale
+        onInsert(htmlCode);
+      }
+
       setHtmlCode("");
       setShowPreview(false);
       onClose();

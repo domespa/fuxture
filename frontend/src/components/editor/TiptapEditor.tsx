@@ -12,6 +12,7 @@ import { LinkBubble } from "./LinkBubble";
 import { HtmlModal } from "./HtmlModal";
 import { useEffect, useState, useRef, memo } from "react";
 import { NodeSelection } from "@tiptap/pm/state";
+import { AwinBanner } from "./Banner";
 
 interface TiptapEditorProps {
   content: string;
@@ -63,6 +64,7 @@ const TiptapEditorComponent = ({
         },
       }),
       Placeholder.configure({ placeholder }),
+      AwinBanner,
     ],
     content: content,
     onUpdate: ({ editor }) => {
@@ -188,9 +190,19 @@ const TiptapEditorComponent = ({
   // HANDLER PER INSERIRE HTML RAW
   const insertHtmlCode = (html: string) => {
     if (editor) {
-      // Inserisce l'HTML raw nell'editor
-      editor.chain().focus().insertContent(html).run();
-      console.log("✅ HTML inserito:", html);
+      try {
+        // Prova a fare il parse come JSON (banner Awin)
+        const data = JSON.parse(html);
+        if (data.type === "awinBanner") {
+          editor.chain().focus().insertAwinBanner(data.attrs).run();
+          console.log("✅ Banner Awin inserito:", data);
+          return;
+        }
+      } catch {
+        // Non è JSON, inserisci HTML normale
+        editor.chain().focus().insertContent(html).run();
+        console.log("✅ HTML inserito:", html);
+      }
     }
   };
 
@@ -269,7 +281,7 @@ export const TiptapEditor = memo(
     }
 
     return true;
-  }
+  },
 );
 
 TiptapEditor.displayName = "TiptapEditor";

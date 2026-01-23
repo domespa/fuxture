@@ -83,6 +83,11 @@ export default function PostDetailPage() {
         iframe.setAttribute("frameborder", "0");
         iframe.setAttribute("scrolling", "no");
 
+        iframe.setAttribute(
+          "sandbox",
+          "allow-scripts allow-same-origin allow-top-navigation allow-top-navigation-by-user-activation allow-popups allow-forms",
+        );
+
         // Applica stili di allineamento
         if (align === "left") {
           iframe.style.float = "left";

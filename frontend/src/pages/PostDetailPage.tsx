@@ -15,7 +15,7 @@ import {
   Send,
   AlertCircle,
 } from "lucide-react";
-import "./post-content.css"; // ← IMPORTA IL CSS PER IL RENDERING DEI POST!
+import "./post-content.css";
 
 export default function PostDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -41,6 +41,70 @@ export default function PostDetailPage() {
       fetchComments();
     }
   }, [post, commentsOpen]);
+
+  // CARICA I BANNER AWIN DOPO IL RENDERING DEL CONTENUTO
+  useEffect(() => {
+    if (!post) return;
+
+    // Trova tutti i placeholder dei banner Awin
+    const bannerPlaceholders = document.querySelectorAll(
+      'span[data-type="awin-banner"]',
+    );
+
+    bannerPlaceholders.forEach((placeholder) => {
+      const scriptUrl = placeholder.getAttribute("scripturl");
+      const iframeUrl = placeholder.getAttribute("iframeurl");
+      const width = placeholder.getAttribute("width") || "300";
+      const height = placeholder.getAttribute("height") || "600";
+      const align = placeholder.getAttribute("align") || "left";
+
+      if (scriptUrl && iframeUrl) {
+        // Crea il container per il banner
+        const container = document.createElement("div");
+        container.className = "awin-banner-public";
+        container.style.display = "inline-block";
+        container.style.maxWidth = "100%";
+        container.style.verticalAlign = "top";
+
+        // Applica stili di allineamento
+        if (align === "left") {
+          container.style.float = "left";
+          container.style.marginRight = "20px";
+          container.style.marginBottom = "10px";
+        } else if (align === "right") {
+          container.style.float = "right";
+          container.style.marginLeft = "20px";
+          container.style.marginBottom = "10px";
+        } else if (align === "center") {
+          container.style.margin = "20px auto";
+          container.style.display = "block";
+          container.style.textAlign = "center";
+        }
+
+        // Carica lo script Awin
+        const script = document.createElement("script");
+        script.src = scriptUrl;
+        script.async = true;
+        container.appendChild(script);
+
+        // Fallback iframe
+        const noscript = document.createElement("noscript");
+        const iframe = document.createElement("iframe");
+        iframe.src = iframeUrl;
+        iframe.width = width;
+        iframe.height = height;
+        iframe.style.border = "0";
+        iframe.style.display = "block";
+        iframe.setAttribute("frameborder", "0");
+        iframe.setAttribute("scrolling", "no");
+        noscript.appendChild(iframe);
+        container.appendChild(noscript);
+
+        // Sostituisci il placeholder con il banner reale
+        placeholder.replaceWith(container);
+      }
+    });
+  }, [post]);
 
   const fetchPost = async () => {
     try {
@@ -102,7 +166,7 @@ export default function PostDetailPage() {
     } catch (error: any) {
       console.error("Error submitting comment", error);
       setSubmitError(
-        error.response?.data?.message || "Errore nell'invio del commento"
+        error.response?.data?.message || "Errore nell'invio del commento",
       );
     }
   };
@@ -300,7 +364,7 @@ export default function PostDetailPage() {
         </div>
       </article>
 
-      {/* COMMENTS SIDEBAR - (resto del codice invariato) */}
+      {/* COMMENTS SIDEBAR */}
       <div
         className={`fixed top-0 right-0 h-full w-full md:w-[500px] bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${
           commentsOpen ? "translate-x-0" : "translate-x-full"

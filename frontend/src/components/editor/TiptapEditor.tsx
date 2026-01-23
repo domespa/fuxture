@@ -189,20 +189,26 @@ const TiptapEditorComponent = ({
 
   // HANDLER PER INSERIRE HTML RAW
   const insertHtmlCode = (html: string) => {
+    console.log("🔍 insertHtmlCode ricevuto:", html);
+
     if (editor) {
       try {
-        // Prova a fare il parse come JSON (banner Awin)
         const data = JSON.parse(html);
+        console.log("🔍 JSON parsed:", data);
+
         if (data.type === "awinBanner") {
+          console.log("✅ Inserisco banner Awin con attrs:", data.attrs);
           editor.chain().focus().insertAwinBanner(data.attrs).run();
-          console.log("✅ Banner Awin inserito:", data);
+          console.log("✅ Banner Awin inserito!");
           return;
         }
-      } catch {
-        // Non è JSON, inserisci HTML normale
+      } catch (e) {
+        console.log("📄 Non è JSON, inserisco HTML normale");
         editor.chain().focus().insertContent(html).run();
         console.log("✅ HTML inserito:", html);
       }
+    } else {
+      console.error("❌ Editor non disponibile!");
     }
   };
 

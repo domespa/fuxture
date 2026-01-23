@@ -46,34 +46,20 @@ const HtmlPreview = ({ html }: { html: string }) => {
     console.log("🔍 Awin Data parsed:", awinData);
 
     if (awinData.isAwin && awinData.scriptUrl) {
-      console.log("✅ È un banner Awin, carico lo script...");
+      console.log("✅ È un banner Awin, mostro iframe...");
 
       previewRef.current.innerHTML = "";
 
-      const container = document.createElement("div");
-      container.style.minHeight = "200px";
-      container.style.border = "1px solid red"; // Debug visual
-
-      const script = document.createElement("script");
-      script.src = awinData.scriptUrl;
-      script.async = true;
-      script.onload = () => console.log("✅ Script Awin caricato!");
-      script.onerror = () => console.error("❌ Errore caricamento script Awin");
-      container.appendChild(script);
-
-      const noscript = document.createElement("noscript");
+      // Per l'anteprima usiamo direttamente l'iframe
       const iframe = document.createElement("iframe");
       iframe.src = awinData.iframeUrl;
       iframe.width = awinData.width;
       iframe.height = awinData.height;
-      iframe.setAttribute("frameborder", "0");
-      iframe.setAttribute("scrolling", "no");
-      iframe.style.border = "0";
-      noscript.appendChild(iframe);
-      container.appendChild(noscript);
+      iframe.style.border = "none";
+      iframe.style.maxWidth = "100%";
 
-      previewRef.current.appendChild(container);
-      console.log("✅ Container aggiunto al DOM");
+      previewRef.current.appendChild(iframe);
+      console.log("✅ Iframe aggiunto al DOM");
     } else {
       console.log("📄 HTML normale, uso innerHTML");
       previewRef.current.innerHTML = html;

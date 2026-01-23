@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, Eye, EyeOff } from "lucide-react";
 
 interface HtmlModalProps {
@@ -7,34 +7,90 @@ interface HtmlModalProps {
   onInsert: (html: string) => void;
 }
 
+// Helper per parsare codice Awin - VERSIONE CORRETTA
+const parseAwinCode = (html: string) => {
+  const scriptMatch = html.match(/src="([^"]+awin1\.com[^"]+)"/);
+  const iframeMatch = html.match(/iframe[^>]+src="([^"]+)"/);
+  const widthMatch = html.match(/width="(\d+)"/);
+  const heightMatch = html.match(/height="(\d+)"/);
+
+  if (scriptMatch) {
+    return {
+      isAwin: true,
+      scriptUrl: scriptMatch[1],
+      iframeUrl: iframeMatch ? iframeMatch[1] : `${scriptMatch[1]}&iframe=1`,
+      width: widthMatch ? widthMatch[1] : "1080",
+      height: heightMatch ? heightMatch[1] : "1920",
+    };
+  }
+
+  return {
+    isAwin: false,
+    scriptUrl: "",
+    iframeUrl: "",
+    width: "1080",
+    height: "1920",
+  };
+};
+
+// Componente per anteprima con script eseguibili
+const HtmlPreview = ({ html }: { html: string }) => {
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!previewRef.current || !html) return;
+
+    const awinData = parseAwinCode(html);
+
+    if (awinData.isAwin && awinData.scriptUrl) {
+      // Se è Awin, carica lo script reale
+      previewRef.current.innerHTML = "";
+
+      const container = document.createElement("div");
+      container.style.minHeight = "200px";
+
+      const script = document.createElement("script");
+      script.src = awinData.scriptUrl;
+      script.async = true;
+      container.appendChild(script);
+
+      const noscript = document.createElement("noscript");
+      const iframe = document.createElement("iframe");
+      iframe.src = awinData.iframeUrl;
+      iframe.width = awinData.width;
+      iframe.height = awinData.height;
+      iframe.setAttribute("frameborder", "0");
+      iframe.setAttribute("scrolling", "no");
+      iframe.style.border = "0";
+      noscript.appendChild(iframe);
+      container.appendChild(noscript);
+
+      previewRef.current.appendChild(container);
+    } else {
+      // HTML normale
+      previewRef.current.innerHTML = html;
+    }
+
+    return () => {
+      if (previewRef.current) {
+        previewRef.current.innerHTML = "";
+      }
+    };
+  }, [html]);
+
+  return <div ref={previewRef} className="html-preview" />;
+};
+
 export const HtmlModal = ({ isOpen, onClose, onInsert }: HtmlModalProps) => {
   const [htmlCode, setHtmlCode] = useState("");
   const [showPreview, setShowPreview] = useState(false);
-
-  const parseAwinCode = (html: string) => {
-    const scriptMatch = html.match(/src="([^"]+awin1\.com[^"]+)"/);
-    const iframeMatch = html.match(/iframe[^>]+src="([^"]+)"/);
-    const widthMatch = html.match(/width="(\d+)"/);
-    const heightMatch = html.match(/height="(\d+)"/);
-
-    if (scriptMatch) {
-      return {
-        isAwin: true,
-        scriptUrl: scriptMatch[1],
-        iframeUrl: iframeMatch ? iframeMatch[1] : scriptMatch[1] + "&iframe=1",
-        width: widthMatch ? widthMatch[1] : "1080",
-        height: heightMatch ? heightMatch[1] : "1920",
-      };
-    }
-
-    return { isAwin: false };
-  };
 
   const handleInsert = () => {
     if (htmlCode.trim()) {
       const awinData = parseAwinCode(htmlCode);
 
       if (awinData.isAwin) {
+        // È un banner Awin, usa il nodo custom
         onInsert(
           JSON.stringify({
             type: "awinBanner",
@@ -153,7 +209,7 @@ export const HtmlModal = ({ isOpen, onClose, onInsert }: HtmlModalProps) => {
               )}
             </div>
 
-            {/* Preview */}
+            {/* Preview con script eseguibili */}
             {showPreview && htmlCode && (
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50">
                 <div className="flex items-center gap-2 mb-3">
@@ -163,10 +219,7 @@ export const HtmlModal = ({ isOpen, onClose, onInsert }: HtmlModalProps) => {
                   </p>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 min-h-[100px]">
-                  <div
-                    dangerouslySetInnerHTML={{ __html: htmlCode }}
-                    className="html-preview"
-                  />
+                  <HtmlPreview html={htmlCode} />
                 </div>
                 <p className="text-xs text-gray-500 mt-3 italic">
                   ⚠️ Assicurati che il codice sia sicuro e provenga da fonti
@@ -181,7 +234,9 @@ export const HtmlModal = ({ isOpen, onClose, onInsert }: HtmlModalProps) => {
                 💡 Esempi di utilizzo:
               </h4>
               <ul className="text-sm text-blue-800 space-y-1">
-                <li>• Banner pubblicitari (Google AdSense, banner custom)</li>
+                <li>
+                  • Banner pubblicitari (Google AdSense, Awin, banner custom)
+                </li>
                 <li>• Widget social (Twitter, Instagram, Facebook)</li>
                 <li>• Video embed (YouTube, Vimeo)</li>
                 <li>• Iframe personalizzati</li>

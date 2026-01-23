@@ -38,20 +38,27 @@ const HtmlPreview = ({ html }: { html: string }) => {
   const previewRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    console.log("🔍 HtmlPreview - HTML ricevuto:", html);
+
     if (!previewRef.current || !html) return;
 
     const awinData = parseAwinCode(html);
+    console.log("🔍 Awin Data parsed:", awinData);
 
     if (awinData.isAwin && awinData.scriptUrl) {
-      // Se è Awin, carica lo script reale
+      console.log("✅ È un banner Awin, carico lo script...");
+
       previewRef.current.innerHTML = "";
 
       const container = document.createElement("div");
       container.style.minHeight = "200px";
+      container.style.border = "1px solid red"; // Debug visual
 
       const script = document.createElement("script");
       script.src = awinData.scriptUrl;
       script.async = true;
+      script.onload = () => console.log("✅ Script Awin caricato!");
+      script.onerror = () => console.error("❌ Errore caricamento script Awin");
       container.appendChild(script);
 
       const noscript = document.createElement("noscript");
@@ -66,8 +73,9 @@ const HtmlPreview = ({ html }: { html: string }) => {
       container.appendChild(noscript);
 
       previewRef.current.appendChild(container);
+      console.log("✅ Container aggiunto al DOM");
     } else {
-      // HTML normale
+      console.log("📄 HTML normale, uso innerHTML");
       previewRef.current.innerHTML = html;
     }
 
@@ -78,7 +86,13 @@ const HtmlPreview = ({ html }: { html: string }) => {
     };
   }, [html]);
 
-  return <div ref={previewRef} className="html-preview" />;
+  return (
+    <div
+      ref={previewRef}
+      className="html-preview"
+      style={{ minHeight: "100px", background: "#fff" }}
+    />
+  );
 };
 
 export const HtmlModal = ({ isOpen, onClose, onInsert }: HtmlModalProps) => {

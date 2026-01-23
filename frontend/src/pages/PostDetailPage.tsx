@@ -43,22 +43,39 @@ export default function PostDetailPage() {
   }, [post, commentsOpen]);
 
   // CARICA I BANNER AWIN DOPO IL RENDERING DEL CONTENUTO
+  // Modifica l'useEffect dei banner così:
   useEffect(() => {
     if (!post) return;
+
+    console.log("🔍 Post content HTML:", post.content);
 
     // Trova tutti i placeholder dei banner Awin
     const bannerPlaceholders = document.querySelectorAll(
       'span[data-type="awin-banner"]',
     );
 
-    bannerPlaceholders.forEach((placeholder) => {
+    console.log("🔍 Banner placeholders trovati:", bannerPlaceholders.length);
+
+    bannerPlaceholders.forEach((placeholder, index) => {
+      console.log(`🔍 Placeholder ${index}:`, placeholder);
+
       const scriptUrl = placeholder.getAttribute("scripturl");
       const iframeUrl = placeholder.getAttribute("iframeurl");
       const width = placeholder.getAttribute("width") || "300";
       const height = placeholder.getAttribute("height") || "600";
       const align = placeholder.getAttribute("align") || "left";
 
+      console.log(`📊 Attributi banner ${index}:`, {
+        scriptUrl,
+        iframeUrl,
+        width,
+        height,
+        align,
+      });
+
       if (scriptUrl && iframeUrl) {
+        console.log(`✅ Creando banner ${index}...`);
+
         // Crea il container per il banner
         const container = document.createElement("div");
         container.className = "awin-banner-public";
@@ -85,6 +102,9 @@ export default function PostDetailPage() {
         const script = document.createElement("script");
         script.src = scriptUrl;
         script.async = true;
+        script.onload = () => console.log(`✅ Script ${index} caricato!`);
+        script.onerror = () =>
+          console.error(`❌ Errore caricamento script ${index}`);
         container.appendChild(script);
 
         // Fallback iframe
@@ -102,6 +122,9 @@ export default function PostDetailPage() {
 
         // Sostituisci il placeholder con il banner reale
         placeholder.replaceWith(container);
+        console.log(`✅ Banner ${index} sostituito!`);
+      } else {
+        console.error(`❌ Banner ${index} - attributi mancanti`);
       }
     });
   }, [post]);

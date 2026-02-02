@@ -1,93 +1,146 @@
-// components/editor/AwinBannerNode.tsx
 import { Node, mergeAttributes } from "@tiptap/core";
 import { ReactNodeViewRenderer, NodeViewProps } from "@tiptap/react";
 import { NodeViewWrapper } from "@tiptap/react";
-import { useEffect, useRef } from "react";
+import { useState } from "react";
+import { X } from "lucide-react";
 
-interface AwinBannerAttrs {
-  scriptUrl: string;
-  iframeUrl: string;
-  width: string;
-  height: string;
-  align: string; // ← AGGIUNTO
+interface AwinBannerLinkAttrs {
+  linkUrl: string;
+  imageUrl: string;
+  align: string;
 }
 
-const AwinBannerComponent = ({ node, updateAttributes }: NodeViewProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const attrs = node.attrs as AwinBannerAttrs;
-  const { scriptUrl, iframeUrl, width, height, align = "left" } = attrs;
+const AwinBannerLinkComponent = ({
+  node,
+  updateAttributes,
+  deleteNode,
+}: NodeViewProps) => {
+  const attrs = node.attrs as AwinBannerLinkAttrs;
+  const { linkUrl, imageUrl, align = "left" } = attrs;
+  const [showControls, setShowControls] = useState(false);
 
-  useEffect(() => {
-    if (!containerRef.current || !iframeUrl) return;
-
-    containerRef.current.innerHTML = "";
-
-    const iframe = document.createElement("iframe");
-    iframe.src = iframeUrl;
-    iframe.width = width || "300";
-    iframe.height = height || "600";
-    iframe.style.border = "none";
-    iframe.style.display = "block";
-    iframe.style.maxWidth = "100%";
-
-    containerRef.current.appendChild(iframe);
-  }, [scriptUrl, iframeUrl, width, height]);
-
-  // Stili in base all'allineamento
-  const getAlignmentStyles = () => {
+  const getAlignmentStyles = (): React.CSSProperties => {
     switch (align) {
       case "left":
-        return {
-          float: "left" as const,
-          marginRight: "20px",
-          marginBottom: "10px",
-        };
+        return { float: "left", marginRight: "20px", marginBottom: "10px" };
       case "right":
-        return {
-          float: "right" as const,
-          marginLeft: "20px",
-          marginBottom: "10px",
-        };
+        return { float: "right", marginLeft: "20px", marginBottom: "10px" };
       case "center":
-        return { margin: "20px auto", display: "block" };
+        return { margin: "20px auto", display: "block", textAlign: "center" };
       default:
-        return {
-          float: "left" as const,
-          marginRight: "20px",
-          marginBottom: "10px",
-        };
+        return { float: "left", marginRight: "20px", marginBottom: "10px" };
     }
   };
 
   return (
     <NodeViewWrapper
       as="span"
-      className="awin-banner-wrapper"
+      className="awin-banner-link-wrapper"
       style={{
         display: "inline-block",
+        position: "relative",
         ...getAlignmentStyles(),
       }}
+      onMouseEnter={() => setShowControls(true)}
+      onMouseLeave={() => setShowControls(false)}
     >
-      <div
-        ref={containerRef}
-        className="awin-banner-container"
-        style={{
-          position: "relative",
-          border: "2px solid #3b82f6",
-          borderRadius: "8px",
-          padding: "10px",
-          background: "#fff",
-          cursor: "pointer",
-        }}
+      {/* Pulsanti controllo */}
+      {showControls && (
+        <div
+          style={{
+            position: "absolute",
+            top: "-35px",
+            right: "0",
+            background: "#1F2937",
+            borderRadius: "8px",
+            padding: "4px",
+            display: "flex",
+            gap: "4px",
+            zIndex: 10,
+            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+          }}
+          contentEditable={false}
+        >
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const newAlign =
+                align === "left"
+                  ? "right"
+                  : align === "right"
+                    ? "center"
+                    : "left";
+              updateAttributes({ align: newAlign });
+            }}
+            style={{
+              background: "#3b82f6",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              padding: "6px 10px",
+              fontSize: "12px",
+              cursor: "pointer",
+              fontWeight: "600",
+            }}
+            title="Cambia allineamento"
+          >
+            {align === "left" ? "⬅️" : align === "right" ? "➡️" : "⬆️"}
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (confirm("Rimuovere questo banner?")) {
+                deleteNode();
+              }
+            }}
+            style={{
+              background: "#ef4444",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              padding: "6px 10px",
+              fontSize: "12px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+            }}
+            title="Rimuovi banner"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
+
+      <a
+        href={linkUrl}
+        target="_blank"
+        rel="noopener noreferrer sponsored"
         contentEditable={false}
-        onClick={(e) => {
-          e.stopPropagation();
-          // Cambia allineamento al click
-          const newAlign =
-            align === "left" ? "right" : align === "right" ? "center" : "left";
-          updateAttributes({ align: newAlign });
+        style={{
+          display: "block",
+          border: showControls ? "2px solid #3b82f6" : "2px solid transparent",
+          borderRadius: "8px",
+          padding: "5px",
+          background: "#fff",
+          transition: "border-color 0.2s",
         }}
-      />
+      >
+        <img
+          src={imageUrl}
+          alt="Banner Awin"
+          style={{
+            maxWidth: "100%",
+            height: "auto",
+            display: "block",
+          }}
+          contentEditable={false}
+        />
+      </a>
+
       <div
         style={{
           fontSize: "10px",
@@ -101,42 +154,34 @@ const AwinBannerComponent = ({ node, updateAttributes }: NodeViewProps) => {
         }}
         contentEditable={false}
       >
-        📢 Banner Awin ({width}x{height}) - {align}
+        📢 Banner Awin - {align}
       </div>
     </NodeViewWrapper>
   );
 };
 
-export const AwinBanner = Node.create({
-  name: "awinBanner",
-  group: "inline", // ← CAMBIATO da "block" a "inline"
-  inline: true, // ← AGGIUNTO
+export const AwinBannerLink = Node.create({
+  name: "awinBannerLink",
+  group: "inline",
+  inline: true,
   atom: true,
   draggable: true,
 
   addAttributes() {
     return {
-      scriptUrl: {
+      linkUrl: {
         default: "",
         parseHTML: (element) =>
-          element.getAttribute("scripturl") ||
-          element.getAttribute("data-script-url") ||
+          element.getAttribute("linkurl") ||
+          element.getAttribute("data-link-url") ||
           "",
       },
-      iframeUrl: {
+      imageUrl: {
         default: "",
         parseHTML: (element) =>
-          element.getAttribute("iframeurl") ||
-          element.getAttribute("data-iframe-url") ||
+          element.getAttribute("imageurl") ||
+          element.getAttribute("data-image-url") ||
           "",
-      },
-      width: {
-        default: "300",
-        parseHTML: (element) => element.getAttribute("width") || "300",
-      },
-      height: {
-        default: "600",
-        parseHTML: (element) => element.getAttribute("height") || "600",
       },
       align: {
         default: "left",
@@ -151,7 +196,7 @@ export const AwinBanner = Node.create({
   parseHTML() {
     return [
       {
-        tag: 'span[data-type="awin-banner"]',
+        tag: 'span[data-type="awin-banner-link"]',
       },
     ];
   },
@@ -160,24 +205,22 @@ export const AwinBanner = Node.create({
     return [
       "span",
       mergeAttributes(HTMLAttributes, {
-        "data-type": "awin-banner",
-        scripturl: HTMLAttributes.scriptUrl,
-        iframeurl: HTMLAttributes.iframeUrl,
-        width: HTMLAttributes.width,
-        height: HTMLAttributes.height,
+        "data-type": "awin-banner-link",
+        linkurl: HTMLAttributes.linkUrl,
+        imageurl: HTMLAttributes.imageUrl,
         align: HTMLAttributes.align,
       }),
     ];
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(AwinBannerComponent);
+    return ReactNodeViewRenderer(AwinBannerLinkComponent);
   },
 
   addCommands() {
     return {
-      insertAwinBanner:
-        (attrs: AwinBannerAttrs) =>
+      insertAwinBannerLink:
+        (attrs: AwinBannerLinkAttrs) =>
         ({ commands }: any) => {
           return commands.insertContent({
             type: this.name,
@@ -190,8 +233,8 @@ export const AwinBanner = Node.create({
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
-    awinBanner: {
-      insertAwinBanner: (attrs: AwinBannerAttrs) => ReturnType;
+    awinBannerLink: {
+      insertAwinBannerLink: (attrs: AwinBannerLinkAttrs) => ReturnType;
     };
   }
 }

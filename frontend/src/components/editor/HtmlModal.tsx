@@ -39,7 +39,7 @@ const parseAwinCode = (html: string) => {
       type: "link" as const,
       linkUrl: linkMatch[1],
       imageUrl: imgMatch[1],
-      width: "auto",
+      width: "auto", // ← DIMENSIONI AUTO PER LINK+IMG
       height: "auto",
       scriptUrl: "",
       iframeUrl: "",
@@ -53,8 +53,8 @@ const parseAwinCode = (html: string) => {
     iframeUrl: "",
     linkUrl: "",
     imageUrl: "",
-    width: "1080",
-    height: "1920",
+    width: "auto",
+    height: "auto",
   };
 };
 

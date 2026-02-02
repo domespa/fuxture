@@ -43,16 +43,18 @@ export default function PostDetailPage() {
   }, [post, commentsOpen]);
 
   // CARICA I BANNER AWIN DOPO IL RENDERING DEL CONTENUTO
+  // CARICA I BANNER AWIN DOPO IL RENDERING DEL CONTENUTO
   useEffect(() => {
     if (!post) return;
 
     console.log("🔍 Post content HTML:", post.content);
 
+    // BANNER IFRAME (script/iframe)
     const bannerPlaceholders = document.querySelectorAll(
       'span[data-type="awin-banner"]',
     );
 
-    console.log("🔍 Banner placeholders trovati:", bannerPlaceholders.length);
+    console.log("🔍 Banner iframe trovati:", bannerPlaceholders.length);
 
     bannerPlaceholders.forEach((placeholder, index) => {
       const scriptUrl = placeholder.getAttribute("scripturl");
@@ -61,7 +63,7 @@ export default function PostDetailPage() {
       const height = placeholder.getAttribute("height") || "600";
       const align = placeholder.getAttribute("align") || "left";
 
-      console.log(`📊 Attributi banner ${index}:`, {
+      console.log(`📊 Attributi banner iframe ${index}:`, {
         scriptUrl,
         iframeUrl,
         width,
@@ -72,7 +74,6 @@ export default function PostDetailPage() {
       if (iframeUrl) {
         console.log(`✅ Creando iframe per banner ${index}...`);
 
-        // USA DIRETTAMENTE L'IFRAME
         const iframe = document.createElement("iframe");
         iframe.src = iframeUrl;
         iframe.width = width;
@@ -82,7 +83,6 @@ export default function PostDetailPage() {
         iframe.style.maxWidth = "100%";
         iframe.setAttribute("frameborder", "0");
         iframe.setAttribute("scrolling", "no");
-
         iframe.setAttribute(
           "sandbox",
           "allow-scripts allow-same-origin allow-top-navigation allow-top-navigation-by-user-activation allow-popups allow-forms",
@@ -106,9 +106,68 @@ export default function PostDetailPage() {
         iframe.onerror = () =>
           console.error(`❌ Errore caricamento iframe ${index}`);
 
-        // Sostituisci il placeholder con l'iframe
         placeholder.replaceWith(iframe);
         console.log(`✅ Iframe ${index} sostituito!`);
+      }
+    });
+
+    // BANNER LINK+IMMAGINE
+    const bannerLinks = document.querySelectorAll(
+      'span[data-type="awin-banner-link"]',
+    );
+
+    console.log("🔍 Banner link+img trovati:", bannerLinks.length);
+
+    bannerLinks.forEach((placeholder, index) => {
+      const linkUrl = placeholder.getAttribute("linkurl");
+      const imageUrl = placeholder.getAttribute("imageurl");
+      const align = placeholder.getAttribute("align") || "left";
+
+      console.log(`📊 Attributi banner link ${index}:`, {
+        linkUrl,
+        imageUrl,
+        align,
+      });
+
+      if (linkUrl && imageUrl) {
+        console.log(`✅ Creando link+img per banner ${index}...`);
+
+        const link = document.createElement("a");
+        link.href = linkUrl;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer sponsored";
+        link.style.display = "inline-block";
+
+        // Applica stili di allineamento
+        if (align === "left") {
+          link.style.float = "left";
+          link.style.marginRight = "20px";
+          link.style.marginBottom = "10px";
+        } else if (align === "right") {
+          link.style.float = "right";
+          link.style.marginLeft = "20px";
+          link.style.marginBottom = "10px";
+        } else if (align === "center") {
+          link.style.margin = "20px auto";
+          link.style.display = "block";
+          link.style.textAlign = "center";
+        }
+
+        const img = document.createElement("img");
+        img.src = imageUrl;
+        img.alt = "Banner Awin";
+        img.style.maxWidth = "100%";
+        img.style.height = "auto";
+        img.style.display = "block";
+        img.style.border = "0";
+
+        img.onload = () => console.log(`✅ Immagine ${index} caricata!`);
+        img.onerror = () =>
+          console.error(`❌ Errore caricamento immagine ${index}`);
+
+        link.appendChild(img);
+        placeholder.replaceWith(link);
+        console.log(`✅ Banner link ${index} sostituito!`);
       }
     });
   }, [post]);

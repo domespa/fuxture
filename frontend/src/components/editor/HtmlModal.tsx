@@ -7,27 +7,52 @@ interface HtmlModalProps {
   onInsert: (html: string) => void;
 }
 
-// Helper per parsare codice Awin - VERSIONE CORRETTA
 const parseAwinCode = (html: string) => {
+  // Prova a riconoscere il banner con script
   const scriptMatch = html.match(/src="([^"]+awin1\.com[^"]+)"/);
   const iframeMatch = html.match(/iframe[^>]+src="([^"]+)"/);
   const widthMatch = html.match(/width="(\d+)"/);
   const heightMatch = html.match(/height="(\d+)"/);
 
-  if (scriptMatch) {
+  if (scriptMatch && scriptMatch[1]) {
     return {
       isAwin: true,
+      type: "script" as const,
       scriptUrl: scriptMatch[1],
-      iframeUrl: iframeMatch ? iframeMatch[1] : `${scriptMatch[1]}&iframe=1`,
-      width: widthMatch ? widthMatch[1] : "1080",
-      height: heightMatch ? heightMatch[1] : "1920",
+      iframeUrl:
+        iframeMatch && iframeMatch[1]
+          ? iframeMatch[1]
+          : scriptMatch[1] + "&iframe=1",
+      width: widthMatch && widthMatch[1] ? widthMatch[1] : "1080",
+      height: heightMatch && heightMatch[1] ? heightMatch[1] : "1920",
+      linkUrl: "",
+      imageUrl: "",
+    };
+  }
+
+  const linkMatch = html.match(/<a[^>]+href="([^"]+awin1\.com[^"]+)"[^>]*>/);
+  const imgMatch = html.match(/<img[^>]+src="([^"]+awin1\.com[^"]+)"[^>]*>/);
+
+  if (linkMatch && linkMatch[1] && imgMatch && imgMatch[1]) {
+    return {
+      isAwin: true,
+      type: "link" as const,
+      linkUrl: linkMatch[1],
+      imageUrl: imgMatch[1],
+      width: "auto",
+      height: "auto",
+      scriptUrl: "",
+      iframeUrl: "",
     };
   }
 
   return {
     isAwin: false,
+    type: null,
     scriptUrl: "",
     iframeUrl: "",
+    linkUrl: "",
+    imageUrl: "",
     width: "1080",
     height: "1920",
   };
@@ -45,12 +70,31 @@ const HtmlPreview = ({ html }: { html: string }) => {
     const awinData = parseAwinCode(html);
     console.log("🔍 Awin Data parsed:", awinData);
 
-    if (awinData.isAwin && awinData.scriptUrl) {
-      console.log("✅ È un banner Awin, mostro iframe...");
+    if (awinData.isAwin && awinData.type === "link") {
+      // Banner con link + immagine
+      console.log("✅ È un banner Awin link+img, mostro anteprima...");
 
       previewRef.current.innerHTML = "";
 
-      // Per l'anteprima usiamo direttamente l'iframe
+      const link = document.createElement("a");
+      link.href = awinData.linkUrl;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer sponsored";
+
+      const img = document.createElement("img");
+      img.src = awinData.imageUrl;
+      img.style.maxWidth = "100%";
+      img.style.height = "auto";
+      img.style.display = "block";
+
+      link.appendChild(img);
+      previewRef.current.appendChild(link);
+    } else if (awinData.isAwin && awinData.type === "script") {
+      // Banner con iframe (vecchio metodo)
+      console.log("✅ È un banner Awin iframe, mostro iframe...");
+
+      previewRef.current.innerHTML = "";
+
       const iframe = document.createElement("iframe");
       iframe.src = awinData.iframeUrl;
       iframe.width = awinData.width;
@@ -90,18 +134,31 @@ export const HtmlModal = ({ isOpen, onClose, onInsert }: HtmlModalProps) => {
       const awinData = parseAwinCode(htmlCode);
 
       if (awinData.isAwin) {
-        // È un banner Awin, usa il nodo custom
-        onInsert(
-          JSON.stringify({
-            type: "awinBanner",
-            attrs: {
-              scriptUrl: awinData.scriptUrl,
-              iframeUrl: awinData.iframeUrl,
-              width: awinData.width,
-              height: awinData.height,
-            },
-          }),
-        );
+        if (awinData.type === "link") {
+          // Banner link + immagine
+          onInsert(
+            JSON.stringify({
+              type: "awinBannerLink",
+              attrs: {
+                linkUrl: awinData.linkUrl,
+                imageUrl: awinData.imageUrl,
+              },
+            }),
+          );
+        } else if (awinData.type === "script") {
+          // Banner iframe (vecchio)
+          onInsert(
+            JSON.stringify({
+              type: "awinBanner",
+              attrs: {
+                scriptUrl: awinData.scriptUrl,
+                iframeUrl: awinData.iframeUrl,
+                width: awinData.width,
+                height: awinData.height,
+              },
+            }),
+          );
+        }
       } else {
         // HTML normale
         onInsert(htmlCode);

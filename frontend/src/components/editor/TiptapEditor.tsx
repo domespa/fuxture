@@ -13,6 +13,7 @@ import { HtmlModal } from "./HtmlModal";
 import { useEffect, useState, useRef, memo } from "react";
 import { NodeSelection } from "@tiptap/pm/state";
 import { AwinBanner } from "./Banner";
+import { AwinBannerLink } from "./BannerLink";
 
 interface TiptapEditorProps {
   content: string;
@@ -65,6 +66,7 @@ const TiptapEditorComponent = ({
       }),
       Placeholder.configure({ placeholder }),
       AwinBanner,
+      AwinBannerLink,
     ],
     content: content,
     onUpdate: ({ editor }) => {
@@ -200,6 +202,12 @@ const TiptapEditorComponent = ({
           console.log("✅ Inserisco banner Awin con attrs:", data.attrs);
           editor.chain().focus().insertAwinBanner(data.attrs).run();
           console.log("✅ Banner Awin inserito!");
+          return;
+        }
+
+        if (data.type === "awinBannerLink") {
+          console.log("✅ Inserisco banner Awin link con attrs:", data.attrs);
+          editor.chain().focus().insertAwinBannerLink(data.attrs).run();
           return;
         }
       } catch (e) {

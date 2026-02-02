@@ -43,37 +43,21 @@ export default function PostDetailPage() {
   }, [post, commentsOpen]);
 
   // CARICA I BANNER AWIN DOPO IL RENDERING DEL CONTENUTO
-  // CARICA I BANNER AWIN DOPO IL RENDERING DEL CONTENUTO
   useEffect(() => {
     if (!post) return;
-
-    console.log("🔍 Post content HTML:", post.content);
 
     // BANNER IFRAME (script/iframe)
     const bannerPlaceholders = document.querySelectorAll(
       'span[data-type="awin-banner"]',
     );
 
-    console.log("🔍 Banner iframe trovati:", bannerPlaceholders.length);
-
-    bannerPlaceholders.forEach((placeholder, index) => {
-      const scriptUrl = placeholder.getAttribute("scripturl");
+    bannerPlaceholders.forEach((placeholder) => {
       const iframeUrl = placeholder.getAttribute("iframeurl");
       const width = placeholder.getAttribute("width") || "300";
       const height = placeholder.getAttribute("height") || "600";
       const align = placeholder.getAttribute("align") || "left";
 
-      console.log(`📊 Attributi banner iframe ${index}:`, {
-        scriptUrl,
-        iframeUrl,
-        width,
-        height,
-        align,
-      });
-
       if (iframeUrl) {
-        console.log(`✅ Creando iframe per banner ${index}...`);
-
         const iframe = document.createElement("iframe");
         iframe.src = iframeUrl;
         iframe.width = width;
@@ -88,7 +72,6 @@ export default function PostDetailPage() {
           "allow-scripts allow-same-origin allow-top-navigation allow-top-navigation-by-user-activation allow-popups allow-forms",
         );
 
-        // Applica stili di allineamento
         if (align === "left") {
           iframe.style.float = "left";
           iframe.style.marginRight = "20px";
@@ -102,12 +85,7 @@ export default function PostDetailPage() {
           iframe.style.display = "block";
         }
 
-        iframe.onload = () => console.log(`✅ Iframe ${index} caricato!`);
-        iframe.onerror = () =>
-          console.error(`❌ Errore caricamento iframe ${index}`);
-
         placeholder.replaceWith(iframe);
-        console.log(`✅ Iframe ${index} sostituito!`);
       }
     });
 
@@ -116,29 +94,18 @@ export default function PostDetailPage() {
       'span[data-type="awin-banner-link"]',
     );
 
-    console.log("🔍 Banner link+img trovati:", bannerLinks.length);
-
-    bannerLinks.forEach((placeholder, index) => {
+    bannerLinks.forEach((placeholder) => {
       const linkUrl = placeholder.getAttribute("linkurl");
       const imageUrl = placeholder.getAttribute("imageurl");
       const align = placeholder.getAttribute("align") || "left";
 
-      console.log(`📊 Attributi banner link ${index}:`, {
-        linkUrl,
-        imageUrl,
-        align,
-      });
-
       if (linkUrl && imageUrl) {
-        console.log(`✅ Creando link+img per banner ${index}...`);
-
         const link = document.createElement("a");
         link.href = linkUrl;
         link.target = "_blank";
         link.rel = "noopener noreferrer sponsored";
         link.style.display = "inline-block";
 
-        // Applica stili di allineamento
         if (align === "left") {
           link.style.float = "left";
           link.style.marginRight = "20px";
@@ -161,13 +128,8 @@ export default function PostDetailPage() {
         img.style.display = "block";
         img.style.border = "0";
 
-        img.onload = () => console.log(`✅ Immagine ${index} caricata!`);
-        img.onerror = () =>
-          console.error(`❌ Errore caricamento immagine ${index}`);
-
         link.appendChild(img);
         placeholder.replaceWith(link);
-        console.log(`✅ Banner link ${index} sostituito!`);
       }
     });
   }, [post]);

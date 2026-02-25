@@ -16,7 +16,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import "./post-content.css";
-import AdsterraPopunder from "../components/AdsterraPopunder";
+// import AdsterraPopunder from "../components/AdsterraPopunder";
 import AdsterraBanner from "@/components/AdsterraBanner";
 
 export default function PostDetailPage() {
@@ -277,7 +277,7 @@ export default function PostDetailPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F8FAFC" }}>
-      <AdsterraPopunder />
+      {/* <AdsterraPopunder />  */}
       {/* HEADER */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="container mx-auto px-4 py-4">

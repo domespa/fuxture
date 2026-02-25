@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import "./post-content.css";
 import AdsterraPopunder from "../components/AdsterraPopunder";
+import AdsterraBanner from "@/components/AdsterraBanner";
 
 export default function PostDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -360,7 +361,7 @@ export default function PostDetailPage() {
           style={{ color: "#1F2937" }}
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
-
+        <AdsterraBanner />
         {/* Tags */}
         {post.tags && post.tags.length > 0 && (
           <div className="py-8 border-t border-gray-200">

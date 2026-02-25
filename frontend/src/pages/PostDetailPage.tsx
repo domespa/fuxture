@@ -16,6 +16,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import "./post-content.css";
+import AdsterraPopunder from "../components/AdsterraPopunder";
 
 export default function PostDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -275,6 +276,7 @@ export default function PostDetailPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F8FAFC" }}>
+      <AdsterraPopunder />
       {/* HEADER */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="container mx-auto px-4 py-4">
@@ -301,7 +303,6 @@ export default function PostDetailPage() {
           </div>
         </div>
       </div>
-
       {/* MAIN CONTENT */}
       <article className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Category Badge */}
@@ -391,7 +392,6 @@ export default function PostDetailPage() {
           </button>
         </div>
       </article>
-
       {/* COMMENTS SIDEBAR */}
       <div
         className={`fixed top-0 right-0 h-full w-full md:w-[500px] bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${
@@ -552,7 +552,6 @@ export default function PostDetailPage() {
           </div>
         </div>
       </div>
-
       {commentsOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40"

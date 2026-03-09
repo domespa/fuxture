@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
   const imageRef = useRef<HTMLImageElement>(null);
   const [isResizing, setIsResizing] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const [dimensions, setDimensions] = useState({
     width: node.attrs.width || 0,
     height: node.attrs.height || 0,
@@ -55,19 +56,26 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
         updateAttributes({ width: initialWidth, height: initialHeight });
       }
 
+      setImageLoaded(true);
       isInitialized.current = true;
+    };
+
+    const handleError = () => {
+      console.error("❌ Error loading image:", node.attrs.src);
+      // Mostra comunque qualcosa
+      setDimensions({ width: 400, height: 300 });
+      setImageLoaded(true);
     };
 
     if (img.complete && img.naturalWidth > 0) {
       handleLoad();
     } else {
       img.addEventListener("load", handleLoad);
-      img.addEventListener("error", () => {
-        console.error("❌ Error loading image:", node.attrs.src);
-      });
+      img.addEventListener("error", handleError);
 
       return () => {
         img.removeEventListener("load", handleLoad);
+        img.removeEventListener("error", handleError);
       };
     }
   }, [node.attrs.src, node.attrs.width, node.attrs.height, updateAttributes]);
@@ -126,22 +134,50 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
       data-align={align}
     >
       <div className="image-container">
+        {!imageLoaded && (
+          <div
+            style={{
+              width: "400px",
+              height: "300px",
+              background: "#f0f0f0",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "2px dashed #ccc",
+              borderRadius: "8px",
+              color: "#666",
+              fontSize: "14px",
+            }}
+          >
+            Caricamento immagine...
+          </div>
+        )}
+
         <img
           ref={imageRef}
           src={node.attrs.src}
           alt={node.attrs.alt || ""}
           title={node.attrs.title || ""}
           style={{
-            width: dimensions.width > 0 ? `${dimensions.width}px` : "auto",
-            height: dimensions.height > 0 ? `${dimensions.height}px` : "auto",
+            width: dimensions.width > 0 ? `${dimensions.width}px` : undefined,
+            height:
+              dimensions.height > 0 ? `${dimensions.height}px` : undefined,
             maxWidth: "100%",
-            display: "block",
+            display: imageLoaded ? "block" : "none",
             cursor: hasLink ? "pointer" : "default",
+          }}
+          onLoad={() => {
+            console.log("✅ Image loaded successfully:", node.attrs.src);
+            setImageLoaded(true);
+          }}
+          onError={() => {
+            console.error("❌ Error loading image:", node.attrs.src);
+            setImageLoaded(true);
           }}
           draggable={false}
         />
 
-        {hasLink && (
+        {imageLoaded && hasLink && (
           <div
             className="image-link-indicator"
             title={`Link a: ${node.attrs.link}`}
@@ -150,11 +186,13 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
           </div>
         )}
 
-        <div
-          className="resize-handle"
-          onMouseDown={handleMouseDown}
-          title="Trascina per ridimensionare"
-        />
+        {imageLoaded && (
+          <div
+            className="resize-handle"
+            onMouseDown={handleMouseDown}
+            title="Trascina per ridimensionare"
+          />
+        )}
 
         {isResizing && (
           <div className="resize-tooltip">

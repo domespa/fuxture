@@ -15,17 +15,31 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
     const img = imageRef.current;
     if (!img || isInitialized.current) return;
 
+    console.log("🔍 ImageResizer mounted with:", {
+      savedWidth: node.attrs.width,
+      savedHeight: node.attrs.height,
+    });
+
     const handleLoad = () => {
       const naturalWidth = img.naturalWidth;
       const naturalHeight = img.naturalHeight;
+
+      if (naturalWidth === 0 || naturalHeight === 0) {
+        console.error("❌ Image has invalid natural dimensions");
+        return;
+      }
+
       aspectRatio.current = naturalWidth / naturalHeight;
 
       const savedWidth = node.attrs.width;
       const savedHeight = node.attrs.height;
 
-      console.log("🔍 ImageResizer mounted with:", { savedWidth, savedHeight });
-
-      if (savedWidth && savedHeight) {
+      if (
+        savedWidth &&
+        savedHeight &&
+        savedWidth !== null &&
+        savedHeight !== null
+      ) {
         console.log("✅ Using saved dimensions:", { savedWidth, savedHeight });
         setDimensions({
           width: savedWidth,
@@ -33,7 +47,7 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
         });
         aspectRatio.current = savedWidth / savedHeight;
       } else {
-        console.log("⚠️ No saved dimensions, using default");
+        console.log("⚠️ No saved dimensions, using natural dimensions");
         const initialWidth = Math.min(naturalWidth, 800);
         const initialHeight = Math.round(initialWidth / aspectRatio.current);
 
@@ -44,13 +58,19 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
       isInitialized.current = true;
     };
 
-    if (img.complete) {
+    if (img.complete && img.naturalWidth > 0) {
       handleLoad();
     } else {
       img.addEventListener("load", handleLoad);
-      return () => img.removeEventListener("load", handleLoad);
+      img.addEventListener("error", () => {
+        console.error("❌ Error loading image:", node.attrs.src);
+      });
+
+      return () => {
+        img.removeEventListener("load", handleLoad);
+      };
     }
-  }, [node.attrs.src]);
+  }, [node.attrs.src, node.attrs.width, node.attrs.height, updateAttributes]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -70,7 +90,7 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
 
       const maxWidth = Math.min(
         imageRef.current?.naturalWidth || MAX_WIDTH,
-        MAX_WIDTH
+        MAX_WIDTH,
       );
 
       newWidth = Math.max(MIN_WIDTH, Math.min(newWidth, maxWidth));
@@ -97,14 +117,6 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
     document.addEventListener("mouseup", handleMouseUp);
   };
 
-  // const handleImageClick = (e: React.MouseEvent) => {
-  //   const link = node.attrs.link;
-  //   if (link) {
-  //     e.preventDefault();
-  //     window.open(link, "_blank", "noopener,noreferrer");
-  //   }
-  // };
-
   const align = node.attrs.align || "left";
   const hasLink = !!node.attrs.link && node.attrs.link.trim() !== "";
 
@@ -120,14 +132,13 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
           alt={node.attrs.alt || ""}
           title={node.attrs.title || ""}
           style={{
-            width: dimensions.width ? `${dimensions.width}px` : "auto",
-            height: dimensions.height ? `${dimensions.height}px` : "auto",
+            width: dimensions.width > 0 ? `${dimensions.width}px` : "auto",
+            height: dimensions.height > 0 ? `${dimensions.height}px` : "auto",
             maxWidth: "100%",
             display: "block",
             cursor: hasLink ? "pointer" : "default",
           }}
           draggable={false}
-          // onClick={handleImageClick}
         />
 
         {hasLink && (

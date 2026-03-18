@@ -26,7 +26,7 @@ router.post("/", validateCreateSub, subscribe);
 
 // CANCELLAZION
 // POST /subscribers/unsubscribe
-router.post("/unsubscribe", validateUnsubscribe, unsubscribe);
+router.get("/unsubscribe", unsubscribe);
 
 // ============================================================
 //                    ROUTES ADMIN
@@ -46,7 +46,7 @@ router.put(
   authenticateToken,
   requireRole("ADMIN"),
   validateUpdateSubscriber,
-  updateSubscriber
+  updateSubscriber,
 );
 
 // ELIMINA
@@ -55,7 +55,7 @@ router.delete(
   "/:id",
   authenticateToken,
   requireRole("ADMIN"),
-  deleteSubscriber
+  deleteSubscriber,
 );
 
 export default router;

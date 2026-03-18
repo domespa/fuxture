@@ -6,6 +6,7 @@ import {
   updateSubscriber,
   deleteSubscriber,
   unsubscribe,
+  unsubscribeById,
 } from "../controllers/subscriber.controller";
 import {
   validateCreateSub,
@@ -24,9 +25,12 @@ const router = Router();
 // POST /subscribers
 router.post("/", validateCreateSub, subscribe);
 
+// POST /subscribers/unsubscribe/:id
+router.post("/unsubscribe", validateUnsubscribe, unsubscribe);
+
 // CANCELLAZION
-// POST /subscribers/unsubscribe
-router.get("/unsubscribe", unsubscribe);
+// GET /subscribers/unsubscribe
+router.get("/unsubscribe/:id", unsubscribeById);
 
 // ============================================================
 //                    ROUTES ADMIN

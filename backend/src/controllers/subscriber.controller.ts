@@ -64,10 +64,10 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
       try {
         await sendWelcomeEmail(
           reactivated.email,
-          reactivated.name || undefined
+          reactivated.name || undefined,
         );
         console.log(
-          `✅ Welcome email sent to ${reactivated.email} (reactivated)`
+          `✅ Welcome email sent to ${reactivated.email} (reactivated)`,
         );
       } catch (emailError) {
         console.error("⚠️ Failed to send welcome email:", emailError);
@@ -118,7 +118,7 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
 // GET /subscribers
 export const getSubscribers = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const {
@@ -201,7 +201,7 @@ export const getSubscribers = async (
 // GET /subscribers/:id
 export const getSubscriberById = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const { id } = req.params;
@@ -226,7 +226,7 @@ export const getSubscriberById = async (
 // PUT /subscribers/:id
 export const updateSubscriber = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const { id } = req.params;
@@ -283,7 +283,7 @@ export const updateSubscriber = async (
 // DELETE /subscribers/:id
 export const deleteSubscriber = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const { id } = req.params;
@@ -315,7 +315,7 @@ export const deleteSubscriber = async (
 // POST /subscribers/unsubscribe
 export const unsubscribe = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const { email }: UnsubscribeRequest = req.body;
@@ -352,15 +352,15 @@ export const unsubscribe = async (
     try {
       await sendUnsubscribeConfirmationEmail(
         updatedSubscriber.email,
-        updatedSubscriber.name || undefined
+        updatedSubscriber.name || undefined,
       );
       console.log(
-        `✅ Unsubscribe confirmation email sent to ${updatedSubscriber.email}`
+        `✅ Unsubscribe confirmation email sent to ${updatedSubscriber.email}`,
       );
     } catch (emailError) {
       console.error(
         "⚠️ Failed to send unsubscribe confirmation email:",
-        emailError
+        emailError,
       );
     }
 
@@ -371,6 +371,62 @@ export const unsubscribe = async (
     });
   } catch (error) {
     console.error("Errore unsubscribe:", error);
+    res.status(500).json({ error: "Errore durante disiscrizione" });
+  }
+};
+
+// DISISCRIZIONE VIA LINK EMAIL - PUBBLICO
+// GET /subscribers/unsubscribe/:id
+export const unsubscribeById = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    const subscriber = await prisma.subscriber.findUnique({
+      where: { id },
+    });
+
+    if (!subscriber) {
+      res.status(404).json({ error: "Subscriber non trovato" });
+      return;
+    }
+
+    if (subscriber.status === "UNSUBSCRIBED") {
+      res.status(200).json({
+        success: true,
+        message: "Sei già disiscritto/a dalla newsletter",
+      });
+      return;
+    }
+
+    const updated = await prisma.subscriber.update({
+      where: { id },
+      data: {
+        status: "UNSUBSCRIBED",
+        unsubscribedAt: new Date(),
+      },
+    });
+
+    try {
+      await sendUnsubscribeConfirmationEmail(
+        updated.email,
+        updated.name || undefined,
+      );
+    } catch (emailError) {
+      console.error(
+        "⚠️ Failed to send unsubscribe confirmation email:",
+        emailError,
+      );
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Disiscrizione completata con successo.",
+    });
+  } catch (error) {
+    console.error("Errore unsubscribeById:", error);
     res.status(500).json({ error: "Errore durante disiscrizione" });
   }
 };

@@ -26,6 +26,7 @@ import CookiePolicy from "./pages/legal/CookiePolicy";
 import Terms from "./pages/legal/Terms";
 import ScrollToTop from "./components/blog/components/ScrollToTop";
 import ContactPage from "./pages/ContactPage";
+import UnsubscribePage from "./pages/UnsubscribePage";
 
 function App() {
   return (
@@ -99,6 +100,10 @@ function App() {
 
         {/* 404 - Pagina non trovata */}
         <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route
+          path="/unsubscribe/:subscriberId"
+          element={<UnsubscribePage />}
+        />
       </Routes>
     </BrowserRouter>
   );

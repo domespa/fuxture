@@ -97,10 +97,7 @@ function App() {
           <Route path="email-lists" element={<EmailListsPage />} />
           <Route path="users" element={<UsersPage />} />
         </Route>
-        <Route
-          path="/unsubscribe/:subscriberId"
-          element={<UnsubscribePage />}
-        />
+        <Route path="/unsubscribe" element={<UnsubscribePage />} />
         {/* 404 - Pagina non trovata */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>

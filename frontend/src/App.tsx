@@ -97,13 +97,12 @@ function App() {
           <Route path="email-lists" element={<EmailListsPage />} />
           <Route path="users" element={<UsersPage />} />
         </Route>
-
-        {/* 404 - Pagina non trovata */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
         <Route
           path="/unsubscribe/:subscriberId"
           element={<UnsubscribePage />}
         />
+        {/* 404 - Pagina non trovata */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );

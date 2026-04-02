@@ -361,7 +361,7 @@ export default function PostDetailPage() {
           style={{ color: "#1F2937" }}
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
-        <AdsterraBanner />
+        {/* <AdsterraBanner /> */}
         {/* Tags */}
         {post.tags && post.tags.length > 0 && (
           <div className="py-8 border-t border-gray-200">

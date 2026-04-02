@@ -16,8 +16,6 @@ import {
   AlertCircle,
 } from "lucide-react";
 import "./post-content.css";
-// import AdsterraPopunder from "../components/AdsterraPopunder";
-import AdsterraBanner from "@/components/AdsterraBanner";
 
 export default function PostDetailPage() {
   const { slug } = useParams<{ slug: string }>();

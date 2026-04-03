@@ -14,6 +14,7 @@ import { useEffect, useState, useRef, memo } from "react";
 import { NodeSelection } from "@tiptap/pm/state";
 import { AwinBanner } from "./Banner";
 import { AwinBannerLink } from "./BannerLink";
+import { TradeDoublerBanner } from "@/pages/TradeDoublerBanner";
 
 interface TiptapEditorProps {
   content: string;
@@ -67,6 +68,7 @@ const TiptapEditorComponent = ({
       Placeholder.configure({ placeholder }),
       AwinBanner,
       AwinBannerLink,
+      TradeDoublerBanner,
     ],
     content: content,
     onUpdate: ({ editor }) => {
@@ -191,32 +193,47 @@ const TiptapEditorComponent = ({
 
   // HANDLER PER INSERIRE HTML RAW
   const insertHtmlCode = (html: string) => {
-    console.log("🔍 insertHtmlCode ricevuto:", html);
+    if (!editor) return;
 
-    if (editor) {
-      try {
-        const data = JSON.parse(html);
-        console.log("🔍 JSON parsed:", data);
+    try {
+      const data = JSON.parse(html);
 
-        if (data.type === "awinBanner") {
-          console.log("✅ Inserisco banner Awin con attrs:", data.attrs);
-          editor.chain().focus().insertAwinBanner(data.attrs).run();
-          console.log("✅ Banner Awin inserito!");
-          return;
-        }
-
-        if (data.type === "awinBannerLink") {
-          console.log("✅ Inserisco banner Awin link con attrs:", data.attrs);
-          editor.chain().focus().insertAwinBannerLink(data.attrs).run();
-          return;
-        }
-      } catch (e) {
-        console.log("📄 Non è JSON, inserisco HTML normale");
-        editor.chain().focus().insertContent(html).run();
-        console.log("✅ HTML inserito:", html);
+      if (data.type === "awinBanner") {
+        editor.chain().focus().insertAwinBanner(data.attrs).run();
+        return;
       }
-    } else {
-      console.error("❌ Editor non disponibile!");
+      if (data.type === "awinBannerLink") {
+        editor.chain().focus().insertAwinBannerLink(data.attrs).run();
+        return;
+      }
+      if (data.type === "tradeDoublerBanner") {
+        editor.chain().focus().insertTradeDoublerBanner(data.attrs).run();
+        return;
+      }
+    } catch (e) {
+      // Prova a parsare automaticamente lo script Tradedoubler incollato
+      const tdMatch = html.match(/imp\?type\(img\)g\((\d+)\)a\((\d+)\)/);
+      const clickMatch = html.match(/click\?p=(\d+)&a=(\d+)&g=(\d+)/);
+      const sizeMatch = html.match(/width="(\d+)"\s+height="(\d+)"/);
+
+      if (tdMatch && clickMatch) {
+        editor
+          .chain()
+          .focus()
+          .insertTradeDoublerBanner({
+            bannerId: clickMatch[3],
+            affiliateId: clickMatch[2],
+            programId: clickMatch[1],
+            width: sizeMatch?.[1] ?? "728",
+            height: sizeMatch?.[2] ?? "90",
+            align: "center",
+          })
+          .run();
+        return;
+      }
+
+      // fallback HTML generico
+      editor.chain().focus().insertContent(html).run();
     }
   };
 

@@ -46,6 +46,48 @@ export default function PostDetailPage() {
   useEffect(() => {
     if (!post) return;
 
+    // BANNER TRADEDOUBLER
+    const tdBanners = document.querySelectorAll('span[data-type="td-banner"]');
+
+    tdBanners.forEach((placeholder) => {
+      const programId = placeholder.getAttribute("programid");
+      const affiliateId = placeholder.getAttribute("affiliateid");
+      const bannerId = placeholder.getAttribute("bannerid");
+      const width = placeholder.getAttribute("width") || "728";
+      const height = placeholder.getAttribute("height") || "90";
+      const align = placeholder.getAttribute("align") || "center";
+
+      if (!programId || !affiliateId || !bannerId) return;
+
+      // URL impression con random per cache-busting
+      const rand = Math.floor(Math.random() * 1e9);
+      const impUrl = `https://imp.tradedoubler.com/imp?type(img)g(${bannerId})a(${affiliateId})${rand}`;
+      const clickUrl = `https://clk.tradedoubler.com/click?p=${programId}&a=${affiliateId}&g=${bannerId}`;
+
+      const link = document.createElement("a");
+      link.href = clickUrl;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer sponsored";
+
+      const img = document.createElement("img");
+      img.src = impUrl;
+      img.width = parseInt(width);
+      img.height = parseInt(height);
+      img.style.border = "0";
+      img.style.maxWidth = "100%";
+
+      link.appendChild(img);
+
+      // Allineamento
+      const wrapper = document.createElement("div");
+      wrapper.style.margin = "16px 0";
+      if (align === "center") wrapper.style.textAlign = "center";
+      else if (align === "right") wrapper.style.textAlign = "right";
+      wrapper.appendChild(link);
+
+      placeholder.replaceWith(wrapper);
+    });
+
     // BANNER IFRAME (script/iframe)
     const bannerPlaceholders = document.querySelectorAll(
       'span[data-type="awin-banner"]',

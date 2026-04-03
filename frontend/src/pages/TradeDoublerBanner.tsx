@@ -1,5 +1,8 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 
+import { ReactNodeViewRenderer } from "@tiptap/react";
+import { TradeDoublerBannerView } from "./TradeDoublerView";
+
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     tradeDoublerBanner: {
@@ -19,6 +22,10 @@ export const TradeDoublerBanner = Node.create({
   name: "tradeDoublerBanner",
   group: "block",
   atom: true,
+
+  addNodeView() {
+    return ReactNodeViewRenderer(TradeDoublerBannerView);
+  },
 
   addAttributes() {
     return {

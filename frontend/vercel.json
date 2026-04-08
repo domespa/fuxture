@@ -1,12 +1,12 @@
 {
-  "routes": [
+  "rewrites": [
     {
-      "src": "/newsletter/(.*)",
-      "dest": "/newsletter/$1"
+      "source": "/newsletter/:path*",
+      "destination": "/newsletter/:path*"
     },
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/((?!newsletter).*)",
+      "destination": "/index.html"
     }
   ]
 }

@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/newsletter/:path*",
-      "destination": "/newsletter/:path*"
-    },
-    {
       "source": "/((?!newsletter).*)",
       "destination": "/index.html"
     }

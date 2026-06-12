@@ -36,7 +36,7 @@ export const CreatePost = () => {
   const [tagInput, setTagInput] = useState("");
   const [isCheckingSlug, setIsCheckingSlug] = useState(false);
   const [slugAvailable, setSlugAvailable] = useState<boolean | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // PULIAMO AL UNMPUNT
   useEffect(() => {
@@ -64,7 +64,7 @@ export const CreatePost = () => {
   // HANDLER PER CAMBIARE I CAMPI
   const handleChange = (
     field: keyof PostFormData,
-    value: string | string[]
+    value: string | string[],
   ) => {
     setFormData((prev) => ({
       ...prev,
@@ -178,7 +178,7 @@ export const CreatePost = () => {
   const handleRemoveTag = (tagToRemove: string) => {
     handleChange(
       "tags",
-      formData.tags.filter((tag) => tag !== tagToRemove)
+      formData.tags.filter((tag) => tag !== tagToRemove),
     );
   };
 
@@ -303,8 +303,8 @@ export const CreatePost = () => {
                   slugAvailable === false
                     ? "border-red-300"
                     : slugAvailable === true
-                    ? "border-green-300"
-                    : "border-gray-300"
+                      ? "border-green-300"
+                      : "border-gray-300"
                 }`}
               />
 

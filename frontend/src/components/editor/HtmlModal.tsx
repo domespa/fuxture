@@ -8,28 +8,7 @@ interface HtmlModalProps {
 }
 
 const parseAwinCode = (html: string) => {
-  // Prova a riconoscere il banner con script
-  const scriptMatch = html.match(/src="([^"]+awin1\.com[^"]+)"/);
-  const iframeMatch = html.match(/iframe[^>]+src="([^"]+)"/);
-  const widthMatch = html.match(/width="(\d+)"/);
-  const heightMatch = html.match(/height="(\d+)"/);
-
-  if (scriptMatch && scriptMatch[1]) {
-    return {
-      isAwin: true,
-      type: "script" as const,
-      scriptUrl: scriptMatch[1],
-      iframeUrl:
-        iframeMatch && iframeMatch[1]
-          ? iframeMatch[1]
-          : scriptMatch[1] + "&iframe=1",
-      width: widthMatch && widthMatch[1] ? widthMatch[1] : "1080",
-      height: heightMatch && heightMatch[1] ? heightMatch[1] : "1920",
-      linkUrl: "",
-      imageUrl: "",
-    };
-  }
-
+  // Prima controlla link+img (più specifico)
   const linkMatch = html.match(/<a[^>]+href="([^"]+awin1\.com[^"]+)"[^>]*>/);
   const imgMatch = html.match(/<img[^>]+src="([^"]+awin1\.com[^"]+)"[^>]*>/);
 
@@ -39,10 +18,29 @@ const parseAwinCode = (html: string) => {
       type: "link" as const,
       linkUrl: linkMatch[1],
       imageUrl: imgMatch[1],
-      width: "auto", // ← DIMENSIONI AUTO PER LINK+IMG
+      width: "auto",
       height: "auto",
       scriptUrl: "",
       iframeUrl: "",
+    };
+  }
+
+  // Poi controlla script (solo tag <script>)
+  const scriptMatch = html.match(/<script[^>]+src="([^"]+awin1\.com[^"]+)"/);
+  const iframeMatch = html.match(/iframe[^>]+src="([^"]+)"/);
+  const widthMatch = html.match(/width="(\d+)"/);
+  const heightMatch = html.match(/height="(\d+)"/);
+
+  if (scriptMatch && scriptMatch[1]) {
+    return {
+      isAwin: true,
+      type: "script" as const,
+      scriptUrl: scriptMatch[1],
+      iframeUrl: iframeMatch?.[1] ?? scriptMatch[1] + "&iframe=1",
+      width: widthMatch?.[1] ?? "728",
+      height: heightMatch?.[1] ?? "90",
+      linkUrl: "",
+      imageUrl: "",
     };
   }
 

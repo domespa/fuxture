@@ -1,4 +1,3 @@
-// components/AwinBannerRenderer.tsx
 import { useEffect, useRef } from "react";
 
 interface AwinBannerRendererProps {

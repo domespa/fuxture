@@ -108,8 +108,8 @@ const AwinBannerComponent = ({ node, updateAttributes }: NodeViewProps) => {
 
 export const AwinBanner = Node.create({
   name: "awinBanner",
-  group: "inline", // ← CAMBIATO da "block" a "inline"
-  inline: true, // ← AGGIUNTO
+  group: "block",
+  inline: false,
   atom: true,
   draggable: true,
 

@@ -211,19 +211,18 @@ const TiptapEditorComponent = ({
         return;
       }
     } catch (e) {
-      // Prova a parsare automaticamente lo script Tradedoubler incollato
-      const tdMatch = html.match(/imp\?type\(img\)g\((\d+)\)a\((\d+)\)/);
+      const tdMatch = html.match(/imp\?type\([^)]+\)g\((\d+)\)a\((\d+)\)/);
       const clickMatch = html.match(/click\?p=(\d+)&a=(\d+)&g=(\d+)/);
       const sizeMatch = html.match(/width="(\d+)"\s+height="(\d+)"/);
 
-      if (tdMatch && clickMatch) {
+      if (tdMatch) {
         editor
           .chain()
           .focus()
           .insertTradeDoublerBanner({
-            bannerId: clickMatch[3],
-            affiliateId: clickMatch[2],
-            programId: clickMatch[1],
+            bannerId: tdMatch[1],
+            affiliateId: tdMatch[2],
+            programId: clickMatch?.[1] ?? "",
             width: sizeMatch?.[1] ?? "728",
             height: sizeMatch?.[2] ?? "90",
             align: "center",

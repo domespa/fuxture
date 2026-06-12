@@ -1,11 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Calendar,
-  ExternalLink,
-  Newspaper,
-} from "lucide-react";
+import { ExternalLink, Newspaper, RefreshCw } from "lucide-react";
 
 interface NewsArticle {
   title: string;
@@ -13,9 +7,7 @@ interface NewsArticle {
   url: string;
   urlToImage: string;
   publishedAt: string;
-  source: {
-    name: string;
-  };
+  source: { name: string };
 }
 
 interface NewsResponse {
@@ -32,7 +24,6 @@ export default function NewsWidget() {
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
 
   const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
@@ -40,25 +31,17 @@ export default function NewsWidget() {
     try {
       setLoading(true);
       setError(null);
-
       const response = await fetch(`${API_URL}/news`);
-
-      if (!response.ok) {
-        throw new Error("Errore nel caricamento delle notizie");
-      }
-
+      if (!response.ok) throw new Error("Errore nel caricamento");
       const data: NewsResponse = await response.json();
-
-      if (data.articles && data.articles.length > 0) {
-        setNews(data.articles);
+      if (data.articles?.length > 0) {
+        setNews(data.articles.slice(0, 8));
       } else {
         throw new Error("Nessuna notizia disponibile");
       }
-
-      setLoading(false);
     } catch (err) {
-      console.error("Errore fetch news:", err);
       setError(err instanceof Error ? err.message : "Errore sconosciuto");
+    } finally {
       setLoading(false);
     }
   };
@@ -67,176 +50,197 @@ export default function NewsWidget() {
     fetchNews();
   }, []);
 
-  // Auto-slide ogni 5 secondi
-  useEffect(() => {
-    if (news.length === 0) return;
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % news.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [news.length]);
-
-  const nextNews = () => {
-    setCurrentIndex((prev) => (prev + 1) % news.length);
-  };
-
-  const prevNews = () => {
-    setCurrentIndex((prev) => (prev - 1 + news.length) % news.length);
-  };
-
   const formatDate = (dateString: string) => {
+    const now = new Date();
     const date = new Date(dateString);
-    return date.toLocaleDateString("it-IT", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
+    const diffMs = now.getTime() - date.getTime();
+    const diffH = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffM = Math.floor(diffMs / (1000 * 60));
+    if (diffM < 60) return `${diffM}m fa`;
+    if (diffH < 24) return `${diffH}h fa`;
+    return date.toLocaleDateString("it-IT", { day: "2-digit", month: "short" });
   };
 
-  if (error) {
+  if (error)
     return (
-      <div className="bg-red-50 border border-red-200 p-6 text-center">
-        <p className="text-red-600 font-semibold mb-3">⚠️ {error}</p>
-        <button
-          onClick={fetchNews}
-          className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 transition-colors"
-        >
-          Riprova
+      <div className="nw-error">
+        <p>⚠️ {error}</p>
+        <button onClick={fetchNews} className="nw-retry">
+          <RefreshCw size={13} /> Riprova
         </button>
       </div>
     );
-  }
-
-  if (loading) {
-    return (
-      <div className="bg-white shadow-lg overflow-hidden">
-        <div className="bg-gradient-to-r from-red-500 to-pink-500 px-6 py-4">
-          <div className="flex items-center gap-2 text-white">
-            <Newspaper className="w-6 h-6" />
-            <h2 className="text-2xl font-bold">Ultime Notizie</h2>
-          </div>
-        </div>
-        <div className="h-[400px] flex items-center justify-center">
-          <div className="animate-spin h-12 w-12 border-b-2 border-red-500"></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (news.length === 0) {
-    return (
-      <div className="bg-white shadow-lg p-8 text-center">
-        <p className="text-gray-500">Nessuna notizia disponibile</p>
-      </div>
-    );
-  }
-
-  const currentArticle = news[currentIndex];
 
   return (
-    <div className="bg-white shadow-lg overflow-hidden rounded-lg h-[600px] flex flex-col">
-      {/* Header */}
-      <div className="bg-gray-800 px-6 py-4 flex-shrink-0">
-        <div className="flex items-center gap-2 text-white">
-          <Newspaper className="w-6 h-6" />
-          <h2 className="text-2xl font-bold">Ultime Notizie</h2>
-        </div>
+    <div className="nw-wrap">
+      <div className="nw-header">
+        <Newspaper size={15} />
+        <span>Dal mondo</span>
       </div>
 
-      {/* Slider Content */}
-      <div className="relative flex-1 flex flex-col">
-        {/* Immagine */}
-        <div className="h-[250px] bg-gray-900 relative overflow-hidden flex-shrink-0">
-          {currentArticle.urlToImage ? (
-            <img
-              key={currentIndex}
-              src={currentArticle.urlToImage}
-              alt={currentArticle.title}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-              }}
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
-              <Newspaper className="w-16 h-16 text-white/30" />
+      {loading ? (
+        <div className="nw-feed">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="nw-ghost">
+              <div className="nw-ghost__source" />
+              <div className="nw-ghost__title" />
+              <div className="nw-ghost__title nw-ghost__title--short" />
             </div>
-          )}
+          ))}
         </div>
-
-        {/* Contenuto */}
-        <div className="h-[250px] p-6 flex flex-col">
-          {/* Fonte */}
-          <div className="text-xs text-red-600 font-bold mb-2 flex-shrink-0">
-            {currentArticle.source.name}
-          </div>
-
-          {/* Titolo */}
-          <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 h-14 flex-shrink-0">
-            {currentArticle.title}
-          </h3>
-
-          {/* Descrizione */}
-          <p className="text-gray-600 text-sm mb-4 flex-1">
-            {(currentArticle.description || "Nessuna descrizione disponibile")
-              .length > 150
-              ? `${currentArticle.description?.substring(0, 150)} . . .`
-              : currentArticle.description || "Nessuna descrizione disponibile"}
-          </p>
-
-          {/* Footer */}
-          <div className="flex items-center justify-between pt-4 border-t border-gray-200 flex-shrink-0">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-gray-400" />
-              <span className="text-xs text-gray-500">
-                {formatDate(currentArticle.publishedAt)}
-              </span>
-            </div>
+      ) : (
+        <div className="nw-feed">
+          {news.map((article, i) => (
             <a
-              href={currentArticle.url}
+              key={i}
+              href={article.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-red-600 font-semibold text-sm hover:text-red-700 transition-colors flex items-center gap-1"
+              className="nw-item"
             >
-              Leggi
-              <ExternalLink className="w-4 h-4" />
+              <div className="nw-item__meta">
+                <span className="nw-item__source">{article.source.name}</span>
+                <span className="nw-item__time">
+                  {formatDate(article.publishedAt)}
+                </span>
+              </div>
+              <p className="nw-item__title">{article.title}</p>
+              <ExternalLink size={11} className="nw-item__icon" />
             </a>
-          </div>
-        </div>
-
-        <button
-          onClick={prevNews}
-          className="absolute left-4 top-[125px] -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all z-10"
-          aria-label="Notizia precedente"
-        >
-          <ChevronLeft className="w-5 h-5 text-gray-700" />
-        </button>
-        <button
-          onClick={nextNews}
-          className="absolute right-4 top-[125px] -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all z-10"
-          aria-label="Notizia successiva"
-        >
-          <ChevronRight className="w-5 h-5 text-gray-700" />
-        </button>
-      </div>
-
-      {/* Indicatori */}
-      {news.length > 1 && (
-        <div className="flex justify-center gap-2 py-4 flex-shrink-0 bg-white border-t">
-          {news.slice(0, 5).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`h-2 rounded-full transition-all ${
-                index === currentIndex
-                  ? "bg-red-500 w-8"
-                  : "bg-gray-300 hover:bg-gray-400 w-2"
-              }`}
-              aria-label={`Vai alla notizia ${index + 1}`}
-            />
           ))}
         </div>
       )}
+
+      <style>{`
+        .nw-wrap {
+          background: #fff;
+          border-radius: 14px;
+          border: 1.5px solid #E2E8F0;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+        }
+        .nw-header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 14px 16px;
+          background: #0B1120;
+          color: rgba(255,255,255,0.7);
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          border-bottom: 1px solid rgba(255,255,255,0.06);
+          flex-shrink: 0;
+        }
+        .nw-feed {
+          overflow-y: auto;
+          max-height: 480px;
+          flex: 1;
+        }
+        .nw-feed::-webkit-scrollbar { width: 4px; }
+        .nw-feed::-webkit-scrollbar-track { background: transparent; }
+        .nw-feed::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 2px; }
+        .nw-item {
+          display: block;
+          padding: 14px 16px;
+          border-bottom: 1px solid #F1F5F9;
+          text-decoration: none;
+          transition: background 0.15s;
+          position: relative;
+        }
+        .nw-item:last-child { border-bottom: none; }
+        .nw-item:hover { background: #F8FAFC; }
+        .nw-item__meta {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 5px;
+        }
+        .nw-item__source {
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          color: #4F46E5;
+        }
+        .nw-item__time {
+          font-size: 10px;
+          color: #94A3B8;
+          font-weight: 500;
+        }
+        .nw-item__title {
+          font-size: 13px;
+          font-weight: 600;
+          color: #1E293B;
+          line-height: 1.45;
+          margin: 0;
+          padding-right: 18px;
+        }
+        .nw-item:hover .nw-item__title { color: #4F46E5; }
+        .nw-item__icon {
+          position: absolute;
+          right: 16px;
+          bottom: 14px;
+          color: #CBD5E1;
+          opacity: 0;
+          transition: opacity 0.15s;
+        }
+        .nw-item:hover .nw-item__icon { opacity: 1; }
+
+        /* Skeleton */
+        .nw-ghost {
+          padding: 14px 16px;
+          border-bottom: 1px solid #F1F5F9;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .nw-ghost__source {
+          height: 10px;
+          width: 60px;
+          background: #E2E8F0;
+          border-radius: 4px;
+          animation: nw-shimmer 1.4s ease-in-out infinite;
+        }
+        .nw-ghost__title {
+          height: 12px;
+          background: #E2E8F0;
+          border-radius: 4px;
+          animation: nw-shimmer 1.4s ease-in-out infinite;
+        }
+        .nw-ghost__title--short { width: 70%; }
+        @keyframes nw-shimmer {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+
+        /* Error */
+        .nw-error {
+          padding: 24px;
+          text-align: center;
+          color: #EF4444;
+          font-size: 13px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          align-items: center;
+        }
+        .nw-retry {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 12px;
+          font-weight: 600;
+          color: #fff;
+          background: #EF4444;
+          border: none;
+          border-radius: 6px;
+          padding: 6px 12px;
+          cursor: pointer;
+        }
+      `}</style>
     </div>
   );
 }

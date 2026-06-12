@@ -37,7 +37,7 @@ export default function BlogPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isPending, startTransition] = useTransition();
   const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("search") || ""
+    searchParams.get("search") || "",
   );
   const [pagination, setPagination] = useState({
     total: 0,
@@ -46,23 +46,23 @@ export default function BlogPage() {
     totalPages: 0,
   });
 
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const categoriesLoadedRef = useRef(false);
   const lastFetchParams = useRef<string>("");
 
   const selectedCategory = useMemo(
     () => searchParams.get("category") || "all",
-    [searchParams]
+    [searchParams],
   );
 
   const currentPage = useMemo(
     () => parseInt(searchParams.get("page") || "1"),
-    [searchParams]
+    [searchParams],
   );
 
   const searchTerm = useMemo(
     () => searchParams.get("search") || "",
-    [searchParams]
+    [searchParams],
   );
 
   const selectedCategoryData = useMemo(() => {
@@ -108,7 +108,7 @@ export default function BlogPage() {
 
       if (selectedCategory !== "all") {
         const category = categories.find(
-          (cat) => cat.slug === selectedCategory
+          (cat) => cat.slug === selectedCategory,
         );
         if (category) {
           filters.categoryId = category.id;
@@ -164,7 +164,7 @@ export default function BlogPage() {
         });
       }, 500);
     },
-    [setSearchParams]
+    [setSearchParams],
   );
 
   const clearSearch = useCallback(() => {
@@ -190,7 +190,7 @@ export default function BlogPage() {
         });
       });
     },
-    [setSearchParams]
+    [setSearchParams],
   );
 
   const handlePageChange = useCallback(
@@ -204,7 +204,7 @@ export default function BlogPage() {
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
-    [setSearchParams]
+    [setSearchParams],
   );
 
   const calculateReadTime = useCallback((content: string) => {

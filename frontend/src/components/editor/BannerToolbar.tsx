@@ -4,11 +4,20 @@ import { AlignLeft, AlignCenter, AlignRight, Trash2 } from "lucide-react";
 interface BannerToolbarProps {
   editor: Editor;
   currentAlign: string;
+  bannerType: "tradeDoublerBanner" | "awinBannerLink";
 }
 
-export const BannerToolbar = ({ editor, currentAlign }: BannerToolbarProps) => {
+export const BannerToolbar = ({
+  editor,
+  currentAlign,
+  bannerType,
+}: BannerToolbarProps) => {
   const setAlign = (align: "left" | "center" | "right") => {
-    editor.commands.setBannerAlign(align);
+    if (bannerType === "tradeDoublerBanner") {
+      editor.commands.setBannerAlign(align);
+    } else {
+      editor.commands.setAwinBannerLinkAlign(align);
+    }
     editor.commands.focus();
   };
 

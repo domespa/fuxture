@@ -27,7 +27,7 @@ const AwinBannerLinkComponent = ({ node, updateAttributes }: NodeViewProps) => {
 
   return (
     <NodeViewWrapper
-      as="span"
+      as="div"
       className="awin-banner-link-wrapper"
       style={{
         display: "inline-block",
@@ -42,10 +42,6 @@ const AwinBannerLinkComponent = ({ node, updateAttributes }: NodeViewProps) => {
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          // Cambia allineamento al click nell'editor
-          const newAlign =
-            align === "left" ? "right" : align === "right" ? "center" : "left";
-          updateAttributes({ align: newAlign });
         }}
         style={{
           display: "block",
@@ -153,6 +149,16 @@ export const AwinBannerLink = Node.create({
             attrs: { ...attrs, align: attrs.align || "left" },
           });
         },
+      setAwinBannerLinkAlign:
+        (align: string) =>
+        ({ commands, state }: any) => {
+          const { selection } = state;
+          const node = state.doc.nodeAt(selection.from);
+          if (node && node.type.name === this.name) {
+            return commands.updateAttributes(this.name, { align });
+          }
+          return false;
+        },
     };
   },
 });
@@ -161,6 +167,7 @@ declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     awinBannerLink: {
       insertAwinBannerLink: (attrs: AwinBannerLinkAttrs) => ReturnType;
+      setAwinBannerLinkAlign: (align: string) => ReturnType;
     };
   }
 }

@@ -45,6 +45,9 @@ const TiptapEditorComponent = ({
   });
   const [currentBannerAlign, setCurrentBannerAlign] =
     useState<string>("center");
+  const [currentBannerType, setCurrentBannerType] = useState<
+    "tradeDoublerBanner" | "awinBannerLink"
+  >("tradeDoublerBanner");
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const initialContentRef = useRef<string | null>(null);
 
@@ -115,9 +118,12 @@ const TiptapEditorComponent = ({
         node = editor.state.doc.nodeAt(selection.from);
       }
 
-      if (node && node.type.name === "tradeDoublerBanner") {
+      const isTD = node?.type.name === "tradeDoublerBanner";
+      const isAwin = node?.type.name === "awinBannerLink";
+
+      if ((isTD || isAwin) && editorContainerRef.current) {
         const bannerElement = editor.view.nodeDOM(pos) as HTMLElement;
-        if (!bannerElement || !editorContainerRef.current) return;
+        if (!bannerElement) return;
 
         const rect = bannerElement.getBoundingClientRect();
         const containerRect =
@@ -128,7 +134,8 @@ const TiptapEditorComponent = ({
           left: rect.left - containerRect.left + rect.width / 2,
         });
 
-        setCurrentBannerAlign(node.attrs.align || "center");
+        setCurrentBannerAlign(node?.attrs?.align || "center");
+        setCurrentBannerType(isTD ? "tradeDoublerBanner" : "awinBannerLink");
         setShowBannerToolbar(true);
       } else {
         setShowBannerToolbar(false);
@@ -149,7 +156,6 @@ const TiptapEditorComponent = ({
       const { selection, doc } = editor.state;
       const { from } = selection;
 
-      // LINK ATTIVO?
       if (editor.isActive("link")) {
         const linkMark = doc
           .resolve(from)
@@ -157,10 +163,8 @@ const TiptapEditorComponent = ({
           .find((mark) => mark.type.name === "link");
 
         if (linkMark && editorContainerRef.current) {
-          const url = linkMark.attrs.href;
-          setCurrentLinkUrl(url);
+          setCurrentLinkUrl(linkMark.attrs.href);
 
-          // POSIZIONE DEL BUBBLE
           const { view } = editor;
           const start = view.coordsAtPos(from);
           const containerRect =
@@ -241,7 +245,6 @@ const TiptapEditorComponent = ({
     }
   };
 
-  // HANDLER PER INSERIRE HTML RAW
   const insertHtmlCode = (html: string) => {
     if (!editor) return;
 
@@ -281,14 +284,11 @@ const TiptapEditorComponent = ({
         return;
       }
 
-      // fallback HTML generico
       editor.chain().focus().insertContent(html).run();
     }
   };
 
-  if (!editor) {
-    return null;
-  }
+  if (!editor) return null;
 
   return (
     <div
@@ -301,7 +301,6 @@ const TiptapEditorComponent = ({
         onOpenHtmlModal={() => setIsHtmlModalOpen(true)}
       />
 
-      {/* Link Bubble */}
       {showLinkBubble && (
         <div
           style={{
@@ -319,7 +318,6 @@ const TiptapEditorComponent = ({
         </div>
       )}
 
-      {/* Image Toolbar */}
       {showImageToolbar && (
         <div
           style={{
@@ -333,7 +331,7 @@ const TiptapEditorComponent = ({
           <ImageToolbar editor={editor} currentAlign={currentImageAlign} />
         </div>
       )}
-      {/* Banner Toolbar */}
+
       {showBannerToolbar && (
         <div
           style={{
@@ -344,13 +342,16 @@ const TiptapEditorComponent = ({
             zIndex: 50,
           }}
         >
-          <BannerToolbar editor={editor} currentAlign={currentBannerAlign} />
+          <BannerToolbar
+            editor={editor}
+            currentAlign={currentBannerAlign}
+            bannerType={currentBannerType}
+          />
         </div>
       )}
 
       <EditorContent editor={editor} />
 
-      {/* Modal HTML */}
       <HtmlModal
         isOpen={isHtmlModalOpen}
         onClose={() => setIsHtmlModalOpen(false)}

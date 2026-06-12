@@ -1,53 +1,10 @@
 import { NodeViewWrapper } from "@tiptap/react";
 
-export const TradeDoublerBannerView = ({
-  node,
-  updateAttributes,
-}: {
-  node: any;
-  updateAttributes: any;
-}) => {
+export const TradeDoublerBannerView = ({ node }: { node: any }) => {
   const { width, height, bannerId, programId, align = "center" } = node.attrs;
-
-  const getWrapperStyle = (): React.CSSProperties => {
-    switch (align) {
-      case "left":
-        return { display: "block", marginRight: "auto", marginLeft: "0" };
-      case "right":
-        return { display: "block", marginLeft: "auto", marginRight: "0" };
-      case "center":
-        return { display: "block", margin: "0 auto" };
-      default:
-        return { display: "block", margin: "0 auto" };
-    }
-  };
 
   return (
     <NodeViewWrapper>
-      {/* Controlli allineamento */}
-      <div
-        contentEditable={false}
-        style={{ display: "flex", gap: "6px", marginBottom: "4px" }}
-      >
-        {["left", "center", "right"].map((a) => (
-          <button
-            key={a}
-            onClick={() => updateAttributes({ align: a })}
-            style={{
-              padding: "2px 8px",
-              fontSize: "11px",
-              border: "1px solid #cbd5e1",
-              borderRadius: "4px",
-              background: align === a ? "#3b82f6" : "#f1f5f9",
-              color: align === a ? "#fff" : "#64748b",
-              cursor: "pointer",
-            }}
-          >
-            {a}
-          </button>
-        ))}
-      </div>
-
       <div
         contentEditable={false}
         style={{
@@ -60,7 +17,12 @@ export const TradeDoublerBannerView = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          ...getWrapperStyle(),
+          margin:
+            align === "center"
+              ? "0 auto"
+              : align === "right"
+                ? "0 0 0 auto"
+                : "0 auto 0 0",
         }}
       >
         <div style={{ textAlign: "center", color: "#64748b" }}>

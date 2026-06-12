@@ -81,8 +81,12 @@ export default function PostDetailPage() {
       // Allineamento
       const wrapper = document.createElement("div");
       wrapper.style.margin = "16px 0";
-      if (align === "center") wrapper.style.textAlign = "center";
-      else if (align === "right") wrapper.style.textAlign = "right";
+      wrapper.style.display = "flex";
+
+      if (align === "center") wrapper.style.justifyContent = "center";
+      else if (align === "right") wrapper.style.justifyContent = "flex-end";
+      else wrapper.style.justifyContent = "flex-start";
+
       wrapper.appendChild(link);
 
       placeholder.replaceWith(wrapper);

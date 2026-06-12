@@ -131,7 +131,7 @@ const TiptapEditorComponent = ({
 
         setBannerToolbarPosition({
           top: rect.top - containerRect.top - 50,
-          left: rect.left - containerRect.left + rect.width / 2,
+          left: containerRect.width / 2,
         });
 
         setCurrentBannerAlign(node?.attrs?.align || "center");

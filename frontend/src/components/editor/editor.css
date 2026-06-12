@@ -244,14 +244,16 @@
   max-width: 100%;
   height: auto;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transition: box-shadow 0.3s ease;
   margin: 1rem 0;
 }
 
 .post-content img.blog-image:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
@@ -305,6 +307,26 @@
     max-width: 100%;
     display: block;
   }
+}
+
+/* ================================
+   BANNER AWIN (Editor)
+   ================================ */
+.tiptap-editor .ProseMirror .awin-banner-link-wrapper {
+  display: block;
+  clear: both;
+}
+
+.tiptap-editor .ProseMirror p:has(> .awin-banner-link-wrapper) {
+  display: block;
+  overflow: hidden;
+}
+
+.tiptap-editor .ProseMirror h1,
+.tiptap-editor .ProseMirror h2,
+.tiptap-editor .ProseMirror h3,
+.tiptap-editor .ProseMirror p {
+  clear: both;
 }
 
 /* ================================

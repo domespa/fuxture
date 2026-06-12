@@ -8,7 +8,7 @@ interface AwinBannerLinkAttrs {
   align: string;
 }
 
-const AwinBannerLinkComponent = ({ node, updateAttributes }: NodeViewProps) => {
+const AwinBannerLinkComponent = ({ node }: NodeViewProps) => {
   const attrs = node.attrs as AwinBannerLinkAttrs;
   const { linkUrl, imageUrl, align = "left" } = attrs;
 

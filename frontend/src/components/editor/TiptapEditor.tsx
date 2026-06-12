@@ -15,6 +15,7 @@ import { NodeSelection } from "@tiptap/pm/state";
 import { AwinBanner } from "./Banner";
 import { AwinBannerLink } from "./BannerLink";
 import { TradeDoublerBanner } from "@/pages/TradeDoublerBanner";
+import { BannerToolbar } from "./BannerToolbar";
 
 interface TiptapEditorProps {
   content: string;
@@ -37,6 +38,13 @@ const TiptapEditorComponent = ({
   const [currentLinkUrl, setCurrentLinkUrl] = useState("");
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
   const [currentImageAlign, setCurrentImageAlign] = useState<string>("left");
+  const [showBannerToolbar, setShowBannerToolbar] = useState(false);
+  const [bannerToolbarPosition, setBannerToolbarPosition] = useState({
+    top: 0,
+    left: 0,
+  });
+  const [currentBannerAlign, setCurrentBannerAlign] =
+    useState<string>("center");
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const initialContentRef = useRef<string | null>(null);
 
@@ -91,6 +99,48 @@ const TiptapEditorComponent = ({
       initialContentRef.current = content;
     }
   }, [editor, content]);
+
+  useEffect(() => {
+    if (!editor) return;
+
+    const updateBannerToolbar = () => {
+      const { selection } = editor.state;
+      let node = null;
+      let pos = selection.from;
+
+      if (selection instanceof NodeSelection) {
+        node = selection.node;
+        pos = selection.from;
+      } else {
+        node = editor.state.doc.nodeAt(selection.from);
+      }
+
+      if (node && node.type.name === "tradeDoublerBanner") {
+        const bannerElement = editor.view.nodeDOM(pos) as HTMLElement;
+        if (!bannerElement || !editorContainerRef.current) return;
+
+        const rect = bannerElement.getBoundingClientRect();
+        const containerRect =
+          editorContainerRef.current.getBoundingClientRect();
+
+        setBannerToolbarPosition({
+          top: rect.top - containerRect.top - 50,
+          left: rect.left - containerRect.left + rect.width / 2,
+        });
+
+        setCurrentBannerAlign(node.attrs.align || "center");
+        setShowBannerToolbar(true);
+      } else {
+        setShowBannerToolbar(false);
+      }
+    };
+
+    editor.on("selectionUpdate", updateBannerToolbar);
+
+    return () => {
+      editor.off("selectionUpdate", updateBannerToolbar);
+    };
+  }, [editor]);
 
   useEffect(() => {
     if (!editor) return;
@@ -281,6 +331,20 @@ const TiptapEditorComponent = ({
           }}
         >
           <ImageToolbar editor={editor} currentAlign={currentImageAlign} />
+        </div>
+      )}
+      {/* Banner Toolbar */}
+      {showBannerToolbar && (
+        <div
+          style={{
+            position: "absolute",
+            top: `${bannerToolbarPosition.top}px`,
+            left: `${bannerToolbarPosition.left}px`,
+            transform: "translateX(-50%)",
+            zIndex: 50,
+          }}
+        >
+          <BannerToolbar editor={editor} currentAlign={currentBannerAlign} />
         </div>
       )}
 

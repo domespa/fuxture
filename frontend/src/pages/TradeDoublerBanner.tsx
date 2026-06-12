@@ -1,5 +1,4 @@
 import { Node, mergeAttributes } from "@tiptap/core";
-
 import { ReactNodeViewRenderer } from "@tiptap/react";
 import { TradeDoublerBannerView } from "./TradeDoublerView";
 
@@ -14,6 +13,7 @@ declare module "@tiptap/core" {
         height?: string;
         align?: string;
       }) => ReturnType;
+      setBannerAlign: (align: string) => ReturnType;
     };
   }
 }
@@ -29,9 +29,9 @@ export const TradeDoublerBanner = Node.create({
 
   addAttributes() {
     return {
-      programId: { default: "" }, // p=363209
-      affiliateId: { default: "" }, // a=2887379
-      bannerId: { default: "" }, // g=25695218
+      programId: { default: "" },
+      affiliateId: { default: "" },
+      bannerId: { default: "" },
       width: { default: "728" },
       height: { default: "90" },
       align: { default: "center" },
@@ -58,6 +58,16 @@ export const TradeDoublerBanner = Node.create({
             type: this.name,
             attrs,
           });
+        },
+      setBannerAlign:
+        (align: string) =>
+        ({ commands, state }) => {
+          const { selection } = state;
+          const node = state.doc.nodeAt(selection.from);
+          if (node && node.type.name === this.name) {
+            return commands.updateAttributes(this.name, { align });
+          }
+          return false;
         },
     };
   },

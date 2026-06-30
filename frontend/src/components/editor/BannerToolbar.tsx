@@ -38,6 +38,7 @@ export const BannerToolbar = ({
           <button
             key={align}
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => setAlign(align)}
             title={tooltip}
             className={`toolbar-button ${currentAlign === align ? "active" : ""}`}
@@ -48,6 +49,7 @@ export const BannerToolbar = ({
         <div className="toolbar-divider" />
         <button
           type="button"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={deleteBanner}
           title="Rimuovi banner"
           className="toolbar-button delete-button"

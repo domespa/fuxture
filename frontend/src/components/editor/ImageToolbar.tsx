@@ -126,6 +126,7 @@ export const ImageToolbar = ({ editor, currentAlign }: ImageToolbarProps) => {
           <button
             key={align}
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => setAlign(align)}
             title={tooltip}
             className={`toolbar-button ${
@@ -142,6 +143,7 @@ export const ImageToolbar = ({ editor, currentAlign }: ImageToolbarProps) => {
         {/* Link Button */}
         <button
           type="button"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={toggleLinkInput}
           title={linkUrl ? "Modifica link" : "Aggiungi link"}
           className={`toolbar-button ${linkUrl ? "active" : ""}`}
@@ -153,6 +155,7 @@ export const ImageToolbar = ({ editor, currentAlign }: ImageToolbarProps) => {
         {linkUrl && (
           <button
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={removeImageLink}
             title="Rimuovi link"
             className="toolbar-button"
@@ -167,6 +170,7 @@ export const ImageToolbar = ({ editor, currentAlign }: ImageToolbarProps) => {
         {/* Delete Button */}
         <button
           type="button"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={deleteImage}
           title="Rimuovi immagine"
           className="toolbar-button delete-button"
@@ -189,6 +193,7 @@ export const ImageToolbar = ({ editor, currentAlign }: ImageToolbarProps) => {
           />
           <button
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={setImageLink}
             className="link-button-save"
             disabled={!linkUrl.trim()}
@@ -197,6 +202,7 @@ export const ImageToolbar = ({ editor, currentAlign }: ImageToolbarProps) => {
           </button>
           <button
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => {
               setShowLinkInput(false);
               editor.commands.focus();

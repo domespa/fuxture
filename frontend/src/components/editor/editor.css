@@ -313,20 +313,12 @@
    BANNER AWIN (Editor)
    ================================ */
 .tiptap-editor .ProseMirror .awin-banner-link-wrapper {
-  display: block;
-  clear: both;
+  display: inline-block;
 }
 
 .tiptap-editor .ProseMirror p:has(> .awin-banner-link-wrapper) {
   display: block;
   overflow: hidden;
-}
-
-.tiptap-editor .ProseMirror h1,
-.tiptap-editor .ProseMirror h2,
-.tiptap-editor .ProseMirror h3,
-.tiptap-editor .ProseMirror p {
-  clear: both;
 }
 
 /* ================================

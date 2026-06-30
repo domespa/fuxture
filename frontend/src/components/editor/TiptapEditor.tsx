@@ -143,9 +143,11 @@ const TiptapEditorComponent = ({
     };
 
     editor.on("selectionUpdate", updateBannerToolbar);
+    editor.on("transaction", updateBannerToolbar);
 
     return () => {
       editor.off("selectionUpdate", updateBannerToolbar);
+      editor.off("transaction", updateBannerToolbar);
     };
   }, [editor]);
 
@@ -229,11 +231,13 @@ const TiptapEditorComponent = ({
     };
 
     editor.on("selectionUpdate", updateImageToolbar);
+    editor.on("transaction", updateImageToolbar);
     const editorElement = editor.view.dom;
     editorElement.addEventListener("scroll", updateImageToolbar);
 
     return () => {
       editor.off("selectionUpdate", updateImageToolbar);
+      editor.off("transaction", updateImageToolbar);
       editorElement.removeEventListener("scroll", updateImageToolbar);
     };
   }, [editor]);

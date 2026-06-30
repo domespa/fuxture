@@ -51,16 +51,6 @@
 }
 
 /* ================================
-   BANNER AWIN (Frontend)
-   ================================ */
-.post-content h1,
-.post-content h2,
-.post-content h3,
-.post-content p {
-  clear: both;
-}
-
-/* ================================
    IMAGE BASE STYLES
    ================================ */
 
@@ -72,101 +62,98 @@
 }
 
 /* ================================
-   IMAGE ALIGNMENT - Left
+   IMAGE ALIGNMENT
    ================================ */
 
-.post-content .img-wrapper.img-align-left {
+.post-content img.align-left {
   display: block;
   margin-left: 0;
   margin-right: auto;
-  max-width: fit-content;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
 
-/* ================================
-   IMAGE ALIGNMENT - Center
-   ================================ */
-
-.post-content .img-wrapper.img-align-center {
-  display: flex;
-  justify-content: center;
+.post-content img.align-center {
+  display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 100%;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
 
-.post-content .img-wrapper.img-align-center > div {
-  display: inline-block;
-}
-
-/* ================================
-   IMAGE ALIGNMENT - Right
-   ================================ */
-
-.post-content .img-wrapper.img-align-right {
+.post-content img.align-right {
   display: block;
   margin-left: auto;
   margin-right: 0;
-  max-width: fit-content;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
 
-/* ================================
-   IMAGE ALIGNMENT - Full Width
-   ================================ */
-
-.post-content .img-wrapper.img-align-full-width {
-  width: 100%;
-  max-width: 100%;
-  margin: 1.5rem 0;
-}
-
-.post-content .img-wrapper.img-align-full-width img {
-  width: 100%;
-}
-
-/* ================================
-   IMAGE FLOAT - Text Wrapping
-   ================================ */
-
 /* Float left - testo si avvolge a destra */
-.post-content .img-wrapper.img-align-float-left {
+.post-content img.align-float-left {
   float: left;
   margin: 0.5rem 2rem 1.5rem 0;
   max-width: 50%;
 }
 
 /* Float right - testo si avvolge a sinistra */
-.post-content .img-wrapper.img-align-float-right {
+.post-content img.align-float-right {
   float: right;
   margin: 0.5rem 0 1.5rem 2rem;
   max-width: 50%;
 }
 
 /* ================================
-   FLOAT CLEANUP
+   BANNER ALIGNMENT
    ================================ */
 
-/* Rimuovi paragrafi vuoti dopo immagini float */
-.post-content .img-wrapper.img-align-float-left + p:empty,
-.post-content .img-wrapper.img-align-float-right + p:empty {
-  display: none;
+.post-content .banner-wrapper {
+  margin: 1rem 0;
 }
 
-/* Permetti ai paragrafi di salire accanto alle immagini float */
-.post-content .img-wrapper.img-align-float-left ~ p,
-.post-content .img-wrapper.img-align-float-right ~ p {
-  clear: none !important;
+.post-content .banner-wrapper.align-left {
+  display: flex;
+  justify-content: flex-start;
 }
 
-/* Il primo paragrafo dopo l'immagine non deve avere margin-top */
-.post-content .img-wrapper.img-align-float-left + p,
-.post-content .img-wrapper.img-align-float-right + p {
-  margin-top: 0;
+.post-content .banner-wrapper.align-center {
+  display: flex;
+  justify-content: center;
+}
+
+.post-content .banner-wrapper.align-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.post-content .banner-wrapper.align-float-left {
+  float: left;
+  margin: 0.5rem 2rem 1.5rem 0;
+  max-width: 50%;
+  display: block;
+}
+
+.post-content .banner-wrapper.align-float-right {
+  float: right;
+  margin: 0.5rem 0 1.5rem 2rem;
+  max-width: 50%;
+  display: block;
+}
+
+/* ================================
+   RESPONSIVE - Mobile
+   ================================ */
+
+@media (max-width: 768px) {
+  .post-content img.align-float-left,
+  .post-content img.align-float-right,
+  .post-content .banner-wrapper.align-float-left,
+  .post-content .banner-wrapper.align-float-right {
+    float: none;
+    margin: 1rem auto;
+    max-width: 100%;
+    display: block;
+  }
 }
 
 /* ================================

@@ -14,14 +14,18 @@ const AwinBannerLinkComponent = ({ node }: NodeViewProps) => {
 
   const getAlignmentStyles = (): React.CSSProperties => {
     switch (align) {
+      case "float-left":
+        return { float: "left", margin: "0.5rem 2rem 1rem 0", maxWidth: "50%" };
+      case "float-right":
+        return { float: "right", margin: "0.5rem 0 1rem 2rem", maxWidth: "50%" };
       case "left":
-        return { float: "left", marginRight: "20px", marginBottom: "10px" };
+        return { display: "block", marginLeft: "0", marginRight: "auto" };
       case "right":
-        return { float: "right", marginLeft: "20px", marginBottom: "10px" };
+        return { display: "block", marginLeft: "auto", marginRight: "0" };
       case "center":
-        return { margin: "20px auto", display: "block", textAlign: "center" };
+        return { display: "block", margin: "0 auto" };
       default:
-        return { float: "left", marginRight: "20px", marginBottom: "10px" };
+        return { display: "block", marginLeft: "0", marginRight: "auto" };
     }
   };
 
@@ -29,10 +33,7 @@ const AwinBannerLinkComponent = ({ node }: NodeViewProps) => {
     <NodeViewWrapper
       as="div"
       className="awin-banner-link-wrapper"
-      style={{
-        display: "inline-block",
-        ...getAlignmentStyles(),
-      }}
+      style={getAlignmentStyles()}
     >
       <a
         href={linkUrl}

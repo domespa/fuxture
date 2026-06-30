@@ -1,10 +1,26 @@
+import type { CSSProperties } from "react";
 import { NodeViewWrapper } from "@tiptap/react";
+
+const getWrapperStyle = (align: string): CSSProperties => {
+  switch (align) {
+    case "float-left":
+      return { float: "left", margin: "0.5rem 2rem 1rem 0", maxWidth: "50%" };
+    case "float-right":
+      return { float: "right", margin: "0.5rem 0 1rem 2rem", maxWidth: "50%" };
+    case "right":
+      return { marginLeft: "auto", marginRight: "0", display: "block" };
+    case "center":
+      return { margin: "0 auto", display: "block" };
+    default:
+      return { marginLeft: "0", marginRight: "auto", display: "block" };
+  }
+};
 
 export const TradeDoublerBannerView = ({ node }: { node: any }) => {
   const { width, height, bannerId, programId, align = "center" } = node.attrs;
 
   return (
-    <NodeViewWrapper>
+    <NodeViewWrapper style={getWrapperStyle(align) as any}>
       <div
         contentEditable={false}
         style={{
@@ -17,12 +33,6 @@ export const TradeDoublerBannerView = ({ node }: { node: any }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          margin:
-            align === "center"
-              ? "0 auto"
-              : align === "right"
-                ? "0 0 0 auto"
-                : "0 auto 0 0",
         }}
       >
         <div style={{ textAlign: "center", color: "#64748b" }}>

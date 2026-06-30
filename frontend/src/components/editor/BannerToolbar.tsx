@@ -1,5 +1,12 @@
 import { Editor } from "@tiptap/react";
-import { AlignLeft, AlignCenter, AlignRight, Trash2 } from "lucide-react";
+import {
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  ArrowLeftFromLine,
+  ArrowRightFromLine,
+  Trash2,
+} from "lucide-react";
 
 interface BannerToolbarProps {
   editor: Editor;
@@ -7,12 +14,14 @@ interface BannerToolbarProps {
   bannerType: "tradeDoublerBanner" | "awinBannerLink";
 }
 
+type BannerAlign = "left" | "center" | "right" | "float-left" | "float-right";
+
 export const BannerToolbar = ({
   editor,
   currentAlign,
   bannerType,
 }: BannerToolbarProps) => {
-  const setAlign = (align: "left" | "center" | "right") => {
+  const setAlign = (align: BannerAlign) => {
     if (bannerType === "tradeDoublerBanner") {
       editor.commands.setBannerAlign(align);
     } else {
@@ -25,10 +34,12 @@ export const BannerToolbar = ({
     editor.commands.deleteSelection();
   };
 
-  const buttons = [
-    { align: "left" as const, icon: AlignLeft, tooltip: "Sinistra" },
-    { align: "center" as const, icon: AlignCenter, tooltip: "Centro" },
-    { align: "right" as const, icon: AlignRight, tooltip: "Destra" },
+  const buttons: { align: BannerAlign; icon: React.ElementType; tooltip: string }[] = [
+    { align: "left", icon: AlignLeft, tooltip: "Sinistra" },
+    { align: "center", icon: AlignCenter, tooltip: "Centro" },
+    { align: "right", icon: AlignRight, tooltip: "Destra" },
+    { align: "float-left", icon: ArrowLeftFromLine, tooltip: "Testo scorre a destra" },
+    { align: "float-right", icon: ArrowRightFromLine, tooltip: "Testo scorre a sinistra" },
   ];
 
   return (

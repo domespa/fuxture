@@ -78,17 +78,9 @@ export default function PostDetailPage() {
 
       link.appendChild(img);
 
-      // Allineamento
       const wrapper = document.createElement("div");
-      wrapper.style.margin = "16px 0";
-      wrapper.style.display = "flex";
-
-      if (align === "center") wrapper.style.justifyContent = "center";
-      else if (align === "right") wrapper.style.justifyContent = "flex-end";
-      else wrapper.style.justifyContent = "flex-start";
-
+      wrapper.className = `banner-wrapper align-${align}`;
       wrapper.appendChild(link);
-
       placeholder.replaceWith(wrapper);
     });
 
@@ -109,7 +101,6 @@ export default function PostDetailPage() {
         iframe.width = width;
         iframe.height = height;
         iframe.style.border = "0";
-        iframe.style.display = "block";
         iframe.style.maxWidth = "100%";
         iframe.setAttribute("frameborder", "0");
         iframe.setAttribute("scrolling", "no");
@@ -118,20 +109,10 @@ export default function PostDetailPage() {
           "allow-scripts allow-same-origin allow-top-navigation allow-top-navigation-by-user-activation allow-popups allow-forms",
         );
 
-        if (align === "left") {
-          iframe.style.float = "left";
-          iframe.style.marginRight = "20px";
-          iframe.style.marginBottom = "10px";
-        } else if (align === "right") {
-          iframe.style.float = "right";
-          iframe.style.marginLeft = "20px";
-          iframe.style.marginBottom = "10px";
-        } else if (align === "center") {
-          iframe.style.margin = "20px auto";
-          iframe.style.display = "block";
-        }
-
-        placeholder.replaceWith(iframe);
+        const wrapper = document.createElement("div");
+        wrapper.className = `banner-wrapper align-${align}`;
+        wrapper.appendChild(iframe);
+        placeholder.replaceWith(wrapper);
       }
     });
 
@@ -146,26 +127,6 @@ export default function PostDetailPage() {
       const align = placeholder.getAttribute("align") || "left";
 
       if (linkUrl && imageUrl) {
-        const link = document.createElement("a");
-        link.href = linkUrl;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer sponsored";
-        link.style.display = "inline-block";
-
-        if (align === "left") {
-          link.style.float = "left";
-          link.style.marginRight = "20px";
-          link.style.marginBottom = "10px";
-        } else if (align === "right") {
-          link.style.float = "right";
-          link.style.marginLeft = "20px";
-          link.style.marginBottom = "10px";
-        } else if (align === "center") {
-          link.style.margin = "20px auto";
-          link.style.display = "block";
-          link.style.textAlign = "center";
-        }
-
         const img = document.createElement("img");
         img.src = imageUrl;
         img.alt = "Banner Awin";
@@ -174,8 +135,17 @@ export default function PostDetailPage() {
         img.style.display = "block";
         img.style.border = "0";
 
+        const link = document.createElement("a");
+        link.href = linkUrl;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer sponsored";
+        link.style.display = "inline-block";
         link.appendChild(img);
-        placeholder.replaceWith(link);
+
+        const wrapper = document.createElement("div");
+        wrapper.className = `banner-wrapper align-${align}`;
+        wrapper.appendChild(link);
+        placeholder.replaceWith(wrapper);
       }
     });
   }, [post]);

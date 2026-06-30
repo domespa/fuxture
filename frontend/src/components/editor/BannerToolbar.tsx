@@ -11,7 +11,7 @@ import {
 interface BannerToolbarProps {
   editor: Editor;
   currentAlign: string;
-  bannerType: "tradeDoublerBanner" | "awinBannerLink";
+  bannerType: "tradeDoublerBanner" | "awinBannerLink" | "awinBanner";
 }
 
 type BannerAlign = "left" | "center" | "right" | "float-left" | "float-right";
@@ -24,8 +24,10 @@ export const BannerToolbar = ({
   const setAlign = (align: BannerAlign) => {
     if (bannerType === "tradeDoublerBanner") {
       editor.commands.setBannerAlign(align);
-    } else {
+    } else if (bannerType === "awinBannerLink") {
       editor.commands.setAwinBannerLinkAlign(align);
+    } else {
+      editor.commands.setAwinBannerAlign(align);
     }
     editor.commands.focus();
   };

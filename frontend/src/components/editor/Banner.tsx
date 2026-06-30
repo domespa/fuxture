@@ -1,6 +1,7 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 import { ReactNodeViewRenderer, NodeViewProps } from "@tiptap/react";
 import { NodeViewWrapper } from "@tiptap/react";
+import type { CSSProperties } from "react";
 import { useEffect, useRef } from "react";
 
 interface AwinBannerAttrs {
@@ -11,10 +12,25 @@ interface AwinBannerAttrs {
   align: string;
 }
 
-const AwinBannerComponent = ({ node, updateAttributes }: NodeViewProps) => {
+const getAlignmentStyles = (align: string): CSSProperties => {
+  switch (align) {
+    case "float-left":
+      return { float: "left", margin: "0.5rem 2rem 1rem 0", maxWidth: "50%" };
+    case "float-right":
+      return { float: "right", margin: "0.5rem 0 1rem 2rem", maxWidth: "50%" };
+    case "right":
+      return { display: "block", marginLeft: "auto", marginRight: "0" };
+    case "center":
+      return { display: "block", margin: "0 auto" };
+    default:
+      return { display: "block", marginLeft: "0", marginRight: "auto" };
+  }
+};
+
+const AwinBannerComponent = ({ node }: NodeViewProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const attrs = node.attrs as AwinBannerAttrs;
-  const { scriptUrl, iframeUrl, width, height, align = "left" } = attrs;
+  const { iframeUrl, width, height, align = "left" } = attrs;
 
   useEffect(() => {
     if (!containerRef.current || !iframeUrl) return;
@@ -30,42 +46,13 @@ const AwinBannerComponent = ({ node, updateAttributes }: NodeViewProps) => {
     iframe.style.maxWidth = "100%";
 
     containerRef.current.appendChild(iframe);
-  }, [scriptUrl, iframeUrl, width, height]);
-
-  // Stili in base all'allineamento
-  const getAlignmentStyles = () => {
-    switch (align) {
-      case "left":
-        return {
-          float: "left" as const,
-          marginRight: "20px",
-          marginBottom: "10px",
-        };
-      case "right":
-        return {
-          float: "right" as const,
-          marginLeft: "20px",
-          marginBottom: "10px",
-        };
-      case "center":
-        return { margin: "20px auto", display: "block" };
-      default:
-        return {
-          float: "left" as const,
-          marginRight: "20px",
-          marginBottom: "10px",
-        };
-    }
-  };
+  }, [iframeUrl, width, height]);
 
   return (
     <NodeViewWrapper
-      as="span"
+      as="div"
       className="awin-banner-wrapper"
-      style={{
-        display: "inline-block",
-        ...getAlignmentStyles(),
-      }}
+      style={getAlignmentStyles(align)}
     >
       <div
         ref={containerRef}
@@ -76,16 +63,8 @@ const AwinBannerComponent = ({ node, updateAttributes }: NodeViewProps) => {
           borderRadius: "8px",
           padding: "10px",
           background: "#fff",
-          cursor: "pointer",
         }}
         contentEditable={false}
-        onClick={(e) => {
-          e.stopPropagation();
-          // Cambia allineamento al click
-          const newAlign =
-            align === "left" ? "right" : align === "right" ? "center" : "left";
-          updateAttributes({ align: newAlign });
-        }}
       />
       <div
         style={{
@@ -183,6 +162,16 @@ export const AwinBanner = Node.create({
             attrs: { ...attrs, align: attrs.align || "left" },
           });
         },
+      setAwinBannerAlign:
+        (align: string) =>
+        ({ commands, state }: any) => {
+          const { selection } = state;
+          const node = state.doc.nodeAt(selection.from);
+          if (node && node.type.name === this.name) {
+            return commands.updateAttributes(this.name, { align });
+          }
+          return false;
+        },
     };
   },
 });
@@ -191,6 +180,7 @@ declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     awinBanner: {
       insertAwinBanner: (attrs: AwinBannerAttrs) => ReturnType;
+      setAwinBannerAlign: (align: string) => ReturnType;
     };
   }
 }

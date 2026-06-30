@@ -46,7 +46,7 @@ const TiptapEditorComponent = ({
   const [currentBannerAlign, setCurrentBannerAlign] =
     useState<string>("center");
   const [currentBannerType, setCurrentBannerType] = useState<
-    "tradeDoublerBanner" | "awinBannerLink"
+    "tradeDoublerBanner" | "awinBannerLink" | "awinBanner"
   >("tradeDoublerBanner");
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const initialContentRef = useRef<string | null>(null);
@@ -119,9 +119,10 @@ const TiptapEditorComponent = ({
       }
 
       const isTD = node?.type.name === "tradeDoublerBanner";
-      const isAwin = node?.type.name === "awinBannerLink";
+      const isAwinLink = node?.type.name === "awinBannerLink";
+      const isAwinBanner = node?.type.name === "awinBanner";
 
-      if ((isTD || isAwin) && editorContainerRef.current) {
+      if ((isTD || isAwinLink || isAwinBanner) && editorContainerRef.current) {
         const bannerElement = editor.view.nodeDOM(pos) as HTMLElement;
         if (!bannerElement) return;
 
@@ -135,7 +136,9 @@ const TiptapEditorComponent = ({
         });
 
         setCurrentBannerAlign(node?.attrs?.align || "center");
-        setCurrentBannerType(isTD ? "tradeDoublerBanner" : "awinBannerLink");
+        setCurrentBannerType(
+          isTD ? "tradeDoublerBanner" : isAwinLink ? "awinBannerLink" : "awinBanner"
+        );
         setShowBannerToolbar(true);
       } else {
         setShowBannerToolbar(false);
@@ -144,6 +147,7 @@ const TiptapEditorComponent = ({
 
     editor.on("selectionUpdate", updateBannerToolbar);
     editor.on("transaction", updateBannerToolbar);
+
 
     return () => {
       editor.off("selectionUpdate", updateBannerToolbar);

@@ -14,7 +14,6 @@ import { BlogHeader } from "../components/blog/components/post/BlogHeader";
 import { CategoryNavbar } from "../components/blog/components/post/CategoryNavbar";
 import { PostsGrid } from "../components/blog/components/post/PostsGrid";
 import { CategoryNewsBar } from "../components/blog/components/CategoryNewsBar";
-import Header from "@/components/blog/components/Header";
 
 // MAPPING CATEGORIE
 const CATEGORY_STYLES: Record<string, { icon: string; color: string }> = {
@@ -232,8 +231,7 @@ export default function BlogPage() {
   }, []);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F8FAFC" }}>
-      <Header />
+    <div className="min-h-[calc(100vh-52px)]" style={{ backgroundColor: "#F8FAFC" }}>
       <BlogHeader
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}

@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Gamepad2, Play, Users } from "lucide-react";
 import { gamesAPI } from "@/services/api";
 import type { Game } from "@/types/game.types";
-import Header from "@/components/blog/components/Header";
 import { useSeo } from "@/hooks/useSeo";
 import { GAMES_BG } from "@/components/games/theme";
 
@@ -38,9 +37,7 @@ export default function GamesPage() {
   }, []);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: GAMES_BG }}>
-      <Header />
-
+    <div className="min-h-[calc(100vh-52px)]" style={{ backgroundColor: GAMES_BG }}>
       {/* HERO */}
       <div className="border-b border-slate-800 bg-gradient-to-b from-slate-800 to-transparent">
         <div className="container mx-auto px-4 py-12 text-center">

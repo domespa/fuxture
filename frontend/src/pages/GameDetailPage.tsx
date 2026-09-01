@@ -4,7 +4,6 @@ import { ArrowLeft, Gamepad2, Info, Loader2, Users } from "lucide-react";
 import toast from "react-hot-toast";
 import { gamesAPI, leaderboardAPI } from "@/services/api";
 import type { Game, GameScore } from "@/types/game.types";
-import Header from "@/components/blog/components/Header";
 import GameEmbed from "@/components/games/GameEmbed";
 import GameNewsletterCta from "@/components/games/GameNewsletterCta";
 import Leaderboard from "@/components/games/Leaderboard";
@@ -121,8 +120,7 @@ export default function GameDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: GAMES_BG }}>
-        <Header />
+      <div className="min-h-[calc(100vh-52px)]" style={{ backgroundColor: GAMES_BG }}>
         <div className="flex h-96 items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
         </div>
@@ -132,8 +130,7 @@ export default function GameDetailPage() {
 
   if (notFound || !game) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: GAMES_BG }}>
-        <Header />
+      <div className="min-h-[calc(100vh-52px)]" style={{ backgroundColor: GAMES_BG }}>
         <div className="container mx-auto px-4 py-20 text-center">
           <Gamepad2 className="mx-auto mb-4 h-12 w-12 text-slate-600" />
           <h1 className="mb-2 text-2xl font-bold text-white">
@@ -186,9 +183,7 @@ export default function GameDetailPage() {
   );
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: GAMES_BG }}>
-      <Header />
-
+    <div className="min-h-[calc(100vh-52px)]" style={{ backgroundColor: GAMES_BG }}>
       <div className="container mx-auto max-w-6xl px-4 py-8">
         {/* BREADCRUMB */}
         <Link

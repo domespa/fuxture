@@ -3,7 +3,7 @@ import { categoriesAPI, postsAPI } from "@/services/api";
 import type { Category } from "@/types/category.types";
 import type { PostResponse, PostStatus } from "@/types/post.types";
 import { Link } from "react-router-dom";
-import { ArrowRight, TrendingUp, Gamepad2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import FeaturedPost from "@/components/blog/components/FeaturedPost";
 import NewsWidget from "@/components/blog/components/NewsWidget";
 import BreakingNewsBar from "@/components/blog/components/BreakingNewsBar";
@@ -52,26 +52,6 @@ export default function HomePage() {
 
   return (
     <div className="hp-root">
-      {/* ── TOPBAR ─────────────────────────────────── */}
-      <div className="hp-topbar">
-        <div className="hp-topbar__inner">
-          <Link to="/" className="hp-topbar__brand">
-            <img src="/logo.png" alt="Fuxture" className="hp-topbar__logo" />
-            <span className="hp-topbar__name">Fuxture</span>
-          </Link>
-          <nav className="hp-topbar__nav">
-            <Link to="/posts" className="hp-topbar__link">
-              <TrendingUp size={14} />
-              Tutti gli Articoli
-            </Link>
-            <Link to="/games" className="hp-topbar__link">
-              <Gamepad2 size={14} />
-              Giochi
-            </Link>
-          </nav>
-        </div>
-      </div>
-
       {/* ── FEATURED ───────────────────────────────── */}
       <FeaturedPost />
 
@@ -94,9 +74,12 @@ export default function HomePage() {
 
             {postsLoading ? (
               <div className="hp-posts-skeleton">
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className="hp-post-ghost" />
-                ))}
+                <div className="hp-post-ghost hp-post-ghost--lead" />
+                <div className="hp-post-ghost-list">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="hp-post-ghost hp-post-ghost--compact" />
+                  ))}
+                </div>
               </div>
             ) : (
               <div className="hp-posts-list">
@@ -194,62 +177,9 @@ export default function HomePage() {
 
       <style>{`
         .hp-root {
-          min-height: 100vh;
+          min-height: calc(100vh - 52px);
           background: #F1F5F9;
           font-family: 'Inter', system-ui, sans-serif;
-        }
-
-        /* TOPBAR */
-        .hp-topbar {
-          background: #0B1120;
-          border-bottom: 1px solid rgba(255,255,255,0.06);
-          position: sticky;
-          top: 0;
-          z-index: 40;
-        }
-        .hp-topbar__inner {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 24px;
-          height: 52px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-        .hp-topbar__brand {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          text-decoration: none;
-        }
-        .hp-topbar__logo {
-          width: 30px;
-          height: 30px;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-        .hp-topbar__name {
-          font-size: 16px;
-          font-weight: 800;
-          color: #fff;
-          letter-spacing: -0.02em;
-        }
-        .hp-topbar__nav { display: flex; gap: 4px; }
-        .hp-topbar__link {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 13px;
-          font-weight: 500;
-          color: rgba(255,255,255,0.6);
-          text-decoration: none;
-          padding: 6px 12px;
-          border-radius: 8px;
-          transition: background 0.15s, color 0.15s;
-        }
-        .hp-topbar__link:hover {
-          background: rgba(255,255,255,0.08);
-          color: #fff;
         }
 
         /* MAIN */
@@ -344,16 +274,32 @@ export default function HomePage() {
           padding: 0 16px;
           overflow: hidden;
         }
+        /* Lo scheletro ricalca le misure delle card vere (.pc-card e .pc-compact):
+           card grande 200px di immagine + corpo, poi il box delle 4 compatte da 68px.
+           Se cambiano quelle misure in PostCard, vanno aggiornate anche qui. */
         .hp-posts-skeleton {
           display: flex;
           flex-direction: column;
-          gap: 12px;
         }
         .hp-post-ghost {
-          height: 72px;
-          border-radius: 10px;
           background: #E2E8F0;
           animation: hp-shimmer 1.4s ease-in-out infinite;
+        }
+        .hp-post-ghost--lead {
+          height: 359px;
+          border-radius: 14px;
+          margin-bottom: 20px;
+        }
+        .hp-post-ghost-list {
+          background: #fff;
+          border-radius: 14px;
+          border: 1.5px solid #E2E8F0;
+          padding: 0 16px;
+        }
+        .hp-post-ghost--compact {
+          height: 68px;
+          margin: 16px 0;
+          border-radius: 8px;
         }
         @keyframes hp-shimmer {
           0%, 100% { opacity: 1; }
@@ -436,7 +382,7 @@ export default function HomePage() {
           gap: 12px;
         }
         .hp-catgrid-ghost {
-          height: 120px;
+          height: 130px;
           border-radius: 14px;
           background: #E2E8F0;
           animation: hp-shimmer 1.4s ease-in-out infinite;
@@ -551,7 +497,6 @@ export default function HomePage() {
         }
 
         @media (max-width: 640px) {
-          .hp-topbar__name { display: none; }
           .hp-main { padding: 20px 16px 60px; gap: 36px; }
           .hp-cta { padding: 32px 20px; }
         }

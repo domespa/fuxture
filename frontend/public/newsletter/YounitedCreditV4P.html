@@ -1,595 +1,492 @@
 <!DOCTYPE html>
 <html lang="it" xmlns:v="urn:schemas-microsoft-com:vml"><head>
-  <meta charset="utf-8"/>
-  <meta name="x-apple-disable-message-reformatting"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no, url=no"/>
-  <!--[if mso]>
-  <noscript>
-    <xml>
-      <o:OfficeDocumentSettings xmlns:o="urn:schemas-microsoft-com:office:office">
-        <o:PixelsPerInch>96</o:PixelsPerInch>
-      </o:OfficeDocumentSettings>
-    </xml>
-  </noscript>
-  <style>
-    table {border-collapse:collapse;border:0;border-spacing:0;margin:0;}
-    div, td {padding:0;}
-    div {margin:0 !important;}
-    td,th,div,p,a,h1,h2,h3,h4,h5,h6 {font-family: "Segoe UI", sans-serif; mso-line-height-rule: exactly;}
-  </style>
-  <![endif]-->
-  <link rel="preconnect" href="https://fonts.googleapis.com" target="_new"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" target="_new"/>
-   <!--[if !mso]><!-->
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-    @import url("https://use.typekit.net/xaa5sad.css");
-  </style>
-  <!--<![endif]-->
-  <style title="template-stylesheet">
-    div:hover *{
-      cursor: pointer !important;
-    }
-    .rollover-thumb:hover .rollover-main{
-      max-height: 0px !important;
-    }
-    .rollover-thumb:hover div img{
-      max-height: none !important;
-    }
-    #un:hover .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #un:hover .rollover div img{
-      max-height: none !important;
-    }
-    #deux:hover .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #deux:hover .rollover div img{
-      max-height: none !important;
-    }
-    #deux:hover + td .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #deux:hover + td .rollover div img{
-      max-height: none !important;
-    }
-    #trois:hover .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #trois:hover .rollover div img{
-      max-height: none !important;
-    }
-    #trois:hover + td .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #trois:hover + td .rollover div img{
-      max-height: none !important;
-    }
-    #trois:hover + td + td .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #trois:hover + td + td .rollover div img{
-      max-height: none !important;
-    }
-    #quatre:hover .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #quatre:hover .rollover div img{
-      max-height: none !important;
-    }
-    #quatre:hover + td .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #quatre:hover + td .rollover div img{
-      max-height: none !important;
-    }
-    #quatre:hover + td + td .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #quatre:hover + td + td .rollover div img{
-      max-height: none !important;
-    }
-    #quatre:hover + td + td + td .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #quatre:hover + td + td + td .rollover div img{
-      max-height: none !important;
-    }
-    #cinq:hover .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #cinq:hover .rollover div img{
-      max-height: none !important;
-    }
-    #cinq:hover + td .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #cinq:hover + td .rollover div img{
-      max-height: none !important;
-    }
-    #cinq:hover + td + td .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #cinq:hover + td + td .rollover div img{
-      max-height: none !important;
-    }
-    #cinq:hover + td + td + td .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #cinq:hover + td + td + td .rollover div img{
-      max-height: none !important;
-    }
-    #cinq:hover + td + td + td + td .rollover .rollover-main{
-      max-height: 0px !important;
-    }
-    #cinq:hover + td + td + td + td .rollover div img{
-      max-height: none !important;
-    }
-    @media screen and (max-width: 350px) {
-      .three-col .column{
-        max-width: 100% !important;
-      }
-    }
-    @media screen and (min-width: 351px) and (max-width: 460px) {
-      .three-col .column{
-        max-width: 50% !important;
-      }
-    }
-    @media (max-width: 600px) {
-      .sm-mb-40px{
-        margin-bottom: 40px !important;
-      }
-      .sm-mt-0{
-        margin-top: 0 !important;
-      }
-      .sm-mt-18{
-        margin-top: 18px !important;
-      }
-      .sm-block{
-        display: block !important;
-      }
-      .sm-inline-block{
-        display: inline-block !important;
-      }
-      .sm-hidden{
-        display: none !important;
-      }
-      .sm-h-200px{
-        height: 200px !important;
-      }
-      .sm-w-1-2{
-        width: 50% !important;
-      }
-      .sm-w-1-3{
-        width: 33.333333% !important;
-      }
-      .sm-w-122px{
-        width: 122px !important;
-      }
-      .sm-w-40px{
-        width: 40px !important;
-      }
-      .sm-w-46px{
-        width: 46px !important;
-      }
-      .sm-w-48px{
-        width: 48px !important;
-      }
-      .sm-w-50pc{
-        width: 50% !important;
-      }
-      .sm-w-8px{
-        width: 8px !important;
-      }
-      .sm-w-auto{
-        width: auto !important;
-      }
-      .sm-w-full{
-        width: 100% !important;
-      }
-      .sm-max-w-60pc{
-        max-width: 60% !important;
-      }
-      .sm-bg-cover{
-        background-size: cover !important;
-      }
-      .sm-bg-left-top{
-        background-position: left top !important;
-      }
-      .sm-bg-right-top{
-        background-position: right top !important;
-      }
-      .sm-p-10px{
-        padding: 10px !important;
-      }
-      .sm-p-20px{
-        padding: 20px !important;
-      }
-      .sm-p-9px{
-        padding: 9px !important;
-      }
-      .sm-px-0{
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-      }
-      .sm-px-10px{
-        padding-left: 10px !important;
-        padding-right: 10px !important;
-      }
-      .sm-px-11px{
-        padding-left: 11px !important;
-        padding-right: 11px !important;
-      }
-      .sm-px-20px{
-        padding-left: 20px !important;
-        padding-right: 20px !important;
-      }
-      .sm-px-5px{
-        padding-left: 5px !important;
-        padding-right: 5px !important;
-      }
-      .sm-px-6px{
-        padding-left: 6px !important;
-        padding-right: 6px !important;
-      }
-      .sm-px-8px{
-        padding-left: 8px !important;
-        padding-right: 8px !important;
-      }
-      .sm-px-9px{
-        padding-left: 9px !important;
-        padding-right: 9px !important;
-      }
-      .sm-py-9{
-        padding-top: 9px !important;
-        padding-bottom: 9px !important;
-      }
-      .sm-py-10px{
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
-      }
-      .sm-py-20px{
-        padding-top: 20px !important;
-        padding-bottom: 20px !important;
-      }
-      .sm-pb-14px{
-        padding-bottom: 14px !important;
-      }
-      .sm-pb-20px{
-        padding-bottom: 20px !important;
-      }
-      .sm-pb-24px{
-        padding-bottom: 24px !important;
-      }
-      .sm-pl-0{
-        padding-left: 0 !important;
-      }
-      .sm-pl-16px{
-        padding-left: 16px !important;
-      }
-      .sm-pl-20px{
-        padding-left: 20px !important;
-      }
-      .sm-pr-0{
-        padding-right: 0 !important;
-      }
-      .sm-pr-12px{
-        padding-right: 12px !important;
-      }
-      .sm-pt-0{
-        padding-top: 0 !important;
-      }
-      .sm-pt-4{
-        padding-top: 4px !important;
-      }
-      .sm-pt-10px{
-        padding-top: 10px !important;
-      }
-      .sm-pt-16px{
-        padding-top: 16px !important;
-      }
-      .sm-pt-18px{
-        padding-top: 18px !important;
-      }
-      .sm-pt-20px{
-        padding-top: 20px !important;
-      }
-      .sm-pt-24px{
-        padding-top: 24px !important;
-      }
-      .sm-pt-6px{
-        padding-top: 6px !important;
-      }
-      .sm-pt-8px{
-        padding-top: 8px !important;
-      }
-      .sm-text-left{
-        text-align: left !important;
-      }
-      .sm-text-center{
-        text-align: center !important;
-      }
-      .sm-align-middle{
-        vertical-align: middle !important;
-      }
-      .sm-text-12px{
-        font-size: 12px !important;
-      }
-      .sm-text-14px{
-        font-size: 14px !important;
-      }
-      .sm-text-16px{
-        font-size: 16px !important;
-      }
-      .sm-text-18px{
-        font-size: 18px !important;
-      }
-      .sm-text-20px{
-        font-size: 20px !important;
-      }
-      .sm-leading-16px{
-        line-height: 16px !important;
-      }
-      .sm-leading-18px{
-        line-height: 18px !important;
-      }
-      .sm-leading-22px{
-        line-height: 22px !important;
-      }
-    }
-  </style>
+<meta charset="utf-8"/>
+<meta name="x-apple-disable-message-reformatting"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="format-detection" content="telephone=no, date=no, address=no, email=no,
+url=no"/>
+<!--[if mso]>
+<noscript>
+<xml>
+<o:OfficeDocumentSettings xmlns:o="urn:schemas-microsoft-com:office:office">
+<o:PixelsPerInch>96</o:PixelsPerInch>
+</o:OfficeDocumentSettings>
+</xml>
+</noscript>
+<style>
+td,th,div,p,a,h1,h2,h3,h4,h5,h6 {font-family: "Segoe UI", sans-serif; mso-line-height-rule:
+exactly;}
+</style>
+<![endif]-->
+<link rel="preconnect" href="https://fonts.googleapis.com" target="_new"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" target="_new"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?
+family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://use.typekit.net/xaa5sad.css");
+</style>
+<style title="template-stylesheet">
+@media (max-width: 600px) {
+.sm-mb-40px{
+margin-bottom: 40px !important
+}
+.sm-block{
+display: block !important
+}
+.sm-hidden{
+display: none !important
+}
+.sm-h-1px{
+height: 1px !important
+}
+.sm-h-66px{
+height: 66px !important
+}
+.sm-w-1-2{
+width: 50% !important
+}
+.sm-w-1-3{
+width: 33.333333% !important
+}
+.sm-w-30px{
+width: 30px !important
+}
+.sm-w-66px{
+width: 66px !important
+}
+.sm-w-auto{
+width: auto !important
+}
+.sm-w-full{
+width: 100% !important
+}
+.sm-border-none{
+border-style: none !important
+}
+.sm-p-10px{
+padding: 10px !important
+}
+.sm-px-0{
+padding-left: 0 !important;
+padding-right: 0 !important
+}
+.sm-px-10px{
+padding-left: 10px !important;
+padding-right: 10px !important
+}
+.sm-px-11px{
+padding-left: 11px !important;
+padding-right: 11px !important
+}
+.sm-px-20px{
+padding-left: 20px !important;
+padding-right: 20px !important
+}
+.sm-px-24px{
+padding-left: 24px !important;
+padding-right: 24px !important
+}
+.sm-px-5px{
+padding-left: 5px !important;
+padding-right: 5px !important
+}
+.sm-px-6px{
+padding-left: 6px !important;
+padding-right: 6px !important
+}
+.sm-px-8px{
+padding-left: 8px !important;
+padding-right: 8px !important
+}
+.sm-py-15px{
+padding-top: 15px !important;
+padding-bottom: 15px !important
+}
+.sm-py-20px{
+padding-top: 20px !important;
+padding-bottom: 20px !important
+}
+.sm-pb-16px{
+padding-bottom: 16px !important
+}
+.sm-pb-20px{
+padding-bottom: 20px !important
+}
+.sm-pb-24px{
+padding-bottom: 24px !important
+}
+.sm-pb-40px{
+padding-bottom: 40px !important
+}
+.sm-pr-0{
+padding-right: 0 !important
+}
+.sm-pr-12px{
+padding-right: 12px !important
+}
+.sm-pt-10px{
+padding-top: 10px !important
+}
+.sm-pt-12px{
+padding-top: 12px !important
+}
+.sm-pt-15px{
+padding-top: 15px !important
+}
+.sm-pt-16px{
+padding-top: 16px !important
+}
+.sm-pt-20px{
+padding-top: 20px !important
+}
+.sm-pt-24px{
+padding-top: 24px !important
+}
+.sm-pt-30px{
+padding-top: 30px !important
+}
+.sm-pt-6px{
+padding-top: 6px !important
+}
+.sm-pt-8px{
+padding-top: 8px !important
+}
+.sm-text-center{
+text-align: center !important
+}
+.sm-text-12px{
+font-size: 12px !important
+}
+.sm-text-18px{
+font-size: 18px !important
+}
+.sm-text-20px{
+font-size: 20px !important
+}
+.sm-text-25px{
+font-size: 25px !important
+}
+.sm-text-50px{
+font-size: 50px !important
+}
+.sm-leading-16px{
+line-height: 16px !important
+}
+.sm-leading-22px{
+line-height: 22px !important
+}
+.sm-leading-30px{
+line-height: 30px !important
+}
+.sm-leading-50px{
+line-height: 50px !important
+}
+}
+</style>
 </head>
-<body style="margin: 0; width: 100%; background-color: #f8fafc; padding: 0; -webkit-font-smoothing: antialiased; word-break: break-word;">
-  <span style="mso-hide: all; display: none;">&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;</span>
-  <div role="article" aria-roledescription="email" aria-label="" lang="en" style="font-size: 0;">
-    <div class="sm-px-6px" style="font-size: 0; background-color: #f8fafc;">
-      <table align="center" style="margin: 0; margin-left: auto; margin-right: auto;" cellpadding="0" cellspacing="0" role="none">
-        <tbody><tr>
-          <td style="width: 636px; max-width: 100%;">
-            <div style="font-size: 0; margin: 0; padding: 0;" id="ko_header_1">
-              <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                <tbody><tr>
-                  <td class="sm-px-20px" style="background-color: #ffffff; padding-top: 0; padding-bottom: 0; padding-left: 36px; padding-right: 36px;">
-                    <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                      <tbody><tr>
-                        <td style="background-color: #ffffff; padding-top: 5px; padding-bottom: 5px;">
-                          <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                            <tbody><tr>
-                              <td align="left" style="width: 50%;">
-                                <p style="margin: 0; text-align: left; font-family: Roboto, Arial, Helvetica, sans-serif; font-size: 10px; line-height: 13px; color: #625B71;">
-                                   <a expr:href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8077&url_id=10972" style="color: #625B71; text-decoration: underline;" target="_new"><br data-mce-bogus="1"/></a>
-                                </p>
-                              </td>
-                              <td align="right" style="width: 50%;">
-                                <p style="margin: 0; text-align: right; font-family: Roboto, Arial, Helvetica, sans-serif; font-size: 10px; line-height: 13px; color: #625B71;">
-                                   <a href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8077&url_id=10972" style="color: #625B71; text-decoration: underline;" target="_new"><br data-mce-bogus="1"/></a>
-                                </p>
-                              </td>
-                            </tr>
-                          </tbody></table>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td align="center" style="padding-top: 4px; padding-bottom: 14px;">
-                          <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                            <tbody><tr>
-                              <td class="sm-block sm-pb-14px">
-                                <table class="sm-w-full" cellpadding="0" cellspacing="0" role="none">
-                                  <tbody><tr>
-                                    <td align="center">
-                                      <a target="_new" href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8077&url_id=10972">
-                                        <img src="https://mailingwebcontent.younited-credit.com/images/affil_generic_june2026/logo-logo_white.png" width="120" alt="" style="max-width: 100%; vertical-align: middle;"/>
-                                      </a>
-                                    </td>
-                                  </tr>
-                                </tbody></table>
-                              </td>
-                              <td class="sm-block" align="right">
-                                <table class="sm-w-full" cellpadding="0" cellspacing="0" role="none">
-                                  <tbody><tr>
-                                    <td align="center">
-                                      <table cellpadding="0" cellspacing="0" role="none">
-                                        <tbody><tr>
-                                          <td align="center" style="border-radius: 6px; background-color: #35293D; padding-left: 10px; padding-right: 10px; padding-top: 8px; padding-bottom: 8px;">
-                                            <table class="sm-w-auto" style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                                              <tbody><tr>
-                                                <td>
-                                                  <p style="margin: 0; font-family: Roboto, Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 500; line-height: 12px; color: #fffffe;">
-                                                    <a target="_new" href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8077&url_id=10972" style="color: #fffffe; text-decoration: none;">Richiedi ora</a>
-                                                  </p>
-                                                </td>
-                                              </tr>
-                                            </tbody></table>
-                                          </td>
-                                        </tr>
-                                      </tbody></table>
-                                    </td>
-                                  </tr>
-                                </tbody></table>
-                              </td>
-                            </tr>
-                          </tbody></table>
-                        </td>
-                      </tr>
-                    </tbody></table>
-                  </td>
-                </tr>
-              </tbody></table>
-            </div>
-            <div style="font-size: 0;"><div style="font-size: 0; margin: 0; padding: 0;" id="ko_image_4">
-                <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                  <tbody><tr>
-                    <td align="center" class="sm-px-20px" style="background-color: #ffffff; padding-top: 30px; padding-bottom: 0; padding-left: 36px; padding-right: 36px;">
-                          <a target="_new" href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8077&url_id=10972"> <img class="sm-hidden" alt="" width="564" style="max-width: 100%; vertical-align: middle;" src="https://mailingwebcontent.younited-credit.com/images/affil_generic_june2026/cover-564xnull-acf1b9784e1aaa2143f1208d5ca5d839.png"/> </a>
-                        <!--[if !mso]><!-->
-                          <a target="_new" href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8077&url_id=10972"> <img class="sm-block sm-w-full" alt="" width="320" style="max-width: 100%; vertical-align: middle; mso-hide: all; margin: auto; display: none;" src="https://mailingwebcontent.younited-credit.com/images/affil_generic_june2026/cover-320xnull-910593050246d2ccf3bee9849165b1b6.png"/> </a>
-                        <!--<![endif]-->
-                    </td>
-                  </tr>
-                </tbody></table>
-              </div><div style="font-size: 0; margin: 0; padding: 0;" id="ko_text_courant_2">
-                <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                  <tbody><tr>
-                    <td align="center" style="background-color: #ffffff; padding-top: 30px; padding-bottom: 30px;">
-                      <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                        <tbody><tr>
-                          <td class="sm-px-20px" style="padding-left: 86px; padding-right: 86px;">
-                            <p style="font-size: 16px; line-height: 21px; text-align: center; font-weight: normal; color: #1B1221; margin: 0; margin-bottom: 25px; font-family: Roboto, Arial, Helvetica, sans-serif;"><span style="font-size: 22px; color: rgb(129, 51, 254);"><strong>Goditi il momento, gioca d&#8217;anticipo sui tuoi progetti<br/></strong></span><br/>Non aspettare il momento giusto: crealo.<br/>Con Younited puoi avere subito la liquidit&#224; per realizzare quello che desideri, con condizioni chiare fin dall&#8217;inizio.<br/>Puoi ottenere<br/><br/><strong>10.000&#8364; in 96 mesi</strong><br/><strong>&nbsp;</strong><strong>TAEG a partire da 6,99%</strong><br/></p>
-                            <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                              <tbody><tr>
-                                <td align="center">
-                                  <table class="sm-w-full" cellpadding="0" cellspacing="0" role="none">
-                                    <tbody><tr>
-                                      <td align="center" style="border-radius: 8px; background-color: #8133FE; padding-left: 24px; padding-right: 24px; padding-top: 8px; padding-bottom: 8px;">
-                                        <p style="margin: 0; font-family: Roboto, Arial, Helvetica, sans-serif; font-size: 18px; font-weight: 500; line-height: 18px; color: #fffffe;">
-                                           <a target="_new" href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8077&url_id=10972" style="color: #fffffe; text-decoration: none;">Richiedi Prestito</a>
-                                        </p>
-                                      </td>
-                                    </tr>
-                                  </tbody></table>
-                                </td>
-                              </tr>
-                            </tbody></table>
-                          </td>
-                        </tr>
-                      </tbody></table>
-                    </td>
-                  </tr>
-                </tbody></table>
-              </div><div style="font-size: 0; margin: 0; padding: 0;" id="ko_temoignage_1">
-                <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                  <tbody><tr>
-                    <td align="center" class="sm-px-10px" style="background-color: #F9F5FF ; padding-top: 0; padding-bottom: 0; padding-left: 36px; padding-right: 36px;">
-                        <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                          <tbody><tr>
-                            <td style="padding: 20px 20px 20px 20px; border-radius: 8px; background-color: #fffffe;">
-                              <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                                <tbody><tr>
-                                  <td align="center" style="padding-bottom: 12px;">
-                                    <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                                      <tbody><tr>
-                                        <td align="center" class="sm-block sm-pr-0 sm-pb-20px" style="padding-right: 30px;">
-                                                <img src="https://mailingwebcontent.younited-credit.com/images/affil_generic_june2026/trustpilot-visuel_small.png" alt="" width="118" style="max-width: 100%; vertical-align: middle; margin: auto;"/>
-                                            <table class="sm-w-full" cellpadding="0" cellspacing="0" role="none">
-                                          </table>
-                                        </td>
-                                        <td align="" class="sm-block">
-                                          <table class="sm-w-full" cellpadding="0" cellspacing="0" role="none">
-                                            <tbody><tr>
-                                            </tr>
-                                          </tbody></table>
-                                          <p class="sm-text-center" style="margin: 0; margin-bottom: 8px; margin-top: 8px; text-align: left; font-family: Roboto, Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 300; line-height: 18px;">
-                                              <span style="font-size: 22px; color: rgb(129, 51, 254);"><strong>Le Nostre Recensioni</strong></span><br data-mce-bogus="1"/>
-                                          </p>
-                                          <p class="sm-text-center" style="margin: 0; font-size: 16px; line-height: 21px; margin-bottom: 12px; text-align: left; font-family: Roboto, Arial, Helvetica, sans-serif;">
-                                              Esperienza positiva. Personale cortese e preparato, pratiche controllate ed analizzare in giornata e soluzione immediata.<br/>Nel mio caso mai oltre il secondo giorno dopo aver inviato la documentazione richiesta.<br/>Ottimo servizio
-                                          </p>
-                                          <p class="sm-text-center" style="margin: 0; text-align: left; font-family: Roboto, Arial, Helvetica, sans-serif; font-size: 16px; line-height: 21px;">
-                                              Simone
-                                          </p>
-                                        </td>
-                                      </tr>
-                                    </tbody></table>
-                                  </td>
-                                </tr>
-                              </tbody></table>
-                              <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                                <tbody><tr>
-                                  <td align="center">
-                                    <table cellpadding="0" cellspacing="0" role="none">
-                                      <tbody><tr>
-                                        <td class="sm-block">
-                                          <p class="sm-text-center sm-text-12px sm-leading-16px" style="margin: 0; text-align: left; font-family: Roboto, Arial, Helvetica, sans-serif; font-size: 16px; font-weight: 700; line-height: 21px;">
-                                              <br data-mce-bogus="1"/>
-                                          </p>
-                                        </td>
-                                        <td class="sm-block sm-pt-6px" style="padding-left: 8px; padding-right: 8px;">
-                                          <table cellpadding="0" cellspacing="0" role="none">
-                                            <tbody><tr>
-                                              <td>
-                                                  <img src="https://mailingwebcontent.younited-credit.com/images/affil_generic_june2026/trustpilot-stars.png" alt="" width="156" height="34" style="max-width: 100%; vertical-align: middle;"/>
-                                              </td>
-                                              <td>
-                                                <p class="sm-text-center sm-text-18px sm-leading-22px" style="margin: 0; text-align: left; font-family: Roboto, Arial, Helvetica, sans-serif; font-size: 26px; font-weight: 700; line-height: 30px;">
-                                                    <br data-mce-bogus="1"/>
-                                                </p>
-                                              </td>
-                                            </tr>
-                                          </tbody></table>
-                                        </td>
-                                      </tr>
-                                    </tbody></table>
-                                  </td>
-                                </tr>
-                              </tbody></table>
-                            </td>
-                          </tr>
-                        </tbody></table>
-                    </td>
-                  </tr>
-                </tbody></table>
-              </div><div style="font-size: 0; margin: 0; padding: 0;" id="ko_button_4">
-                <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                  <tbody><tr>
-                    <td align="center" class="sm-px-20px" style="background-color: #ffffff; padding-top: 30px; padding-bottom: 0; padding-left: 36px; padding-right: 36px;">
-                      <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                        <tbody><tr>
-                          <td align="center">
-                            <table class="sm-w-full" cellpadding="0" cellspacing="0" role="none">
-                              <tbody><tr>
-                                <td align="center" style="border-radius: 8px; background-color: #8133FE; padding-left: 24px; padding-right: 24px; padding-top: 8px; padding-bottom: 8px;">
-                                  <p style="margin: 0; font-family: Roboto, Arial, Helvetica, sans-serif; font-size: 18px; font-weight: 500; line-height: 18px; color: #fffffe;">
-                                     <a target="_new" href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8077&url_id=10972" style="color: #fffffe; text-decoration: none;">Richiedi Prestito</a>
-                                  </p>
-                                </td>
-                              </tr>
-                            </tbody></table>
-                          </td>
-                        </tr>
-                      </tbody></table>
-                    </td>
-                  </tr>
-                </tbody></table>
-              </div></div>
-            <div style="font-size: 0; margin: 0; padding: 0;" id="ko_footer_2">
-              <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                <tbody><tr>
-                  <td align="center" style="background-color: #F8F4FB; padding-top: 30px; padding-bottom: 20px;">
-                    <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                      <tbody><tr>
-                        <td align="center" style="padding-bottom: 20px;">
-                            <a href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8077&url_id=10972" target="_new">
-                              <img src="https://mailingwebcontent.younited-credit.com/images/affil_generic_june2026/logo-logo_white_foo.png" width="200" height="50" alt="" style="max-width: 100%; vertical-align: middle;"/>
-                            </a>
-                        </td>
-                      </tr>
-                    </tbody></table>
-                    <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
-                      <tbody><tr>
-                        <td class="sm-px-20px" style="padding-left: 36px; padding-right: 36px; padding-bottom: 50px;">
-                          <p style="margin: 0; margin-bottom: 16px; text-align: center; font-family: Roboto, Arial, Helvetica, sans-serif; font-size: 16px; line-height: 19px; color: #625B71;">Messaggio pubblicitario con finalit&#224; promozionale</p>
-                            <p style="margin: 0; color: #625B71; text-align: center; font-family: Roboto, Arial, Helvetica, sans-serif; font-size: 12px; line-height: 14px;">Messaggio pubblicitario con finalit&#224; promozionale. Per maggiori informazioni consulta il documento "Informazioni europee di base sul credito ai consumatori (SECCI)" e copia del testo contrattuale disponibili <a href="https://www.awin1.com/awclick.php?gid=344097&mid=9635&awinaffid=704319&linkid=4703257&clickref=&p=https://it.younited-credit.com/trasparenza">qui</a>. La richiesta di finanziamento &#232; soggetta ad approvazione di Younited e le condizioni economiche dell&#8217;esempio potranno subire variazioni in funzione della valutazione effettuata in fase di istruttoria.<br/><br/>*Esempio di finanziamento per un importo totale di 10.000 &#8364; rimborsabile in 96 mensilit&#224; di&nbsp;135,22 &#8364;. TAEG fisso: 6,99 % TAN fisso: 6,78%. Costi accessori del servizio azzerati. Importo totale dovuto per il prestito&nbsp;12.981,12 &#8364; solo per i clienti con pi&#249; alto&nbsp;<a href="https://www.awin1.com/awclick.php?gid=344097&mid=9635&awinaffid=704319&linkid=4703257&clickref=&p=https://it.younited-credit.com/glossario/merito-creditizio">merito creditizio</a>.<br/><br/>Per tutti gli altri clienti, Younited si riserva di proporre un&#8217;offerta su misura in base alle valutazioni svolte in fase di istruttoria; tale seconda offerta non sar&#224; vincolante per il cliente, il quale potr&#224; scegliere di non proseguire con la richiesta di finanziamento. Il numero di rate disponibili va da un minimo di 6 mesi ad un massimo di 96, per importi da 1.000&#8364; a 60.000&#8364;<br/></p>
-                        </td>
-                      </tr>
-                    </tbody></table>
-                    <table cellpadding="0" cellspacing="0" role="none">
-                      <tbody><tr>
-                        <td style="padding-left: 12px; padding-right: 12px;">
-                          <p style="margin: 0; text-align: center; font-family: Arial, Helvetica, sans-serif; font-size: 12px; line-height: 14px; color: #625B71;">
-                             <a href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8077&url_id=10972" style="color: #625B71; text-decoration: underline;" target="_new"><br data-mce-bogus="1"/></a>
-                          </p>
-                        </td>
-                      </tr>
-                    </tbody></table>
-                  </td>
-                </tr>
-              </tbody></table>
-            </div>
-          </td>
-        </tr>
-      </tbody></table>
-    </div>
-  </div>
-<img src="https://www.awin1.com/cshow.php?s=4703257&v=9635&q=344097&r=704319" style="display: none" border="0" /><img src="https://tracking.performagency.it/aff_i?offer_id=1936&file_id=8077&aff_id=1089" width="0" height="0" style="position:absolute;visibility:hidden;" border="0" /></body></html>
+<body style="margin: 0; width: 100%; background-color: #f8fafc; padding: 0; -webkit-fontsmoothing:
+antialiased; word-break: break-word;">
+<span style="mso-hide: all; display: none;">&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+&#8199;&#65279;&#847;</span>
+<div role="article" aria-roledescription="email" aria-label="" lang="en">
+<div class="sm-px-6px" style="background-color: #f8fafc;">
+<table align="center" style="margin: 0; margin-left: auto; margin-right: auto;" cellpadding="0"
+cellspacing="0" role="none">
+<tbody><tr>
+<td style="width: 636px; max-width: 100%;">
+<div style="margin: 0; padding: 0;" id="ko_header_1">
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td class="sm-px-20px" style="background-color: #ffffff; padding-top: 10px; paddingbottom:
+0; padding-left: 36px; padding-right: 36px;">
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody>
+<tr>
+<td align="center" style="padding-top: 4px; padding-bottom: 14px;">
+<a href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8294&url_id=11138" target="_new">
+<img src="https://mailingwebcontent.younited-credit.com/images/
+generica_sponsorizzazione_cq/logo-logo_white.png" width="206" alt="Younited" style="maxwidth:
+100%; vertical-align: middle;"/>
+</a>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div><div style="margin: 0; padding: 0;" id="ko_cover_1_6">
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td align="center" style="background-color: #ffffff; padding-top: 10px; paddingbottom:
+30px;">
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td class="sm-px-20px" align="center" style="padding-left: 36x; padding-right:
+36x; padding-bottom: 30px;">
+<img class="sm-w-full" alt="Pitagora" width="564" style="max-width:
+100%; vertical-align: middle;" src="https://mailingwebcontent.younited-credit.com/images/
+generica_sponsorizzazione_cq/cover-564xnull-cadf8a51441787b867415b1a9393eb3c.png"/>
+</td>
+</tr>
+</tbody></table>
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td class="sm-px-20px" style="padding-left: 86px; padding-right: 86px;">
+<h3 style="font-size: 25px; line-height: 27px; text-align: center; color: #1B1221;
+margin: 0; margin-bottom: 25px; font-family: Roboto, Arial, Helvetica, sans-serif; font-weight:
+500;">Finalmente una cessione per YOU<br/></h3>
+<p style="font-size: 16px; line-height: 21px; text-align: center; font-weight:
+normal; color: #1B1221; margin: 0; margin-bottom: 25px; font-family: Roboto, Arial, Helvetica,
+sans-serif;">Comodamente da casa, puoi ottenere un finanziamento con cessione del quinto<br/
+>fino a <strong>60.000&#8364;</strong><br/><br/>Compila il form online e sarai ricontattato da
+un operatore del nostro partner specializzato che ti seguir&#224; nella tua richiesta.<br/><br/
+>Solo per dipendenti (privati e pubblici) e pensionati</p>
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td align="center">
+<table class="sm-w-full" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td align="center" style="border-radius: 8px; background-color: #8133FE;
+padding-left: 24px; padding-right: 24px; padding-top: 8px; padding-bottom: 8px;">
+<table class="sm-w-auto" style="width: 100%;" cellpadding="0"
+cellspacing="0" role="none">
+<tbody><tr>
+<td>
+<p style="margin: 0; font-family: Roboto, Arial, Helvetica, sans-serif;
+font-size: 18px; font-weight: 500; line-height: 18px; color: #fffffe;">
+<a target="_new" href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8294&url_id=11138" style="color: #fffffe; text-decoration: none;">Richiedi ora</a>
+</p>
+</td>
+<td style="padding-left: 8px;">
+<img src="https://mailingwebcontent.younited-credit.com/images/
+generica_sponsorizzazione_cq/icon-button_arrow_white.png" alt="" width="17" style="maxwidth:
+100%; vertical-align: middle;"/>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</div><div style="margin: 0; padding: 0;" id="ko_etapes_1_3">
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td align="center" class="sm-px-11px" style="background-color: #ffffff; padding-top:
+30px; padding-bottom: 30px; padding-left: 36px; padding-right: 36px;">
+<h2 class="sm-mb-40px" style="margin: 0; font-size: 25px; line-height: 27px; textalign:
+center; color: #8133FE; margin-bottom: 30px; font-family: 'roc-grotesk', Arial, Helvetica,
+sans-serif; font-weight: 500;">I vantaggi della cessione del quinto:&nbsp;<br/></h2>
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td class="sm-block sm-px-24px sm-pt-15px" align="center" style="paddingright:
+24px; vertical-align: top;">
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td align="center" style="width: 172px;">
+<a target="_new" href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8294&url_id=11138">
+<img alt="Puoi fare tutto comodamente da casa" width="172"
+style="max-width: 100%; vertical-align: middle; margin: auto;" src="https://
+mailingwebcontent.younited-credit.com/images/generica_sponsorizzazione_cq/
+cover-172xnull-2be7c30587a7ce16f92c7ba71f39762e.png"/>
+</a>
+<p style="margin: 0; font-size: 16px; line-height: 21px; text-align: center;
+margin-top: 16px; color: #1B1221; font-family: Roboto, Arial, Helvetica, sans-serif;"><strong>Puoi
+fare tutto comodamente</strong><br/><strong>da casa</strong></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+<td class="sm-block sm-px-24px sm-pt-30px" align="center" style="paddingright:
+24px; vertical-align: top;">
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td align="center" style="width: 172px;">
+<a target="_new" href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8294&url_id=11138">
+<img alt="Mini-finanziamenti fino a 5.000&#8364; con il prodotto
+giustoXte" width="172" style="max-width: 100%; vertical-align: middle; margin: auto;"
+src="https://mailingwebcontent.younited-credit.com/images/generica_sponsorizzazione_cq/
+cover-172xnull-3d91783a7a44746fb75b3bed3714aaa7.png"/>
+</a>
+<p style="margin: 0; font-size: 16px; line-height: 21px; text-align: center;
+margin-top: 16px; color: #1B1221; font-family: Roboto, Arial, Helvetica, sansserif;"><
+strong>Trattenuta direttamente in busta paga</strong></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+<td class="sm-block sm-px-24px sm-pt-30px" align="center" style="paddingright:
+0; vertical-align: top;">
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td align="center" style="width: 172px;">
+<a target="_new" href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8294&url_id=11138">
+<img alt="Puoi ottenere fino a 75.000&#8364; in 120 mesi" width="172"
+style="max-width: 100%; vertical-align: middle; margin: auto;" src="https://
+mailingwebcontent.younited-credit.com/images/generica_sponsorizzazione_cq/
+cover-172xnull-154413d1de1173165ae3d01d09d6a2ab.png"/>
+</a>
+<p style="margin: 0; font-size: 16px; line-height: 21px; text-align: center;
+margin-top: 16px; color: #1B1221; font-family: Roboto, Arial, Helvetica, sans-serif;"><strong>Puoi
+ottenere<br/>fino a 60.000&#8364;<br/></strong></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td align="center" style="padding-top: 30px;">
+<table class="sm-w-full" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td align="center" style="border-radius: 8px; background-color: #8133FE;
+padding-left: 24px; padding-right: 24px; padding-top: 8px; padding-bottom: 8px;">
+<table class="sm-w-auto" style="width: 100%;" cellpadding="0"
+cellspacing="0" role="none">
+<tbody><tr>
+<td>
+<p style="margin: 0; font-family: Roboto, Arial, Helvetica, sans-serif;
+font-size: 18px; font-weight: 500; line-height: 18px; color: #fffffe;">
+<a target="_new" href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8294&url_id=11138" style="color: #fffffe; text-decoration: none;">Scopri di pi&#249;</a>
+</p>
+</td>
+<td style="padding-left: 8px;">
+<img src="https://mailingwebcontent.younited-credit.com/images/
+generica_sponsorizzazione_cq/icon-button_arrow_white.png" alt="" width="17" style="maxwidth:
+100%; vertical-align: middle;"/>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</div><div style="margin: 0; padding: 0;" id="ko_cover_1_2">
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td align="center" style="background-color: #ffffff; padding-top: 30px; paddingbottom:
+30px;">
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td class="sm-px-20px" style="padding-left: 86px; padding-right: 86px;">
+<h3 style="font-size: 25px; line-height: 27px; text-align: center; color: #1B1221;
+margin: 0; margin-bottom: 25px; font-family: Roboto, Arial, Helvetica, sans-serif; font-weight:
+500;">Caratteristiche del prodotto<br/></h3>
+<p style="font-size: 16px; line-height: 21px; text-align: center; font-weight:
+normal; color: #1B1221; margin: 0; margin-bottom: 25px; font-family: Roboto, Arial, Helvetica,
+sans-serif;">E&#8217; una particolare tipologia di finanziamento non finalizzato a firma singola
+dedicata esclusivamente ai lavoratori (<strong>dipendenti pubblici</strong> e
+<strong>dipendenti privati</strong>) e ai pensionati.<br/>Il finanziamento contro cessione del
+quinto &#232; assistito da coperture assicurative obbligatorie a garanzia del rischio vita e perdita
+d&#8217;impiego, il cui costo &#232; interamente a carico del partner che eroga la cessione del
+quinto<br/>Clicca qui per le condizioni economiche del prodotto</p>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</div></div>
+<div style="margin: 0; padding: 0;" id="ko_footer_2">
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td align="center" style="background-color: #F8F4FB; padding-top: 20px; paddingbottom:
+20px;">
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td align="center" style="padding-bottom: 20px;">
+<a href="https://tracking.performagency.it/aff_c?offer_id=1936&aff_id=1089&file_id=8294&url_id=11138" target="_new">
+<img src="https://mailingwebcontent.younited-credit.com/images/
+generica_sponsorizzazione_cq/logo-logo_white.png" width="200" height="50" alt="Younited"
+style="max-width: 100%; vertical-align: middle;"/>
+</a>
+</td>
+</tr>
+</tbody></table>
+<table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+<tbody><tr>
+<td class="sm-px-20px" style="padding-left: 36px; padding-right: 36px; paddingbottom:
+20px;">
+<p style="margin: 0; color: #777777; text-align: center; font-family: Roboto, Arial,
+Helvetica, sans-serif; font-size: 12px; line-height: 14px;"><br/><strong><span style="color:
+rgb(119, 119, 119);">Messaggio pubblicitario con finalit&#224; promozionale:</span>&nbsp;</
+strong>Younited non eroga direttamente la cessione del quinto. Compilando il form, la tua
+richiesta sar&#224; trasmessa a partner specializzati che potranno valutare la tua situazione e
+proporti una soluzione personalizzata.</strong>.<br/></p>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<img src="https://www.awin1.com/cshow.php?s=4851194&v=9635&q=344097&r=704319"
+style="display: none" border="0" /><img src="https://tracking.performagency.it/aff_i?offer_id=1936&file_id=8294&aff_id=1089" width="0" height="0" style="position:absolute;visibility:hidden;" border="0" /></body></html>

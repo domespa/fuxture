@@ -11,8 +11,9 @@ export default function Footer() {
       <div className="bg-gray-800 py-8 px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-6">
-            <h3 className="text-2xl font-bold text-white mb-3">
-              📬 Iscriviti alla Newsletter
+            <h3 className="text-2xl font-bold text-white mb-3 flex items-center justify-center gap-2">
+              <Mail className="w-6 h-6" />
+              Iscriviti alla Newsletter
             </h3>
             <p className="text-gray-400">
               Ricevi i migliori articoli direttamente nella tua inbox

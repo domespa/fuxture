@@ -160,7 +160,7 @@ export default function ContactPage() {
               <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
               <div>
                 <h3 className="font-bold text-green-900 mb-2">
-                  Messaggio inviato con successo! ✅
+                  Messaggio inviato con successo!
                 </h3>
                 <p className="text-green-800 text-sm">
                   Grazie per averci contattato. Ti risponderemo entro 24-48 ore
@@ -177,7 +177,7 @@ export default function ContactPage() {
               <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
               <div>
                 <h3 className="font-bold text-red-900 mb-2">
-                  Errore nell'invio ❌
+                  Errore nell'invio
                 </h3>
                 <p className="text-red-800 text-sm">
                   Si è verificato un errore durante l'invio del messaggio.

@@ -69,13 +69,12 @@ export default function Register() {
       localStorage.setItem("user", JSON.stringify(response.user));
 
       console.log("Registration successful!", response);
-      alert("Registrazione riuscita! Token salvato.");
 
       navigate("/dashboard");
     } catch (err: any) {
       console.error("Registration error:", err);
       setError(
-        err.response?.data?.message || "Errore durante la registrazione"
+        err.response?.data?.message || "Errore durante la registrazione",
       );
     } finally {
       setIsLoading(false);

@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { Inbox } from "lucide-react";
 import { PostCard } from "./PostCard";
 import type { PostResponse } from "@/types/post.types";
 
@@ -51,7 +52,7 @@ const PostsGridComponent = ({
   if (posts.length === 0) {
     return (
       <div className="text-center py-20">
-        <div className="text-6xl mb-4">📭</div>
+        <Inbox className="mx-auto mb-4 h-16 w-16 text-gray-300" strokeWidth={1.5} />
         <h3 className="text-2xl font-bold text-gray-800 mb-2">
           Nessun articolo trovato
         </h3>

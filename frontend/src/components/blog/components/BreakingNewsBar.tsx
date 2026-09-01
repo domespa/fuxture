@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Circle } from "lucide-react";
 import type { NewsArticle } from "@/types/news.types";
 
 export default function BreakingNewsBar() {
@@ -60,7 +61,7 @@ export default function BreakingNewsBar() {
       <div className="flex items-center gap-4 px-6 py-3">
         {/* Badge BREAKING NEWS */}
         <div className="flex-shrink-0 flex items-center gap-1.5 bg-red-600 px-2 py-0.5 rounded">
-          <span className="text-red-600 text-xs animate-pulse">🔴</span>
+          <Circle className="h-2 w-2 animate-pulse fill-white text-white" />
           <span className="text-white font-bold text-xs uppercase tracking-wide">
             <span className="sm:hidden">Live</span>
             <span className="hidden sm:inline">Breaking News</span>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ExternalLink, Newspaper, RefreshCw } from "lucide-react";
+import { AlertCircle, ExternalLink, Newspaper, RefreshCw } from "lucide-react";
 
 interface NewsArticle {
   title: string;
@@ -64,7 +64,9 @@ export default function NewsWidget() {
   if (error)
     return (
       <div className="nw-error">
-        <p>⚠️ {error}</p>
+        <p className="flex items-center justify-center gap-1.5">
+          <AlertCircle size={14} /> {error}
+        </p>
         <button onClick={fetchNews} className="nw-retry">
           <RefreshCw size={13} /> Riprova
         </button>

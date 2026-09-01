@@ -56,7 +56,6 @@ export default function Login() {
       localStorage.setItem("user", JSON.stringify(response.user));
 
       console.log("Login riuscito", response);
-      alert("Login riuscito! Token salvato 👍");
 
       // REDIRECT
       navigate("/dashboard");

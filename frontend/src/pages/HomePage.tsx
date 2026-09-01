@@ -3,7 +3,7 @@ import { categoriesAPI, postsAPI } from "@/services/api";
 import type { Category } from "@/types/category.types";
 import type { PostResponse, PostStatus } from "@/types/post.types";
 import { Link } from "react-router-dom";
-import { ArrowRight, TrendingUp } from "lucide-react";
+import { ArrowRight, TrendingUp, Gamepad2 } from "lucide-react";
 import FeaturedPost from "@/components/blog/components/FeaturedPost";
 import NewsWidget from "@/components/blog/components/NewsWidget";
 import BreakingNewsBar from "@/components/blog/components/BreakingNewsBar";
@@ -63,6 +63,10 @@ export default function HomePage() {
             <Link to="/posts" className="hp-topbar__link">
               <TrendingUp size={14} />
               Tutti gli Articoli
+            </Link>
+            <Link to="/games" className="hp-topbar__link">
+              <Gamepad2 size={14} />
+              Giochi
             </Link>
           </nav>
         </div>

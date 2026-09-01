@@ -44,7 +44,7 @@ export default function CookieBanner() {
           {/* Content */}
           <div className="flex-1">
             <h3 className="text-lg font-bold text-gray-900 mb-2">
-              🍪 Utilizziamo i Cookie
+              Utilizziamo i Cookie
             </h3>
             <p className="text-sm text-gray-600 leading-relaxed mb-4">
               Questo sito utilizza solo strumenti tecnici necessari al suo

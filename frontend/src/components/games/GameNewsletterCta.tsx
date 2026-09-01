@@ -4,6 +4,7 @@ import { Loader2, Mail, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { subscribersAPI } from "@/services/api";
+import { PANEL_CLASS } from "./theme";
 
 interface GameNewsletterCtaProps {
   gameSlug: string;
@@ -58,7 +59,7 @@ export default function GameNewsletterCta({
 
   if (isDone) {
     return (
-      <div className="flex items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-6 text-emerald-800">
+      <div className="flex items-center justify-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-emerald-300">
         <CheckCircle2 className="h-5 w-5" />
         <span className="text-sm font-medium">
           Iscrizione registrata. Ti avvisiamo quando esce un nuovo gioco.
@@ -68,15 +69,15 @@ export default function GameNewsletterCta({
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className={`${PANEL_CLASS} p-6`}>
       <div className="mb-4 flex items-center gap-2">
-        <Mail className="h-5 w-5 text-blue-600" />
-        <h3 className="text-lg font-semibold text-gray-900">
+        <Mail className="h-5 w-5 text-blue-400" />
+        <h3 className="text-lg font-semibold text-white">
           Ti e piaciuto {gameTitle}?
         </h3>
       </div>
 
-      <p className="mb-4 text-sm text-gray-600">
+      <p className="mb-4 text-sm text-slate-300">
         Lascia la tua email: ti scriviamo quando pubblichiamo un nuovo gioco o
         una nuova sfida. Niente spam, disiscrizione con un click.
       </p>
@@ -89,7 +90,7 @@ export default function GameNewsletterCta({
             onChange={(e) => setEmail(e.target.value)}
             placeholder="La tua email"
             disabled={isLoading}
-            className="flex-1"
+            className="flex-1 border-slate-600 bg-slate-900 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
           />
           <Button type="submit" disabled={isLoading}>
             {isLoading ? (
@@ -100,22 +101,22 @@ export default function GameNewsletterCta({
           </Button>
         </div>
 
-        <label className="flex items-start gap-2 text-xs text-gray-500">
+        <label className="flex items-start gap-2 text-xs text-slate-400">
           <input
             type="checkbox"
             checked={acceptedPrivacy}
             onChange={(e) => setAcceptedPrivacy(e.target.checked)}
-            className="mt-0.5"
+            className="mt-0.5 accent-blue-500"
           />
           <span>
             Accetto la{" "}
-            <Link to="/privacy-policy" className="text-blue-600 underline">
+            <Link to="/privacy-policy" className="text-blue-400 underline">
               Privacy Policy
             </Link>
           </span>
         </label>
 
-        {error && <p className="text-xs text-red-600">{error}</p>}
+        {error && <p className="text-xs text-red-400">{error}</p>}
       </form>
     </div>
   );

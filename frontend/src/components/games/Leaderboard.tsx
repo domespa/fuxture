@@ -1,5 +1,6 @@
 import { Loader2, Trophy } from "lucide-react";
 import type { GameScore, LeaderboardPeriod } from "@/types/game.types";
+import { PANEL_CLASS } from "./theme";
 
 interface LeaderboardProps {
   period: LeaderboardPeriod;
@@ -19,13 +20,13 @@ export default function Leaderboard({
   playerRank,
 }: LeaderboardProps) {
   return (
-    <aside className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+    <aside className={`${PANEL_CLASS} p-5`}>
       <div className="mb-1 flex items-center gap-2">
-        <Trophy className="h-5 w-5 text-amber-500" />
-        <h2 className="text-lg font-bold text-gray-900">Classifica</h2>
+        <Trophy className="h-5 w-5 text-amber-400" />
+        <h2 className="text-lg font-bold text-white">Classifica</h2>
       </div>
 
-      <p className="mb-4 text-xs text-gray-500">
+      <p className="mb-4 text-xs text-slate-400">
         {period === "DAILY"
           ? "I migliori 10 di oggi. Si azzera a mezzanotte."
           : "I 10 punteggi piu alti di sempre."}
@@ -33,10 +34,10 @@ export default function Leaderboard({
 
       {isLoading ? (
         <div className="flex h-32 items-center justify-center">
-          <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+          <Loader2 className="h-5 w-5 animate-spin text-slate-500" />
         </div>
       ) : scores.length === 0 ? (
-        <p className="py-8 text-center text-sm text-gray-500">
+        <p className="py-8 text-center text-sm text-slate-400">
           Nessun punteggio
           {period === "DAILY" ? " oggi" : ""}. Puoi essere il primo.
         </p>
@@ -50,29 +51,31 @@ export default function Leaderboard({
               <li
                 key={entry.id}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
-                  isPlayer ? "bg-blue-50 ring-1 ring-blue-200" : ""
+                  isPlayer
+                    ? "bg-blue-500/15 ring-1 ring-blue-400/40"
+                    : "hover:bg-slate-700/40"
                 }`}
               >
-                <span className="w-6 shrink-0 text-center text-sm font-bold text-gray-500">
+                <span className="w-6 shrink-0 text-center text-sm font-bold text-slate-400">
                   {MEDALS[entry.position - 1] ?? entry.position}
                 </span>
 
                 <div className="min-w-0 flex-1">
                   <div
                     className={`truncate text-sm font-medium ${
-                      isPlayer ? "text-blue-700" : "text-gray-900"
+                      isPlayer ? "text-blue-300" : "text-white"
                     }`}
                   >
                     {entry.playerName}
                   </div>
                   {entry.detail && (
-                    <div className="truncate text-xs text-gray-500">
+                    <div className="truncate text-xs text-slate-400">
                       {entry.detail}
                     </div>
                   )}
                 </div>
 
-                <span className="shrink-0 text-sm font-bold text-gray-900">
+                <span className="shrink-0 text-sm font-bold text-white">
                   {entry.score}
                 </span>
               </li>
@@ -83,9 +86,10 @@ export default function Leaderboard({
 
       {/* POSIZIONE FUORI DALLA TOP 10 */}
       {playerRank != null && playerRank > scores.length && (
-        <p className="mt-4 border-t border-gray-100 pt-3 text-center text-xs text-gray-500">
-          Sei in posizione <span className="font-bold">{playerRank}</span>.
-          Ancora un tentativo per entrare in classifica.
+        <p className="mt-4 border-t border-slate-700 pt-3 text-center text-xs text-slate-400">
+          Sei in posizione{" "}
+          <span className="font-bold text-white">{playerRank}</span>. Ancora un
+          tentativo per entrare in classifica.
         </p>
       )}
     </aside>

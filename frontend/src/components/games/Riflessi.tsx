@@ -194,32 +194,32 @@ export default function Riflessi({ onGameOver }: GameComponentProps) {
     <div className="flex w-full flex-col items-center gap-4">
       {/* STATISTICHE */}
       <div className="grid w-full max-w-2xl grid-cols-4 gap-2 text-center">
-        <div className="rounded-lg bg-white p-3 shadow-sm">
-          <div className="flex items-center justify-center gap-1 text-xs text-gray-500">
+        <div className="rounded-lg border border-slate-700 bg-slate-900/60 p-3">
+          <div className="flex items-center justify-center gap-1 text-xs text-slate-400">
             <Zap className="h-3 w-3" /> Punti
           </div>
-          <div className="text-xl font-bold text-gray-900">{score}</div>
+          <div className="text-xl font-bold text-white">{score}</div>
         </div>
-        <div className="rounded-lg bg-white p-3 shadow-sm">
-          <div className="flex items-center justify-center gap-1 text-xs text-gray-500">
+        <div className="rounded-lg border border-slate-700 bg-slate-900/60 p-3">
+          <div className="flex items-center justify-center gap-1 text-xs text-slate-400">
             <Timer className="h-3 w-3" /> Tempo
           </div>
-          <div className="text-xl font-bold text-gray-900">{timeLeft}s</div>
+          <div className="text-xl font-bold text-white">{timeLeft}s</div>
         </div>
-        <div className="rounded-lg bg-white p-3 shadow-sm">
-          <div className="flex items-center justify-center gap-1 text-xs text-gray-500">
+        <div className="rounded-lg border border-slate-700 bg-slate-900/60 p-3">
+          <div className="flex items-center justify-center gap-1 text-xs text-slate-400">
             <TargetIcon className="h-3 w-3" /> Precisione
           </div>
-          <div className="text-xl font-bold text-gray-900">{accuracy}%</div>
+          <div className="text-xl font-bold text-white">{accuracy}%</div>
         </div>
-        <div className="rounded-lg bg-white p-3 shadow-sm">
-          <div className="text-xs text-gray-500">Record</div>
-          <div className="text-xl font-bold text-gray-900">{bestScore}</div>
+        <div className="rounded-lg border border-slate-700 bg-slate-900/60 p-3">
+          <div className="text-xs text-slate-400">Record</div>
+          <div className="text-xl font-bold text-white">{bestScore}</div>
         </div>
       </div>
 
       {/* AREA DI GIOCO */}
-      <div className="relative aspect-[4/3] w-full max-w-2xl select-none overflow-hidden rounded-xl bg-slate-900 shadow-inner">
+      <div className="relative aspect-[4/3] w-full max-w-2xl select-none overflow-hidden rounded-xl bg-slate-950 ring-1 ring-slate-700">
         {status === "playing" && target && (
           <button
             key={target.id}

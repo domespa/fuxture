@@ -15,7 +15,7 @@ export default function GameEmbed({ title, entryPath }: GameEmbedProps) {
     : `/embedded-games/${entryPath.replace(/^\/+/, "")}`;
 
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-gray-200 bg-slate-900 shadow-sm">
+    <div className="w-full overflow-hidden rounded-xl border border-slate-700 bg-slate-950">
       <iframe
         src={src}
         title={title}

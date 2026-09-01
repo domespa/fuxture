@@ -13,6 +13,7 @@ import { getGameComponent } from "@/components/games/registry";
 import type { GameResult } from "@/components/games/registry";
 import { useSeo } from "@/hooks/useSeo";
 import { usePlayerName } from "@/hooks/usePlayerName";
+import { GAMES_BG } from "@/components/games/theme";
 
 export default function GameDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -120,10 +121,10 @@ export default function GameDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: "#F8FAFC" }}>
+      <div className="min-h-screen" style={{ backgroundColor: GAMES_BG }}>
         <Header />
         <div className="flex h-96 items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+          <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
         </div>
       </div>
     );
@@ -131,19 +132,19 @@ export default function GameDetailPage() {
 
   if (notFound || !game) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: "#F8FAFC" }}>
+      <div className="min-h-screen" style={{ backgroundColor: GAMES_BG }}>
         <Header />
         <div className="container mx-auto px-4 py-20 text-center">
-          <Gamepad2 className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-          <h1 className="mb-2 text-2xl font-bold text-gray-900">
+          <Gamepad2 className="mx-auto mb-4 h-12 w-12 text-slate-600" />
+          <h1 className="mb-2 text-2xl font-bold text-white">
             Gioco non trovato
           </h1>
-          <p className="mb-6 text-gray-600">
+          <p className="mb-6 text-slate-300">
             Questo gioco non esiste o non e piu disponibile.
           </p>
           <Link
             to="/games"
-            className="inline-flex items-center gap-2 text-blue-600 hover:underline"
+            className="inline-flex items-center gap-2 text-blue-400 hover:underline"
           >
             <ArrowLeft className="h-4 w-4" />
             Torna ai giochi
@@ -162,21 +163,21 @@ export default function GameDetailPage() {
   const gameArea = needsPlayerName ? (
     <PlayerNameGate gameTitle={game.title} onConfirm={setPlayerName} />
   ) : (
-    <div className="rounded-xl bg-slate-50 p-4 sm:p-6">
+    <div className="rounded-xl border border-slate-700 bg-slate-800 p-4 sm:p-6">
       {game.type === "EMBED" && game.entryPath ? (
         <GameEmbed title={game.title} entryPath={game.entryPath} />
       ) : GameComponent ? (
         <Suspense
           fallback={
             <div className="flex h-64 items-center justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+              <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
             </div>
           }
         >
           <GameComponent onGameOver={handleGameOver} />
         </Suspense>
       ) : (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-center text-sm text-amber-800">
+        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-6 text-center text-sm text-amber-200">
           Gioco non disponibile: la chiave "{game.entryPath}" non e registrata
           nel registry dei giochi.
         </div>
@@ -185,14 +186,14 @@ export default function GameDetailPage() {
   );
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F8FAFC" }}>
+    <div className="min-h-screen" style={{ backgroundColor: GAMES_BG }}>
       <Header />
 
       <div className="container mx-auto max-w-6xl px-4 py-8">
         {/* BREADCRUMB */}
         <Link
           to="/games"
-          className="mb-6 inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-slate-300 hover:text-blue-400"
         >
           <ArrowLeft className="h-4 w-4" />
           Tutti i giochi
@@ -200,13 +201,13 @@ export default function GameDetailPage() {
 
         {/* TITOLO */}
         <div className="mb-6">
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">
+          <h1 className="mb-2 text-3xl font-bold text-white">
             {game.title}
           </h1>
           {game.description && (
-            <p className="text-gray-600">{game.description}</p>
+            <p className="text-slate-300">{game.description}</p>
           )}
-          <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-gray-500">
+          <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-slate-400">
             <span className="flex items-center gap-1">
               <Users className="h-4 w-4" />
               {game.plays.toLocaleString("it-IT")} partite giocate
@@ -220,15 +221,15 @@ export default function GameDetailPage() {
               </span>
             )}
             {hasLeaderboard && playerName && (
-              <span className="text-gray-500">
+              <span className="text-slate-400">
                 Giochi come{" "}
-                <span className="font-semibold text-gray-700">
+                <span className="font-semibold text-slate-200">
                   {playerName}
                 </span>{" "}
                 <button
                   type="button"
                   onClick={() => setPlayerName("")}
-                  className="text-blue-600 hover:underline"
+                  className="text-blue-400 hover:underline"
                 >
                   (cambia)
                 </button>
@@ -258,14 +259,14 @@ export default function GameDetailPage() {
 
         {/* ISTRUZIONI */}
         {game.instructions && (
-          <div className="mb-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="mb-8 rounded-xl border border-slate-700 bg-slate-800 p-6">
             <div className="mb-2 flex items-center gap-2">
-              <Info className="h-5 w-5 text-blue-600" />
-              <h2 className="text-lg font-semibold text-gray-900">
+              <Info className="h-5 w-5 text-blue-400" />
+              <h2 className="text-lg font-semibold text-white">
                 Come si gioca
               </h2>
             </div>
-            <p className="whitespace-pre-line text-sm text-gray-600">
+            <p className="whitespace-pre-line text-sm text-slate-300">
               {game.instructions}
             </p>
           </div>

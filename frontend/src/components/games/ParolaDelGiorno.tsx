@@ -104,13 +104,13 @@ const evaluateGuess = (guess: string, solution: string): LetterState[] => {
 const CELL_STYLES: Record<LetterState, string> = {
   correct: "bg-emerald-500 border-emerald-500 text-white",
   present: "bg-amber-400 border-amber-400 text-white",
-  absent: "bg-gray-400 border-gray-400 text-white",
+  absent: "bg-slate-600 border-slate-600 text-slate-300",
 };
 
 const KEY_STYLES: Record<LetterState, string> = {
   correct: "bg-emerald-500 text-white",
   present: "bg-amber-400 text-white",
-  absent: "bg-gray-400 text-white",
+  absent: "bg-slate-900 text-slate-500",
 };
 
 export default function ParolaDelGiorno({ onGameOver }: GameComponentProps) {
@@ -347,8 +347,8 @@ export default function ParolaDelGiorno({ onGameOver }: GameComponentProps) {
                   row.states
                     ? CELL_STYLES[row.states[cellIndex]]
                     : letter.trim()
-                      ? "border-gray-400 bg-white text-gray-900"
-                      : "border-gray-200 bg-white text-gray-900"
+                      ? "border-slate-500 bg-slate-900 text-white"
+                      : "border-slate-700 bg-slate-900/60 text-white"
                 }`}
               >
                 {letter.trim()}
@@ -361,7 +361,7 @@ export default function ParolaDelGiorno({ onGameOver }: GameComponentProps) {
       {/* ESITO */}
       {status !== "playing" && (
         <div className="flex flex-col items-center gap-3 text-center">
-          <p className="text-lg font-semibold text-gray-900">
+          <p className="text-lg font-semibold text-white">
             {status === "won"
               ? `Indovinata in ${guesses.length} tentativi!`
               : `Niente da fare: era ${solution.toUpperCase()}`}
@@ -376,7 +376,7 @@ export default function ParolaDelGiorno({ onGameOver }: GameComponentProps) {
               Rigioca
             </Button>
           </div>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-slate-400">
             Una parola nuova ogni giorno a mezzanotte.
           </p>
         </div>
@@ -401,7 +401,7 @@ export default function ParolaDelGiorno({ onGameOver }: GameComponentProps) {
                   } ${
                     state
                       ? KEY_STYLES[state]
-                      : "bg-gray-200 text-gray-900 hover:bg-gray-300"
+                      : "bg-slate-600 text-white hover:bg-slate-500"
                   }`}
                   aria-label={key === "CANC" ? "Cancella" : key}
                 >

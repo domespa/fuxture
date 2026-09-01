@@ -7,6 +7,7 @@ import {
   MIN_NAME_LENGTH,
   sanitizePlayerName,
 } from "@/hooks/usePlayerName";
+import { PANEL_CLASS } from "./theme";
 
 interface PlayerNameGateProps {
   gameTitle: string;
@@ -38,14 +39,16 @@ export default function PlayerNameGate({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 rounded-xl bg-white px-6 py-12 text-center shadow-sm">
-      <Trophy className="h-10 w-10 text-amber-500" />
+    <div
+      className={`${PANEL_CLASS} flex flex-col items-center justify-center gap-4 px-6 py-12 text-center`}
+    >
+      <Trophy className="h-10 w-10 text-amber-400" />
 
       <div>
-        <h2 className="text-xl font-bold text-gray-900">
+        <h2 className="text-xl font-bold text-white">
           Come ti chiamiamo in classifica?
         </h2>
-        <p className="mt-1 max-w-sm text-sm text-gray-600">
+        <p className="mx-auto mt-1 max-w-sm text-sm text-slate-300">
           Scegli un nickname: comparira nella classifica di {gameTitle} quando
           finisci la partita. Te lo ricordiamo noi, non serve registrarsi.
         </p>
@@ -64,12 +67,12 @@ export default function PlayerNameGate({
           placeholder="Il tuo nickname"
           maxLength={MAX_NAME_LENGTH}
           autoFocus
-          className="flex-1"
+          className="flex-1 border-slate-600 bg-slate-900 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
         />
         <Button type="submit">Inizia a giocare</Button>
       </form>
 
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-red-400">{error}</p>}
     </div>
   );
 }

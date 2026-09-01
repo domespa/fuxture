@@ -245,6 +245,8 @@ model Game {
   updatedAt       DateTime    @updatedAt
   categoryId      String?
   category        Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  leaderboard     LeaderboardPeriod @default(NONE)
+  scores          GameScore[]
 }
 
 enum GameType {
@@ -255,4 +257,27 @@ enum GameType {
 enum GameStatus {
   DRAFT
   PUBLISHED
+}
+
+// CLASSIFICHE: NONE = disattivata, ALL_TIME = record assoluti, DAILY = si azzera ogni giorno
+enum LeaderboardPeriod {
+  NONE
+  ALL_TIME
+  DAILY
+}
+
+// PUNTEGGI
+model GameScore {
+  id          String    @id @default(cuid())
+  gameId      String
+  game        Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  playerName  String
+  score       Int
+  detail      String?
+  periodKey   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([gameId, periodKey, playerName])
+  @@index([gameId, periodKey, score])
 }

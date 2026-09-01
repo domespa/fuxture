@@ -37,6 +37,7 @@ export default function Riflessi({ onGameOver }: GameComponentProps) {
 
   const idRef = useRef(0);
   const hitsRef = useRef(0);
+  const missesRef = useRef(0);
   const scoreRef = useRef(0);
   const bestRef = useRef(0);
   const reactionsRef = useRef<number[]>([]);
@@ -78,6 +79,7 @@ export default function Riflessi({ onGameOver }: GameComponentProps) {
   const startGame = useCallback(() => {
     idRef.current = 0;
     hitsRef.current = 0;
+    missesRef.current = 0;
     reactionsRef.current = [];
     setScore(0);
     setHits(0);
@@ -131,7 +133,16 @@ export default function Riflessi({ onGameOver }: GameComponentProps) {
       }
     }
 
-    onGameOver?.({ score: finalScore });
+    const finalHits = hitsRef.current;
+    const finalShots = finalHits + missesRef.current;
+    const finalAccuracy = finalShots
+      ? Math.round((finalHits / finalShots) * 100)
+      : 0;
+
+    onGameOver?.({
+      score: finalScore,
+      detail: `${finalHits} bersagli · ${finalAccuracy}%`,
+    });
   }, [status, timeLeft, onGameOver]);
 
   // SCADENZA DEL BERSAGLIO
@@ -140,7 +151,10 @@ export default function Riflessi({ onGameOver }: GameComponentProps) {
 
     const timeout = setTimeout(() => {
       // LE BOMBE IGNORATE NON SONO UN ERRORE
-      if (!target.isBomb) setMisses((prev) => prev + 1);
+      if (!target.isBomb) {
+        missesRef.current += 1;
+        setMisses(missesRef.current);
+      }
       spawnTarget();
     }, target.lifetime);
 
@@ -152,7 +166,8 @@ export default function Riflessi({ onGameOver }: GameComponentProps) {
 
     if (target.isBomb) {
       setScore((prev) => Math.max(0, prev - BOMB_PENALTY));
-      setMisses((prev) => prev + 1);
+      missesRef.current += 1;
+      setMisses(missesRef.current);
       spawnTarget();
       return;
     }

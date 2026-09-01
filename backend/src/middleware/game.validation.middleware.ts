@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const VALID_TYPES = ["INTERNAL", "EMBED"];
 const VALID_STATUS = ["DRAFT", "PUBLISHED"];
+const VALID_LEADERBOARD = ["NONE", "ALL_TIME", "DAILY"];
 
 export const validateCreateGame = (
   req: Request,
@@ -10,7 +11,8 @@ export const validateCreateGame = (
   next: NextFunction
 ): void => {
   const errors: Array<{ field: string; message: string }> = [];
-  const { title, slug, type, status, entryPath, tags, order } = req.body;
+  const { title, slug, type, status, entryPath, tags, order, leaderboard } =
+    req.body;
 
   // TITLE
   if (!title) {
@@ -68,6 +70,14 @@ export const validateCreateGame = (
     errors.push({ field: "order", message: "Order deve essere un numero" });
   }
 
+  // LEADERBOARD
+  if (leaderboard !== undefined && !VALID_LEADERBOARD.includes(leaderboard)) {
+    errors.push({
+      field: "leaderboard",
+      message: "Classifica deve essere NONE, ALL_TIME o DAILY",
+    });
+  }
+
   if (errors.length > 0) {
     res.status(400).json({ errors });
     return;
@@ -82,7 +92,8 @@ export const validateUpdateGame = (
   next: NextFunction
 ): void => {
   const errors: Array<{ field: string; message: string }> = [];
-  const { title, slug, type, status, entryPath, tags, order } = req.body;
+  const { title, slug, type, status, entryPath, tags, order, leaderboard } =
+    req.body;
 
   if (Object.keys(req.body).length === 0) {
     errors.push({
@@ -143,6 +154,14 @@ export const validateUpdateGame = (
   // ORDER
   if (order !== undefined && typeof order !== "number") {
     errors.push({ field: "order", message: "Order deve essere un numero" });
+  }
+
+  // LEADERBOARD
+  if (leaderboard !== undefined && !VALID_LEADERBOARD.includes(leaderboard)) {
+    errors.push({
+      field: "leaderboard",
+      message: "Classifica deve essere NONE, ALL_TIME o DAILY",
+    });
   }
 
   if (errors.length > 0) {

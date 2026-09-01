@@ -35,6 +35,7 @@ const toGameResponse = (game: GameWithCategory): GameResponse => {
     createdAt: game.createdAt,
     updatedAt: game.updatedAt,
     categoryId: game.categoryId,
+    leaderboard: game.leaderboard,
     category: game.category
       ? {
           id: game.category.id,
@@ -264,6 +265,7 @@ export const createGame = async (
       seoTitle,
       seoDescription,
       categoryId,
+      leaderboard = "NONE",
     }: CreateGameRequest = req.body;
 
     let finalSlug: string;
@@ -296,6 +298,7 @@ export const createGame = async (
         seoDescription: seoDescription?.trim() || null,
         publishedAt: status === "PUBLISHED" ? new Date() : null,
         categoryId: categoryId || null,
+        leaderboard,
       },
       include: { category: true },
     });
@@ -339,6 +342,7 @@ export const updateGame = async (
       seoTitle,
       seoDescription,
       categoryId,
+      leaderboard,
     }: UpdateGameRequest = req.body;
 
     const existing = await prisma.game.findUnique({ where: { id } });
@@ -372,6 +376,7 @@ export const updateGame = async (
     if (seoTitle !== undefined) updateData.seoTitle = seoTitle.trim() || null;
     if (seoDescription !== undefined)
       updateData.seoDescription = seoDescription.trim() || null;
+    if (leaderboard !== undefined) updateData.leaderboard = leaderboard;
 
     if (categoryId !== undefined) {
       updateData.category = categoryId

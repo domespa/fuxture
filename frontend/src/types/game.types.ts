@@ -1,5 +1,6 @@
 export type GameType = "INTERNAL" | "EMBED";
 export type GameStatus = "DRAFT" | "PUBLISHED";
+export type LeaderboardPeriod = "NONE" | "ALL_TIME" | "DAILY";
 
 export interface Game {
   id: string;
@@ -21,6 +22,7 @@ export interface Game {
   createdAt: string;
   updatedAt: string;
   categoryId: string | null;
+  leaderboard: LeaderboardPeriod;
   category?: {
     id: string;
     name: string;
@@ -66,6 +68,37 @@ export interface CreateGameRequest {
   seoTitle?: string;
   seoDescription?: string;
   categoryId?: string | null;
+  leaderboard?: LeaderboardPeriod;
 }
 
 export type UpdateGameRequest = Partial<CreateGameRequest>;
+
+// ====================================================================================================== //
+//                                          CLASSIFICHE
+// ====================================================================================================== //
+export interface GameScore {
+  id: string;
+  position: number;
+  playerName: string;
+  score: number;
+  detail: string | null;
+  createdAt: string;
+}
+
+export interface LeaderboardResponse {
+  period: LeaderboardPeriod;
+  periodKey: string | null;
+  scores: GameScore[];
+}
+
+export interface SubmitScoreRequest {
+  playerName: string;
+  score: number;
+  detail?: string;
+}
+
+export interface SubmitScoreResponse extends LeaderboardResponse {
+  rank: number;
+  isPersonalBest: boolean;
+  playerName: string;
+}

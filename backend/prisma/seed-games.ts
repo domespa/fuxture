@@ -15,6 +15,7 @@ const games = [
     instructions:
       "Scrivi una parola di 5 lettere e premi INVIO.\nVerde: lettera giusta al posto giusto.\nGiallo: lettera presente ma in un altra posizione.\nGrigio: lettera non presente nella parola.\nHai 6 tentativi e ogni giorno a mezzanotte cambia la parola.",
     entryPath: "parola-del-giorno",
+    leaderboard: "DAILY" as const,
     seoTitle: "Parola del Giorno - il gioco di parole italiano gratis",
     seoDescription:
       "Indovina la parola di 5 lettere del giorno. Gioco di parole italiano gratis, senza registrazione, anche da telefono.",
@@ -29,6 +30,7 @@ const games = [
     instructions:
       "Clicca o tocca i cerchi verdi appena compaiono: piu sei veloce, piu punti prendi.\nLe bombe rosse tolgono 5 punti.\nLa partita dura 30 secondi e i bersagli diventano sempre piu piccoli e veloci.",
     entryPath: "riflessi",
+    leaderboard: "ALL_TIME" as const,
     seoTitle: "Riflessi - test di velocita di reazione online",
     seoDescription:
       "Metti alla prova i tuoi riflessi: 30 secondi per colpire piu bersagli possibile. Gioco gratis da browser, anche da telefono.",
@@ -41,7 +43,7 @@ async function main() {
   for (const game of games) {
     const result = await prisma.game.upsert({
       where: { slug: game.slug },
-      update: {},
+      update: { leaderboard: game.leaderboard },
       create: {
         ...game,
         type: "INTERNAL",

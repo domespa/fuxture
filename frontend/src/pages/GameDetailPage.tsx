@@ -1,13 +1,18 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Gamepad2, Info, Loader2, Users } from "lucide-react";
-import { gamesAPI } from "@/services/api";
-import type { Game } from "@/types/game.types";
+import toast from "react-hot-toast";
+import { gamesAPI, leaderboardAPI } from "@/services/api";
+import type { Game, GameScore } from "@/types/game.types";
 import Header from "@/components/blog/components/Header";
 import GameEmbed from "@/components/games/GameEmbed";
 import GameNewsletterCta from "@/components/games/GameNewsletterCta";
+import Leaderboard from "@/components/games/Leaderboard";
+import PlayerNameGate from "@/components/games/PlayerNameGate";
 import { getGameComponent } from "@/components/games/registry";
+import type { GameResult } from "@/components/games/registry";
 import { useSeo } from "@/hooks/useSeo";
+import { usePlayerName } from "@/hooks/usePlayerName";
 
 export default function GameDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -15,8 +20,16 @@ export default function GameDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [hasFinished, setHasFinished] = useState(false);
+
+  const [scores, setScores] = useState<GameScore[]>([]);
+  const [scoresLoading, setScoresLoading] = useState(false);
+  const [playerRank, setPlayerRank] = useState<number | null>(null);
+
+  const { playerName, setPlayerName } = usePlayerName();
   const ctaRef = useRef<HTMLDivElement>(null);
   const trackedRef = useRef<string | null>(null);
+
+  const hasLeaderboard = !!game && game.leaderboard !== "NONE";
 
   useSeo({
     title: game ? `${game.seoTitle || game.title} | Fuxture` : "Giochi",
@@ -32,6 +45,7 @@ export default function GameDetailPage() {
         setIsLoading(true);
         setNotFound(false);
         setHasFinished(false);
+        setPlayerRank(null);
         const data = await gamesAPI.getGameBySlug(slug);
         setGame(data);
 
@@ -39,6 +53,19 @@ export default function GameDetailPage() {
         if (trackedRef.current !== slug) {
           trackedRef.current = slug;
           gamesAPI.trackPlay(slug);
+        }
+
+        // CLASSIFICA
+        if (data.leaderboard !== "NONE") {
+          setScoresLoading(true);
+          try {
+            const board = await leaderboardAPI.getScores(slug);
+            setScores(board.scores);
+          } finally {
+            setScoresLoading(false);
+          }
+        } else {
+          setScores([]);
         }
       } catch (error) {
         console.error("Error fetching game", error);
@@ -51,13 +78,45 @@ export default function GameDetailPage() {
     loadGame();
   }, [slug]);
 
-  // A FINE PARTITA PORTIAMO L UTENTE SULLA CTA NEWSLETTER
-  const handleGameOver = useCallback(() => {
-    setHasFinished(true);
-    setTimeout(() => {
-      ctaRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 600);
-  }, []);
+  // FINE PARTITA: PUNTEGGIO IN CLASSIFICA, POI CTA NEWSLETTER
+  const handleGameOver = useCallback(
+    async (result: GameResult) => {
+      setHasFinished(true);
+
+      const shouldSubmit =
+        !!slug &&
+        !!game &&
+        game.leaderboard !== "NONE" &&
+        !!playerName &&
+        typeof result.score === "number" &&
+        result.score > 0;
+
+      if (shouldSubmit) {
+        try {
+          const board = await leaderboardAPI.submitScore(slug, {
+            playerName,
+            score: result.score as number,
+            detail: result.detail,
+          });
+
+          setScores(board.scores);
+          setPlayerRank(board.rank);
+
+          if (board.isPersonalBest && board.rank <= 3) {
+            toast.success(`Sei ${board.rank}° in classifica!`);
+          }
+        } catch (error) {
+          console.error("Error submitting score", error);
+          toast.error("Punteggio non salvato in classifica");
+        }
+      }
+
+      setTimeout(() => {
+        ctaRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 800);
+    },
+    [game, playerName, slug]
+  );
 
   if (isLoading) {
     return (
@@ -97,11 +156,39 @@ export default function GameDetailPage() {
   const GameComponent =
     game.type === "INTERNAL" ? getGameComponent(game.entryPath) : null;
 
+  // IL NICKNAME SI CHIEDE UNA VOLTA SOLA, PRIMA DELLA PRIMA PARTITA
+  const needsPlayerName = hasLeaderboard && !playerName;
+
+  const gameArea = needsPlayerName ? (
+    <PlayerNameGate gameTitle={game.title} onConfirm={setPlayerName} />
+  ) : (
+    <div className="rounded-xl bg-slate-50 p-4 sm:p-6">
+      {game.type === "EMBED" && game.entryPath ? (
+        <GameEmbed title={game.title} entryPath={game.entryPath} />
+      ) : GameComponent ? (
+        <Suspense
+          fallback={
+            <div className="flex h-64 items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+            </div>
+          }
+        >
+          <GameComponent onGameOver={handleGameOver} />
+        </Suspense>
+      ) : (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-center text-sm text-amber-800">
+          Gioco non disponibile: la chiave "{game.entryPath}" non e registrata
+          nel registry dei giochi.
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F8FAFC" }}>
       <Header />
 
-      <div className="container mx-auto max-w-4xl px-4 py-8">
+      <div className="container mx-auto max-w-6xl px-4 py-8">
         {/* BREADCRUMB */}
         <Link
           to="/games"
@@ -119,7 +206,7 @@ export default function GameDetailPage() {
           {game.description && (
             <p className="text-gray-600">{game.description}</p>
           )}
-          <div className="mt-3 flex items-center gap-4 text-sm text-gray-500">
+          <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-gray-500">
             <span className="flex items-center gap-1">
               <Users className="h-4 w-4" />
               {game.plays.toLocaleString("it-IT")} partite giocate
@@ -132,28 +219,40 @@ export default function GameDetailPage() {
                 {game.category.icon} {game.category.name}
               </span>
             )}
+            {hasLeaderboard && playerName && (
+              <span className="text-gray-500">
+                Giochi come{" "}
+                <span className="font-semibold text-gray-700">
+                  {playerName}
+                </span>{" "}
+                <button
+                  type="button"
+                  onClick={() => setPlayerName("")}
+                  className="text-blue-600 hover:underline"
+                >
+                  (cambia)
+                </button>
+              </span>
+            )}
           </div>
         </div>
 
-        {/* GIOCO */}
-        <div className="mb-8 rounded-xl bg-slate-50 p-4 sm:p-6">
-          {game.type === "EMBED" && game.entryPath ? (
-            <GameEmbed title={game.title} entryPath={game.entryPath} />
-          ) : GameComponent ? (
-            <Suspense
-              fallback={
-                <div className="flex h-64 items-center justify-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-                </div>
-              }
-            >
-              <GameComponent onGameOver={handleGameOver} />
-            </Suspense>
-          ) : (
-            <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-center text-sm text-amber-800">
-              Gioco non disponibile: la chiave "{game.entryPath}" non e
-              registrata nel registry dei giochi.
-            </div>
+        {/* GIOCO + CLASSIFICA */}
+        <div
+          className={`mb-8 grid gap-6 ${
+            hasLeaderboard ? "lg:grid-cols-[minmax(0,1fr)_320px]" : ""
+          }`}
+        >
+          <div className="min-w-0">{gameArea}</div>
+
+          {hasLeaderboard && (
+            <Leaderboard
+              period={game.leaderboard}
+              scores={scores}
+              isLoading={scoresLoading}
+              highlightName={playerName}
+              playerRank={playerRank}
+            />
           )}
         </div>
 

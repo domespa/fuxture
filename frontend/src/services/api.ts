@@ -43,6 +43,9 @@ import type {
   GameListResponse,
   CreateGameRequest,
   UpdateGameRequest,
+  LeaderboardResponse,
+  SubmitScoreRequest,
+  SubmitScoreResponse,
 } from "@/types/game.types";
 
 // URL
@@ -593,6 +596,42 @@ export const gamesAPI = {
     } catch {
       // IL CONTATORE NON DEVE MAI BLOCCARE IL GIOCO
     }
+  },
+};
+// ======================================================================================
+// ======================================================================================
+
+// ======================================================================================
+//                                  CLASSIFICHE GIOCHI
+// ======================================================================================
+export const leaderboardAPI = {
+  // TOP N DEL PERIODO CORRENTE
+  getScores: async (
+    slug: string,
+    limit = 10
+  ): Promise<LeaderboardResponse> => {
+    const response = await api.get<{
+      success: boolean;
+      data: LeaderboardResponse;
+    }>(`/games/${slug}/scores`, { params: { limit } });
+    return response.data.data;
+  },
+
+  // INVIA IL PUNTEGGIO DI FINE PARTITA
+  submitScore: async (
+    slug: string,
+    data: SubmitScoreRequest
+  ): Promise<SubmitScoreResponse> => {
+    const response = await api.post<{
+      success: boolean;
+      data: SubmitScoreResponse;
+    }>(`/games/${slug}/scores`, data);
+    return response.data.data;
+  },
+
+  // MODERAZIONE (ADMIN)
+  deleteScore: async (id: string): Promise<void> => {
+    await api.delete(`/games/scores/${id}`);
   },
 };
 // ======================================================================================

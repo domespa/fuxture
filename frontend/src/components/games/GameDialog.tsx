@@ -13,7 +13,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { gamesAPI, categoriesAPI } from "@/services/api";
 import { REGISTRY_KEYS } from "@/components/games/registry";
-import type { Game, GameStatus, GameType } from "@/types/game.types";
+import type {
+  Game,
+  GameStatus,
+  GameType,
+  LeaderboardPeriod,
+} from "@/types/game.types";
 import type { Category } from "@/types/category.types";
 import toast from "react-hot-toast";
 
@@ -49,6 +54,7 @@ export default function GameDialog({
   const [categoryId, setCategoryId] = useState("");
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
+  const [leaderboard, setLeaderboard] = useState<LeaderboardPeriod>("NONE");
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -85,6 +91,7 @@ export default function GameDialog({
       setCategoryId(editGame.categoryId || "");
       setSeoTitle(editGame.seoTitle || "");
       setSeoDescription(editGame.seoDescription || "");
+      setLeaderboard(editGame.leaderboard);
     } else {
       setTitle("");
       setSlug("");
@@ -100,6 +107,7 @@ export default function GameDialog({
       setCategoryId("");
       setSeoTitle("");
       setSeoDescription("");
+      setLeaderboard("NONE");
     }
     setErrors({});
   }, [editGame, open]);
@@ -154,6 +162,7 @@ export default function GameDialog({
         seoTitle: seoTitle.trim() || undefined,
         seoDescription: seoDescription.trim() || undefined,
         categoryId: categoryId || null,
+        leaderboard,
       };
 
       if (isEditMode && editGame) {
@@ -332,6 +341,27 @@ export default function GameDialog({
                 ))}
               </select>
             </div>
+          </div>
+
+          {/* CLASSIFICA */}
+          <div className="space-y-2">
+            <Label htmlFor="game-leaderboard">Classifica</Label>
+            <select
+              id="game-leaderboard"
+              className={SELECT_CLASS}
+              value={leaderboard}
+              onChange={(e) =>
+                setLeaderboard(e.target.value as LeaderboardPeriod)
+              }
+            >
+              <option value="NONE">Nessuna</option>
+              <option value="ALL_TIME">Record di sempre</option>
+              <option value="DAILY">Giornaliera (si azzera ogni giorno)</option>
+            </select>
+            <p className="text-xs text-gray-500">
+              Con la classifica attiva il gioco chiede un nickname prima della
+              prima partita.
+            </p>
           </div>
 
           {/* ORDINE + TAGS */}

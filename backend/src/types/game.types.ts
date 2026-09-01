@@ -1,4 +1,8 @@
-import type { GameStatus, GameType } from "@prisma/client";
+import type {
+  GameStatus,
+  GameType,
+  LeaderboardPeriod,
+} from "@prisma/client";
 
 export interface CreateGameRequest {
   title: string;
@@ -15,6 +19,7 @@ export interface CreateGameRequest {
   seoTitle?: string;
   seoDescription?: string;
   categoryId?: string | null;
+  leaderboard?: LeaderboardPeriod;
 }
 
 export interface UpdateGameRequest {
@@ -32,6 +37,7 @@ export interface UpdateGameRequest {
   seoTitle?: string;
   seoDescription?: string;
   categoryId?: string | null;
+  leaderboard?: LeaderboardPeriod;
 }
 
 export interface GameResponse {
@@ -54,6 +60,7 @@ export interface GameResponse {
   createdAt: Date;
   updatedAt: Date;
   categoryId: string | null;
+  leaderboard: LeaderboardPeriod;
   category?: {
     id: string;
     name: string;
@@ -82,4 +89,34 @@ export interface GameListResponse {
     limit: number;
     totalPages: number;
   };
+}
+
+// ====================================================================================================== //
+//                                          CLASSIFICHE
+// ====================================================================================================== //
+export interface SubmitScoreRequest {
+  playerName: string;
+  score: number;
+  detail?: string;
+}
+
+export interface GameScoreResponse {
+  id: string;
+  position: number;
+  playerName: string;
+  score: number;
+  detail: string | null;
+  createdAt: Date;
+}
+
+export interface LeaderboardResponse {
+  period: LeaderboardPeriod;
+  periodKey: string | null;
+  scores: GameScoreResponse[];
+}
+
+export interface SubmitScoreResponse extends LeaderboardResponse {
+  rank: number;
+  isPersonalBest: boolean;
+  playerName: string;
 }

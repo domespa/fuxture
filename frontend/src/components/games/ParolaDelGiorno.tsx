@@ -57,10 +57,17 @@ type GameStatus = "playing" | "won" | "lost";
 // ====================================================================================================== //
 //                                       PAROLA DEL GIORNO
 // ====================================================================================================== //
+// La giornata e quella italiana, la stessa che usa il server per la classifica giornaliera:
+// cosi parola e classifica cambiano nello stesso istante anche per chi gioca da un altro fuso.
 const getDayIndex = (): number => {
-  const now = new Date();
-  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-  return Math.floor((today - EPOCH) / 86400000);
+  const romeDate = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Rome",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+
+  return Math.floor((Date.parse(`${romeDate}T00:00:00Z`) - EPOCH) / 86400000);
 };
 
 // ====================================================================================================== //
@@ -203,10 +210,15 @@ export default function ParolaDelGiorno({ onGameOver }: GameComponentProps) {
 
     if (nextStatus === "won") {
       toast.success("Indovinata! Complimenti");
-      onGameOver?.({ won: true, score: nextGuesses.length });
+      // MENO TENTATIVI = PIU PUNTI: 6 al primo colpo, 1 all ultimo
+      onGameOver?.({
+        won: true,
+        score: MAX_ATTEMPTS + 1 - nextGuesses.length,
+        detail: `${nextGuesses.length}/${MAX_ATTEMPTS} tentativi`,
+      });
     } else if (nextStatus === "lost") {
       toast(`La parola era "${solution.toUpperCase()}"`);
-      onGameOver?.({ won: false, score: nextGuesses.length });
+      onGameOver?.({ won: false, score: 0, detail: "non indovinata" });
     }
   }, [current, guesses, onGameOver, persist, solution, status]);
 

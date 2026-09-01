@@ -30,6 +30,9 @@ const API_PREFIX = process.env.API_PREFIX || "/api";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// SU RENDER SIAMO DIETRO UN PROXY: SERVE PER LEGGERE L IP REALE (RATE LIMIT CLASSIFICHE)
+app.set("trust proxy", 1);
 app.use(
   cors({
     origin: [

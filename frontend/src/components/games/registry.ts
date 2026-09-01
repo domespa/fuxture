@@ -1,10 +1,12 @@
 import { lazy } from "react";
 import type { ComponentType, LazyExoticComponent } from "react";
 
-// RISULTATO DI FINE PARTITA (usato per la CTA newsletter)
+// RISULTATO DI FINE PARTITA (usato per classifica e CTA newsletter).
+// Regola: score e sempre "piu alto = meglio", cosi la classifica resta uguale per tutti i giochi.
 export interface GameResult {
   won?: boolean;
   score?: number;
+  detail?: string;
 }
 
 export interface GameComponentProps {

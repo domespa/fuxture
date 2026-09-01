@@ -26,7 +26,7 @@ export default function PrivacyPolicy() {
             Privacy Policy
           </h1>
           <p className="text-gray-600">
-            Ultimo aggiornamento: <strong>24/11/2025</strong>
+            Ultimo aggiornamento: <strong>01/09/2026</strong>
           </p>
           <p className="text-sm text-gray-500 mt-2">
             Conforme al Regolamento UE 2016/679 (GDPR)
@@ -190,7 +190,19 @@ export default function PrivacyPolicy() {
                   <li>
                     <strong>Metadata</strong>: eventuali preferenze utente
                   </li>
+                  <li>
+                    <strong>Liste di iscrizione</strong>: elenco/i tematici a
+                    cui l'indirizzo è associato
+                  </li>
+                  <li>
+                    <strong>Log di invio</strong>: esito tecnico dell'invio
+                    (inviata, non consegnata/bounce, errore) e relativa data
+                  </li>
                 </ul>
+                <p className="text-sm text-gray-600 mt-3 italic">
+                  ℹ️ Non utilizziamo pixel di tracciamento né link tracciati:
+                  non rileviamo se apri le email o su quali link clicchi.
+                </p>
               </div>
 
               {/* Commenti */}
@@ -213,9 +225,14 @@ export default function PrivacyPolicy() {
                     <strong>Data e ora</strong>: timestamp commento
                   </li>
                   <li>
-                    <strong>Indirizzo IP</strong>: per prevenzione spam e abusi
+                    <strong>Stato di moderazione</strong>: in attesa,
+                    approvato, rifiutato o contrassegnato come spam
                   </li>
                 </ul>
+                <p className="text-sm text-gray-600 mt-3 italic">
+                  ℹ️ Non associamo l'indirizzo IP ai commenti: la moderazione è
+                  manuale e avviene sul solo contenuto pubblicato.
+                </p>
               </div>
 
               {/* Form Contatto */}
@@ -238,9 +255,44 @@ export default function PrivacyPolicy() {
                   </li>
                 </ul>
                 <p className="text-sm text-gray-600 mt-3 italic">
-                  ℹ️ I dati del form contatto sono trattati temporaneamente e
-                  cancellati dopo la gestione della richiesta (max 90 giorni).
+                  ℹ️ I messaggi inviati dal form <strong>non</strong> vengono
+                  archiviati nel database del sito: sono inoltrati via email
+                  alla casella del titolare (con copia di conferma al mittente)
+                  e cancellati dopo la gestione della richiesta (max 90 giorni).
                 </p>
+              </div>
+
+              {/* Account Area Riservata */}
+              <div className="bg-indigo-50 p-6 rounded-lg border-l-4 border-indigo-600">
+                <h3 className="text-lg font-bold text-gray-900 mb-3">
+                  Account dell'Area Riservata
+                </h3>
+                <p className="text-gray-700 mb-3">
+                  L'area riservata è destinata esclusivamente al titolare e agli
+                  eventuali collaboratori autorizzati alla redazione dei
+                  contenuti. La registrazione non è aperta al pubblico. Per
+                  questi account trattiamo:
+                </p>
+                <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                  <li>
+                    <strong>Nome e cognome</strong>: attribuzione degli articoli
+                  </li>
+                  <li>
+                    <strong>Email</strong>: credenziale di accesso e contatto
+                  </li>
+                  <li>
+                    <strong>Password</strong>: conservata esclusivamente come
+                    hash cifrato (bcrypt), mai in chiaro
+                  </li>
+                  <li>
+                    <strong>Ruolo</strong>: livello di autorizzazione
+                    (amministratore, redattore)
+                  </li>
+                  <li>
+                    <strong>Accettazione dei termini</strong>: data e ora del
+                    consenso ai Termini di Servizio
+                  </li>
+                </ul>
               </div>
 
               {/* Dati di Navigazione */}
@@ -333,7 +385,8 @@ export default function PrivacyPolicy() {
                   </strong>
                   <p className="text-gray-700 mt-1">
                     Prevenzione di spam, attività fraudolente e violazioni dei
-                    termini di servizio (utilizzo indirizzo IP).
+                    termini di servizio, attraverso la moderazione manuale dei
+                    commenti e i log tecnici dei server.
                   </p>
                 </div>
               </div>
@@ -353,6 +406,32 @@ export default function PrivacyPolicy() {
                   </p>
                 </div>
               </div>
+
+              <div className="flex gap-3">
+                <span className="text-blue-600 font-bold flex-shrink-0">
+                  f)
+                </span>
+                <div>
+                  <strong className="text-gray-900">
+                    Gestione dell'Area Riservata
+                  </strong>
+                  <p className="text-gray-700 mt-1">
+                    Autenticazione e gestione degli account del titolare e dei
+                    collaboratori autorizzati alla pubblicazione dei contenuti.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-green-50 border-l-4 border-green-600 p-5 rounded-lg mt-6">
+              <p className="text-gray-800 m-0">
+                <strong>Nessuna profilazione.</strong> Non effettuiamo
+                profilazione né processi decisionali automatizzati ai sensi
+                dell'art. 22 GDPR, non tracciamo aperture e clic delle
+                newsletter, non utilizziamo strumenti di analisi di terze parti
+                (come Google Analytics) e non trattiamo categorie particolari di
+                dati (art. 9 GDPR).
+              </p>
             </div>
           </section>
 
@@ -380,11 +459,14 @@ export default function PrivacyPolicy() {
 
               <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
                 <h3 className="font-bold text-gray-900 mb-2">
-                  Esecuzione di un Contratto (Art. 6.1.b GDPR)
+                  Consenso (Art. 6.1.a GDPR) – Commenti e Form di Contatto
                 </h3>
                 <p className="text-gray-700">
-                  Per la fornitura del servizio di commenti e risposta alle tue
-                  richieste tramite form di contatto.
+                  Per la pubblicazione dei commenti e per la gestione delle
+                  richieste inviate tramite il form di contatto: in entrambi i
+                  casi sei tu a fornire spontaneamente i dati per ottenere la
+                  pubblicazione del commento o una risposta, e puoi chiederne la
+                  cancellazione in qualsiasi momento.
                 </p>
               </div>
 
@@ -396,6 +478,17 @@ export default function PrivacyPolicy() {
                   Per la prevenzione di spam, frodi e violazioni della
                   sicurezza, nonché per analisi statistiche aggregate
                   finalizzate al miglioramento del servizio.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                <h3 className="font-bold text-gray-900 mb-2">
+                  Obbligo Legale (Art. 6.1.c GDPR)
+                </h3>
+                <p className="text-gray-700">
+                  Per la conservazione della prova del consenso alla newsletter
+                  e per l'adempimento di obblighi di legge o di richieste
+                  provenienti dalle autorità competenti.
                 </p>
               </div>
             </div>
@@ -448,7 +541,9 @@ export default function PrivacyPolicy() {
                       <strong>Form Contatto</strong>
                     </td>
                     <td className="border border-gray-300 px-4 py-3">
-                      90 giorni dalla gestione della richiesta
+                      90 giorni dalla gestione della richiesta (i messaggi
+                      restano nella sola casella di posta del titolare, non nel
+                      database del sito)
                     </td>
                   </tr>
                   <tr className="bg-gray-50">
@@ -457,6 +552,24 @@ export default function PrivacyPolicy() {
                     </td>
                     <td className="border border-gray-300 px-4 py-3">
                       7-30 giorni (solo per finalità di sicurezza)
+                    </td>
+                  </tr>
+                  <tr className="bg-white">
+                    <td className="border border-gray-300 px-4 py-3">
+                      <strong>Log di Invio Newsletter</strong>
+                    </td>
+                    <td className="border border-gray-300 px-4 py-3">
+                      24 mesi dall'invio, o comunque fino alla cancellazione
+                      dell'iscrizione a cui si riferiscono
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-50">
+                    <td className="border border-gray-300 px-4 py-3">
+                      <strong>Account Area Riservata</strong>
+                    </td>
+                    <td className="border border-gray-300 px-4 py-3">
+                      Per tutta la durata dell'account, cancellati entro 30
+                      giorni dalla sua chiusura
                     </td>
                   </tr>
                 </tbody>
@@ -477,22 +590,36 @@ export default function PrivacyPolicy() {
                 <h3 className="font-bold text-gray-900 mb-2">
                   Provider di Hosting e Servizi Cloud
                 </h3>
-                <p className="text-gray-700">
-                  I dati sono ospitati su server gestiti da fornitori di servizi
-                  cloud professionali che operano in conformità al GDPR e
-                  garantiscono adeguate misure di sicurezza.
+                <p className="text-gray-700 mb-3">
+                  I dati sono ospitati su server gestiti da fornitori
+                  professionali, nominati responsabili del trattamento ai sensi
+                  dell'art. 28 GDPR:
                 </p>
+                <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                  <li>
+                    <strong>Vercel</strong>: hosting del sito e distribuzione
+                    delle pagine
+                  </li>
+                  <li>
+                    <strong>Render</strong>: hosting dell'applicazione e del
+                    database PostgreSQL, con server situati a{" "}
+                    <strong>Francoforte (Germania, Unione Europea)</strong>
+                  </li>
+                </ul>
               </div>
 
               <div className="bg-yellow-50 p-5 rounded-lg border-l-4 border-yellow-500">
                 <h3 className="font-bold text-gray-900 mb-2">
-                  Servizi di Email Marketing (Newsletter)
+                  Invio delle Newsletter
                 </h3>
                 <p className="text-gray-700">
-                  Per l'invio delle newsletter utilizziamo servizi di email
-                  marketing conformi al GDPR. I tuoi dati email sono conservati
-                  in database sicuri e utilizzati esclusivamente per l'invio
-                  delle comunicazioni autorizzate.
+                  Gli indirizzi degli iscritti sono conservati nel nostro
+                  database e <strong>non</strong> vengono caricati su
+                  piattaforme di email marketing di terze parti. La consegna
+                  materiale dei messaggi avviene tramite un provider SMTP
+                  professionale, nominato responsabile del trattamento, che
+                  tratta i dati esclusivamente per recapitare le comunicazioni
+                  da te autorizzate.
                 </p>
               </div>
 
@@ -704,6 +831,29 @@ export default function PrivacyPolicy() {
                   </p>
                 </div>
               </div>
+
+              <div className="flex gap-3 items-start">
+                <span className="text-2xl">🔑</span>
+                <div>
+                  <strong className="text-gray-900">Credenziali Protette</strong>
+                  <p className="text-gray-700 text-sm mt-1">
+                    Le password dell'area riservata sono salvate solo come hash
+                    cifrato (bcrypt) e l'accesso avviene con token di sessione a
+                    scadenza.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-3 items-start">
+                <span className="text-2xl">🇪🇺</span>
+                <div>
+                  <strong className="text-gray-900">Server nell'UE</strong>
+                  <p className="text-gray-700 text-sm mt-1">
+                    Il database che contiene i dati personali è ospitato su
+                    server situati nell'Unione Europea (Francoforte).
+                  </p>
+                </div>
+              </div>
             </div>
             <p className="text-gray-700 mt-4 text-sm italic">
               ⚠️ Nonostante le misure di sicurezza adottate, nessun sistema è
@@ -718,9 +868,13 @@ export default function PrivacyPolicy() {
               9. Cookie e Tecnologie di Tracciamento
             </h2>
             <p className="text-gray-700 mb-4">
-              Questo sito utilizza cookie e tecnologie simili. Per informazioni
-              dettagliate su tipologie, finalità e gestione dei cookie, consulta
-              la nostra:
+              Questo sito utilizza esclusivamente strumenti di archiviazione
+              tecnica: la preferenza espressa nel banner cookie e, per i soli
+              utenti dell'area riservata, il token di sessione necessario a
+              mantenere l'accesso. <strong>Non</strong> utilizziamo cookie di
+              profilazione, pubblicitari o di analisi di terze parti. Per
+              informazioni dettagliate su tipologie, finalità e gestione,
+              consulta la nostra:
             </p>
             <Link
               to="/cookie-policy"
@@ -741,10 +895,41 @@ export default function PrivacyPolicy() {
               qualsiasi momento. Le modifiche saranno pubblicate su questa
               pagina con indicazione della data di aggiornamento.
             </p>
-            <p className="text-gray-700">
+            <p className="text-gray-700 mb-4">
               Ti invitiamo a consultare periodicamente questa pagina per essere
               informato sulle modalità di trattamento dei tuoi dati personali.
             </p>
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
+              <h3 className="font-bold text-gray-900 mb-2">
+                Revisione del 01/09/2026
+              </h3>
+              <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4 m-0">
+                <li>
+                  Chiarito che non registriamo l'indirizzo IP di chi lascia un
+                  commento
+                </li>
+                <li>
+                  Specificato che i messaggi del form di contatto non sono
+                  archiviati nel database del sito
+                </li>
+                <li>
+                  Aggiunte le informazioni su liste di iscrizione e log di invio
+                  della newsletter, precisando che non tracciamo aperture e clic
+                </li>
+                <li>
+                  Aggiunta la sezione sugli account dell'area riservata e la
+                  relativa finalità
+                </li>
+                <li>
+                  Indicati i fornitori di hosting e la localizzazione dei server
+                  nell'Unione Europea
+                </li>
+                <li>
+                  Precisata l'assenza di profilazione, di processi decisionali
+                  automatizzati e di cookie di terze parti
+                </li>
+              </ul>
+            </div>
           </section>
 
           {/* 11. Contatti */}

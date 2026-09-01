@@ -47,9 +47,12 @@ export default function CookieBanner() {
               🍪 Utilizziamo i Cookie
             </h3>
             <p className="text-sm text-gray-600 leading-relaxed mb-4">
-              Questo sito utilizza cookie tecnici e di profilazione propri e di
-              terze parti. Cliccando su "Accetta tutti" acconsenti all'uso di
-              tutti i cookie. Per maggiori informazioni consulta la nostra{" "}
+              Questo sito utilizza solo strumenti tecnici necessari al suo
+              funzionamento e <strong>non</strong> installa cookie di
+              profilazione o di terze parti. La tua scelta viene salvata sul
+              dispositivo e varrà anche per gli eventuali servizi che
+              introdurremo in futuro. Per maggiori informazioni consulta la
+              nostra{" "}
               <Link
                 to="/cookie-policy"
                 className="text-blue-600 hover:underline font-medium"

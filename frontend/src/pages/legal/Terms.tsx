@@ -17,7 +17,7 @@ export default function Terms() {
             Termini e Condizioni di Utilizzo
           </h1>
           <p className="text-gray-600">
-            Ultimo aggiornamento: <strong>24/11/2025</strong>
+            Ultimo aggiornamento: <strong>01/09/2026</strong>
           </p>
           <p className="text-sm text-gray-500 mt-2">
             Regolamento per l'utilizzo di questo sito web
@@ -92,7 +92,7 @@ export default function Terms() {
             </li>
             <li>
               <a href="#link-esterni" className="hover:underline">
-                10. Link a Siti Esterni
+                10. Link Esterni, Pubblicità e Affiliazioni
               </a>
             </li>
             <li>
@@ -164,13 +164,17 @@ export default function Terms() {
             </h2>
             <p className="text-gray-700 mb-4">
               Il Sito è un blog personale che offre contenuti informativi,
-              articoli, opinioni e risorse su [DESCRIVI I TUOI ARGOMENTI
-              PRINCIPALI, es. "tecnologia, sviluppo web, programmazione e
-              innovazione digitale"].
+              articoli, guide e approfondimenti su economia e finanza
+              personale, risparmio, assicurazioni, tecnologia e attualità.
             </p>
             <p className="text-gray-700">I servizi offerti includono:</p>
             <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4 mt-2">
               <li>Lettura di articoli e contenuti pubblicati</li>
+              <li>
+                Consultazione di titoli di notizie provenienti da feed RSS di
+                testate giornalistiche esterne, riportati con indicazione della
+                fonte e link all'articolo originale
+              </li>
               <li>
                 Iscrizione alla newsletter per ricevere aggiornamenti periodici
               </li>
@@ -179,6 +183,12 @@ export default function Terms() {
               </li>
               <li>Form di contatto per richieste dirette</li>
             </ul>
+            <p className="text-gray-700 mt-4 text-sm italic">
+              ℹ️ L'area riservata del Sito è destinata al solo Titolare e ai
+              collaboratori autorizzati: la registrazione non è aperta al
+              pubblico e la semplice consultazione del blog non richiede la
+              creazione di un account.
+            </p>
             <p className="text-gray-700 mt-4">
               Ci riserviamo il diritto di modificare, sospendere o interrompere
               qualsiasi parte del Sito in qualsiasi momento senza preavviso.
@@ -251,10 +261,32 @@ export default function Terms() {
               sono protetti dalle leggi italiane ed internazionali sul diritto
               d'autore e sulla proprietà intellettuale.
             </p>
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 mb-4">
+              <h3 className="font-bold text-gray-900 mb-2">
+                Contenuti di terzi
+              </h3>
+              <p className="text-gray-700 text-sm">
+                Fanno eccezione i contenuti provenienti da terze parti: titoli e
+                sommari delle notizie ripresi dai feed RSS, immagini e marchi
+                dei partner commerciali, citazioni e materiali su licenza
+                restano di proprietà dei rispettivi titolari e sono riportati
+                con finalità informativa, nei limiti del diritto di cronaca e di
+                citazione. Se ritieni che un contenuto pubblicato violi un tuo
+                diritto, scrivi a{" "}
+                <a
+                  href="mailto:info@fuxture.net"
+                  className="text-blue-600 hover:underline"
+                >
+                  info@fuxture.net
+                </a>{" "}
+                indicando l'URL: provvederemo alla verifica e, se necessario,
+                alla rimozione.
+              </p>
+            </div>
 
             <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-600">
               <h3 className="font-bold text-blue-900 mb-3">
-                © Copyright 2025 - Domenico Spampinato
+                © Copyright 2025-2026 - Domenico Spampinato
               </h3>
               <p className="text-gray-700 text-sm mb-3">
                 Tutti i diritti riservati. È vietata la riproduzione, anche
@@ -307,9 +339,13 @@ export default function Terms() {
               <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
                 <h3 className="font-bold text-gray-900 mb-2">c) Moderazione</h3>
                 <p className="text-gray-700 text-sm">
-                  Ci riserviamo il diritto di moderare, modificare o rimuovere
+                  I commenti sono sottoposti a{" "}
+                  <strong>moderazione preventiva</strong>: dopo l'invio restano
+                  in attesa e diventano visibili solo una volta approvati. Ci
+                  riserviamo il diritto di moderare, modificare o rimuovere
                   qualsiasi contenuto che riterremo inappropriato, offensivo o
-                  in violazione di questi Termini, senza preavviso.
+                  in violazione di questi Termini, senza preavviso e senza
+                  obbligo di motivazione.
                 </p>
               </div>
 
@@ -321,6 +357,27 @@ export default function Terms() {
                   È vietato utilizzare i commenti o altri form per inviare spam,
                   pubblicità non autorizzata o link a siti esterni per scopi
                   promozionali.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                <h3 className="font-bold text-gray-900 mb-2">
+                  e) Dati Richiesti per Commentare
+                </h3>
+                <p className="text-gray-700 text-sm">
+                  Per pubblicare un commento sono richiesti un nome e un
+                  indirizzo email: il nome viene mostrato pubblicamente accanto
+                  al commento, l'email <strong>non</strong> viene pubblicata e
+                  serve solo per la moderazione e per eventuali comunicazioni
+                  relative al commento. Puoi chiedere in ogni momento la
+                  rimozione di un commento e dei dati collegati scrivendo a{" "}
+                  <a
+                    href="mailto:info@fuxture.net"
+                    className="text-blue-600 hover:underline"
+                  >
+                    info@fuxture.net
+                  </a>
+                  .
                 </p>
               </div>
             </div>
@@ -431,6 +488,11 @@ export default function Terms() {
               <li>Contenuti esclusivi per iscritti</li>
               <li>Aggiornamenti e novità del blog</li>
               <li>Comunicazioni informative (non spam)</li>
+              <li>
+                Comunicazioni promozionali relative a offerte di partner
+                commerciali, sempre identificabili come tali all'interno del
+                messaggio
+              </li>
             </ul>
             <div className="bg-blue-50 p-5 rounded-lg border-l-4 border-blue-600">
               <h3 className="font-bold text-blue-900 mb-2">
@@ -567,11 +629,12 @@ export default function Terms() {
           {/* 10. Link Esterni */}
           <section id="link-esterni" className="mb-10 scroll-mt-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              10. Link a Siti Esterni
+              10. Link Esterni, Pubblicità e Affiliazioni
             </h2>
             <p className="text-gray-700 mb-4">
               Il Sito può contenere link a siti web di terze parti a scopo
-              informativo o di approfondimento.
+              informativo o di approfondimento, inclusi i link agli articoli
+              originali delle testate da cui riprendiamo i titoli delle notizie.
             </p>
             <div className="bg-blue-50 p-5 rounded-lg border-l-4 border-blue-600 mb-4">
               <h3 className="font-bold text-blue-900 mb-2">
@@ -590,6 +653,30 @@ export default function Terms() {
                 <li>Violazioni di privacy su siti esterni</li>
                 <li>Disponibilità o funzionamento dei link</li>
               </ul>
+            </div>
+            <div className="bg-yellow-50 p-5 rounded-lg border-l-4 border-yellow-500 mb-4">
+              <h3 className="font-bold text-gray-900 mb-2">
+                Contenuti Promozionali e Link di Affiliazione
+              </h3>
+              <p className="text-gray-700 text-sm mb-2">
+                Alcuni articoli e alcune comunicazioni via email possono
+                contenere <strong>link di affiliazione</strong> o spazi
+                pubblicitari: se acquisti un prodotto o sottoscrivi un servizio
+                passando da quei link, il Titolare può percepire una
+                commissione, <strong>senza alcun costo aggiuntivo per te</strong>.
+              </p>
+              <p className="text-gray-700 text-sm mb-2">
+                I contenuti promozionali sono identificabili come tali e non
+                alterano il giudizio espresso negli articoli. La presenza di un
+                link non costituisce garanzia, raccomandazione personalizzata o
+                consulenza sul prodotto o sul servizio segnalato.
+              </p>
+              <p className="text-gray-700 text-sm">
+                Il rapporto contrattuale relativo a prodotti o servizi acquistati
+                presso terzi intercorre esclusivamente tra te e il fornitore: il
+                Titolare non è parte di tale rapporto e non risponde di
+                condizioni economiche, consegna, assistenza o garanzie.
+              </p>
             </div>
             <p className="text-gray-700 text-sm italic">
               ⚠️ Ti consigliamo di leggere i termini e le condizioni dei siti
@@ -625,10 +712,40 @@ export default function Terms() {
                 </li>
               </ul>
             </div>
-            <p className="text-gray-700 mt-4">
+            <p className="text-gray-700 mt-4 mb-4">
               Ti invitiamo a consultare periodicamente questa pagina per
               rimanere aggiornato sulle eventuali modifiche.
             </p>
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
+              <h3 className="font-bold text-gray-900 mb-2">
+                Revisione del 01/09/2026
+              </h3>
+              <ul className="list-disc list-inside text-gray-700 text-sm space-y-2 ml-4 m-0">
+                <li>
+                  Descritti gli argomenti effettivamente trattati dal blog e il
+                  servizio di rassegna delle notizie da feed RSS
+                </li>
+                <li>
+                  Precisato che l'area riservata non è aperta alla registrazione
+                  del pubblico
+                </li>
+                <li>
+                  Aggiunta la clausola sui contenuti di terzi e la procedura di
+                  segnalazione per le violazioni di copyright
+                </li>
+                <li>
+                  Chiarito che i commenti sono soggetti a moderazione preventiva
+                  e quali dati sono richiesti per pubblicarli
+                </li>
+                <li>
+                  Introdotta la sezione su pubblicità e link di affiliazione
+                </li>
+                <li>
+                  Precisata la tutela del foro del consumatore e aggiunto il
+                  riferimento alla piattaforma ODR europea
+                </li>
+              </ul>
+            </div>
           </section>
 
           {/* 12. Legge Applicabile */}
@@ -655,16 +772,32 @@ export default function Terms() {
               <p className="text-gray-700 mb-2">
                 <strong>Foro Competente:</strong>
               </p>
+              <p className="text-gray-700 mb-3">
+                Per qualsiasi controversia derivante da questi Termini sarà
+                competente il <strong>Foro di Catania (CT), Italia</strong>.
+              </p>
               <p className="text-gray-700">
-                Per qualsiasi controversia derivante da questi Termini, sarà
-                esclusivamente competente il{" "}
-                <strong>Foro di Catania (CT), Italia</strong>, salvo diverse
-                disposizioni inderogabili di legge.
+                Se utilizzi il Sito in qualità di{" "}
+                <strong>consumatore</strong>, resta però ferma la competenza
+                inderogabile del giudice del luogo in cui risiedi o hai eletto
+                domicilio (art. 66-bis del Codice del Consumo): la clausola sul
+                Foro di Catania non si applica nei tuoi confronti.
               </p>
             </div>
             <p className="text-gray-700 mt-4 text-sm">
               Se sei un consumatore residente nell'UE, hai diritto a presentare
-              reclamo presso l'autorità competente del tuo Paese di residenza.
+              reclamo presso l'autorità competente del tuo Paese di residenza e
+              puoi ricorrere alla piattaforma europea di risoluzione online
+              delle controversie (ODR), disponibile all'indirizzo{" "}
+              <a
+                href="https://consumer-redress.ec.europa.eu/index_it"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                consumer-redress.ec.europa.eu
+              </a>
+              .
             </p>
           </section>
 
@@ -722,7 +855,7 @@ export default function Terms() {
               Utilizzo.
             </p>
             <p className="text-sm text-gray-600">
-              Ultimo aggiornamento: <strong>24/11/2025</strong>
+              Ultimo aggiornamento: <strong>01/09/2026</strong>
             </p>
           </div>
         </div>

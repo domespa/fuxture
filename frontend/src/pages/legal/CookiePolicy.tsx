@@ -17,7 +17,7 @@ export default function CookiePolicy() {
             Cookie Policy
           </h1>
           <p className="text-gray-600">
-            Ultimo aggiornamento: <strong>24/11/2025</strong>
+            Ultimo aggiornamento: <strong>01/09/2026</strong>
           </p>
           <p className="text-sm text-gray-500 mt-2">
             Informativa sull'uso dei cookie conforme alla normativa europea
@@ -28,10 +28,16 @@ export default function CookiePolicy() {
         <div className="bg-blue-50 border-l-4 border-blue-600 p-6 mb-10 rounded-lg">
           <h2 className="text-xl font-bold text-blue-900 mb-3">🍪 In Breve</h2>
           <p className="text-blue-800 text-sm leading-relaxed">
-            Questo sito utilizza <strong>cookie tecnici</strong> necessari per
-            il funzionamento del sito. Attualmente{" "}
-            <strong>non utilizziamo cookie di profilazione o marketing</strong>.
-            Puoi gestire le tue preferenze tramite le impostazioni del browser.
+            Questo sito utilizza esclusivamente{" "}
+            <strong>strumenti di archiviazione tecnica</strong> necessari al suo
+            funzionamento, salvati nella memoria locale del browser
+            (localStorage). Attualmente{" "}
+            <strong>
+              non utilizziamo cookie di profilazione, pubblicitari o di analisi
+            </strong>{" "}
+            e nessun servizio di terze parti installa cookie sul tuo
+            dispositivo. Puoi cancellare in ogni momento questi dati dalle
+            impostazioni del browser o dal pulsante in fondo a questa pagina.
           </p>
         </div>
 
@@ -283,8 +289,13 @@ export default function CookiePolicy() {
                 Cookie Tecnici Necessari (Sempre Attivi)
               </h3>
               <p className="text-gray-700 text-sm mb-4">
-                Questi cookie sono strettamente necessari per il funzionamento
-                del sito e non possono essere disabilitati nei nostri sistemi.
+                Questi strumenti sono strettamente necessari per il
+                funzionamento del sito e non possono essere disabilitati nei
+                nostri sistemi. Sul piano tecnico non si tratta di cookie
+                inviati al server, ma di voci salvate nella memoria locale del
+                browser (<span className="font-mono">localStorage</span>): le
+                documentiamo comunque qui, perché restano archiviate sul tuo
+                dispositivo.
               </p>
 
               <div className="overflow-x-auto">
@@ -308,34 +319,36 @@ export default function CookiePolicy() {
                         cookieConsent
                       </td>
                       <td className="border border-gray-300 px-4 py-3">
-                        Memorizza le preferenze dell'utente riguardo l'uso dei
-                        cookie
+                        Memorizza la scelta espressa sul banner cookie, così da
+                        non riproporlo a ogni visita
                       </td>
                       <td className="border border-gray-300 px-4 py-3">
-                        12 mesi
+                        Fino a cancellazione manuale (dal pulsante in fondo a
+                        questa pagina o dalle impostazioni del browser)
                       </td>
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="border border-gray-300 px-4 py-3 font-mono text-xs">
-                        session_id
+                        token
                       </td>
                       <td className="border border-gray-300 px-4 py-3">
-                        Mantiene la sessione dell'utente durante la navigazione
+                        Solo per l'area riservata: mantiene l'accesso
+                        dell'utente autenticato (redazione del blog)
                       </td>
                       <td className="border border-gray-300 px-4 py-3">
-                        Sessione
+                        Fino al logout o alla scadenza del token
                       </td>
                     </tr>
                     <tr>
                       <td className="border border-gray-300 px-4 py-3 font-mono text-xs">
-                        theme_preference
+                        user
                       </td>
                       <td className="border border-gray-300 px-4 py-3">
-                        Memorizza le preferenze visive dell'utente (es. dark
-                        mode)
+                        Solo per l'area riservata: dati di base dell'account
+                        (nome, email, ruolo) usati dall'interfaccia
                       </td>
                       <td className="border border-gray-300 px-4 py-3">
-                        6 mesi
+                        Fino al logout
                       </td>
                     </tr>
                   </tbody>
@@ -358,6 +371,14 @@ export default function CookiePolicy() {
                 <li>Cookie di profilazione pubblicitaria</li>
                 <li>Cookie di social media (Facebook Pixel, Twitter, etc.)</li>
                 <li>Cookie di remarketing o retargeting</li>
+                <li>
+                  Cookie di reti pubblicitarie o di programmi di affiliazione
+                  (nessun banner pubblicitario è attualmente attivo sul Sito)
+                </li>
+                <li>
+                  Pixel di tracciamento nelle newsletter: non rileviamo aperture
+                  né clic sui link
+                </li>
               </ul>
               <p className="text-xs text-gray-600 mt-3 italic">
                 ℹ️ Se in futuro dovessimo introdurre cookie di terze parti,
@@ -498,10 +519,11 @@ export default function CookiePolicy() {
               5. Cookie di Terze Parti
             </h2>
             <p className="text-gray-700 mb-4">
-              Alcuni contenuti incorporati nel sito (es. video YouTube, mappe
-              Google Maps, social media embed) possono utilizzare cookie di
-              terze parti. Questi cookie sono controllati direttamente dalle
-              terze parti.
+              Al momento <strong>nessun servizio di terze parti</strong> installa
+              cookie tramite questo sito: non sono presenti video, mappe o
+              widget social incorporati. Se in futuro dovessimo aggiungerli,
+              questi cookie sarebbero controllati direttamente dalle rispettive
+              terze parti e attivati solo previo tuo consenso.
             </p>
 
             <div className="bg-gray-100 p-6 rounded-lg">
@@ -510,42 +532,42 @@ export default function CookiePolicy() {
               </h3>
               <div className="space-y-3">
                 <div className="bg-white p-4 rounded-lg border border-gray-200">
-                  <h4 className="font-bold text-gray-900 mb-2">YouTube</h4>
+                  <h4 className="font-bold text-gray-900 mb-2">
+                    Notizie da fonti esterne (feed RSS)
+                  </h4>
                   <p className="text-gray-700 text-sm mb-2">
-                    I video incorporati possono installare cookie di YouTube
-                    (Google).
+                    Il sito mostra titoli di notizie provenienti da testate
+                    giornalistiche esterne. I feed sono scaricati dal{" "}
+                    <strong>nostro server</strong>, non dal tuo browser: le
+                    testate non ricevono quindi il tuo indirizzo IP e non
+                    possono installare cookie sul tuo dispositivo, a meno che tu
+                    non scelga di aprire il link all'articolo originale.
                   </p>
-                  <a
-                    href="https://policies.google.com/privacy"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline text-sm"
-                  >
-                    Privacy Policy YouTube →
-                  </a>
                 </div>
 
                 <div className="bg-white p-4 rounded-lg border border-gray-200">
-                  <h4 className="font-bold text-gray-900 mb-2">Google Maps</h4>
+                  <h4 className="font-bold text-gray-900 mb-2">
+                    Pubblicità e programmi di affiliazione
+                  </h4>
                   <p className="text-gray-700 text-sm mb-2">
-                    Le mappe incorporate possono utilizzare cookie di Google
-                    Maps.
+                    Alcuni articoli possono contenere link verso partner
+                    commerciali o programmi di affiliazione. Finché si tratta di
+                    semplici link, nessun cookie di terze parti viene installato
+                    da questo sito: eventuali cookie sono impostati dal sito di
+                    destinazione solo <strong>dopo</strong> che hai cliccato.
                   </p>
-                  <a
-                    href="https://policies.google.com/privacy"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline text-sm"
-                  >
-                    Privacy Policy Google →
-                  </a>
+                  <p className="text-gray-700 text-sm">
+                    Se in futuro attiveremo banner o script pubblicitari
+                    all'interno delle pagine, aggiorneremo questa policy e ne
+                    subordineremo il caricamento al tuo consenso.
+                  </p>
                 </div>
               </div>
 
               <p className="text-sm text-gray-600 mt-4 italic">
-                ℹ️ Non abbiamo controllo sui cookie installati da servizi di
-                terze parti. Ti invitiamo a consultare le rispettive privacy
-                policy per maggiori informazioni.
+                ℹ️ Non abbiamo controllo sui cookie installati dai siti esterni
+                che decidi di visitare. Ti invitiamo a consultare le rispettive
+                privacy policy per maggiori informazioni.
               </p>
             </div>
           </section>
@@ -566,8 +588,10 @@ export default function CookiePolicy() {
                   ✓ Accetta Tutti
                 </h3>
                 <p className="text-gray-700 text-sm">
-                  Acconsenti all'utilizzo di tutti i cookie, inclusi quelli di
-                  terze parti (quando presenti).
+                  Acconsenti all'utilizzo di tutti i cookie, compresi quelli di
+                  terze parti che dovessimo introdurre in futuro. Oggi, in
+                  pratica, non cambia nulla rispetto all'opzione "Solo
+                  necessari": non sono attivi cookie di profilazione.
                 </p>
               </div>
 
@@ -586,11 +610,18 @@ export default function CookiePolicy() {
                   🎨 Personalizza
                 </h3>
                 <p className="text-gray-700 text-sm">
-                  Accedi a questa pagina per vedere i dettagli e gestire le
-                  preferenze manualmente.
+                  Ti porta su questa pagina, dove trovi il dettaglio di ciò che
+                  viene salvato e il pulsante per azzerare la tua scelta.
                 </p>
               </div>
             </div>
+
+            <p className="text-gray-700 text-sm mt-4 italic">
+              ℹ️ Se chiudi il banner con la "X" senza scegliere, non viene
+              salvata alcuna preferenza: il banner ricomparirà alla visita
+              successiva e nel frattempo restano attivi solo gli strumenti
+              tecnici necessari.
+            </p>
 
             <div className="bg-blue-600 text-white p-6 rounded-lg mt-6">
               <h3 className="font-bold text-xl mb-3">
@@ -622,11 +653,39 @@ export default function CookiePolicy() {
               qualsiasi momento, specialmente in caso di introduzione di nuovi
               cookie o servizi di terze parti.
             </p>
-            <p className="text-gray-700">
+            <p className="text-gray-700 mb-4">
               Le modifiche saranno pubblicate su questa pagina con indicazione
               della data di aggiornamento. Ti invitiamo a consultare
               periodicamente questa pagina per rimanere informato.
             </p>
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
+              <h3 className="font-bold text-gray-900 mb-2">
+                Revisione del 01/09/2026
+              </h3>
+              <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4 m-0">
+                <li>
+                  Aggiornato l'elenco degli strumenti effettivamente utilizzati:
+                  rimossi <span className="font-mono">session_id</span> e{" "}
+                  <span className="font-mono">theme_preference</span>, che non
+                  sono mai stati installati
+                </li>
+                <li>
+                  Chiarito che si tratta di voci di localStorage e non di cookie
+                  inviati al server
+                </li>
+                <li>
+                  Sostituiti gli esempi di terze parti (YouTube, Google Maps)
+                  con i servizi realmente presenti
+                </li>
+                <li>
+                  Precisato che i feed di notizie sono scaricati dal nostro
+                  server e non dal browser dell'utente
+                </li>
+                <li>
+                  Aggiunte le informazioni su pubblicità e link di affiliazione
+                </li>
+              </ul>
+            </div>
           </section>
 
           {/* 8. Contatti */}
@@ -644,8 +703,7 @@ export default function CookiePolicy() {
                 <p className="mb-2">
                   <strong>Email:</strong>{" "}
                   <a
-                    href="mailto:info@fuxture.net
-"
+                    href="mailto:info@fuxture.net"
                     className="hover:underline font-mono"
                   >
                     info@fuxture.net

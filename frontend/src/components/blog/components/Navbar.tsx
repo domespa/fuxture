@@ -17,6 +17,11 @@ export default function Navbar() {
           </Link>
         </li>
         <li>
+          <Link to="/games" className={isActive("/games")}>
+            Giochi
+          </Link>
+        </li>
+        <li>
           <Link to="/contact" className={isActive("/contact")}>
             Contatti
           </Link>

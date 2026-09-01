@@ -26,6 +26,9 @@ import CookiePolicy from "./pages/legal/CookiePolicy";
 import Terms from "./pages/legal/Terms";
 import ScrollToTop from "./components/blog/components/ScrollToTop";
 import ContactPage from "./pages/ContactPage";
+import GamesPage from "./pages/GamesPage";
+import GameDetailPage from "./pages/GameDetailPage";
+import AdminGamesPage from "./pages/admin/dashboard/GamesPage";
 import UnsubscribePage from "./pages/UnsubscribePage";
 
 function App() {
@@ -62,6 +65,8 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="posts" element={<BlogPage />} />
           <Route path="posts/:slug" element={<PostDetailPage />} />
+          <Route path="games" element={<GamesPage />} />
+          <Route path="games/:slug" element={<GameDetailPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/contact" element={<ContactPage />} />
@@ -86,6 +91,7 @@ function App() {
           <Route path="posts/create" element={<CreatePost />} />
           <Route path="posts/edit/:id" element={<EditPost />} />
           <Route path="/dashboard/categories" element={<CategoriesPage />} />
+          <Route path="games" element={<AdminGamesPage />} />
           <Route path="comments" element={<Comments />} />
           <Route path="campaigns" element={<Campaigns />} />
           <Route path="campaigns/create" element={<CreateCampaing />} />

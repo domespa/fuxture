@@ -37,6 +37,13 @@ import type {
   CreateCategoryRequest,
   UpdateCategoryRequest,
 } from "@/types/category.types";
+import type {
+  Game,
+  GameFilters,
+  GameListResponse,
+  CreateGameRequest,
+  UpdateGameRequest,
+} from "@/types/game.types";
 
 // URL
 const API_BASE_URL =
@@ -524,3 +531,69 @@ export const categoriesAPI = {
     await api.delete(`/categories/${id}`);
   },
 };
+
+// ======================================================================================
+//                                  GIOCHI API
+// ======================================================================================
+export const gamesAPI = {
+  // OTTIENI TUTTI I GIOCHI CON FILTRI
+  getGames: async (filters?: GameFilters): Promise<GameListResponse> => {
+    const response = await api.get<{
+      success: boolean;
+      data: GameListResponse;
+    }>("/games", { params: filters });
+    return response.data.data;
+  },
+
+  // OTTIENI GIOCO PER SLUG
+  getGameBySlug: async (slug: string): Promise<Game> => {
+    const response = await api.get<{ success: boolean; data: Game }>(
+      `/games/slug/${slug}`
+    );
+    return response.data.data;
+  },
+
+  // OTTIENI SINGOLO GIOCO (ADMIN)
+  getGameById: async (id: string): Promise<Game> => {
+    const response = await api.get<{ success: boolean; data: Game }>(
+      `/games/${id}`
+    );
+    return response.data.data;
+  },
+
+  // CREA GIOCO
+  createGame: async (data: CreateGameRequest): Promise<Game> => {
+    const response = await api.post<{
+      success: boolean;
+      message: string;
+      data: Game;
+    }>("/games", data);
+    return response.data.data;
+  },
+
+  // AGGIORNA GIOCO
+  updateGame: async (id: string, data: UpdateGameRequest): Promise<Game> => {
+    const response = await api.put<{
+      success: boolean;
+      message: string;
+      data: Game;
+    }>(`/games/${id}`, data);
+    return response.data.data;
+  },
+
+  // ELIMINA GIOCO
+  deleteGame: async (id: string): Promise<void> => {
+    await api.delete(`/games/${id}`);
+  },
+
+  // INCREMENTA CONTATORE PARTITE
+  trackPlay: async (slug: string): Promise<void> => {
+    try {
+      await api.post(`/games/${slug}/play`);
+    } catch {
+      // IL CONTATORE NON DEVE MAI BLOCCARE IL GIOCO
+    }
+  },
+};
+// ======================================================================================
+// ======================================================================================

@@ -13,6 +13,7 @@ import categoryRoutes from "./routes/category.routes";
 import newsRoutes from "./routes/news.routes";
 import breakingNewsRoutes from "./routes/breaking-news.routes";
 import contactRoutes from "./routes/contact.routes";
+import gameRoutes from "./routes/game.routes";
 
 // ====================================================================================================== //
 //                                              VARIABILI D'AMBIENTE
@@ -83,6 +84,9 @@ app.use(`${API_PREFIX}/email-lists`, emailListRoutes);
 // NEWS
 app.use(`${API_PREFIX}`, newsRoutes);
 app.use(`${API_PREFIX}/breaking-news`, breakingNewsRoutes);
+
+// GIOCHI
+app.use(`${API_PREFIX}/games`, gameRoutes);
 
 // SEND EMAIL
 app.use(`${API_PREFIX}/contact`, contactRoutes);

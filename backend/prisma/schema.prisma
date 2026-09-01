@@ -85,6 +85,7 @@ model Category {
   updatedAt   DateTime  @updatedAt
   
   posts       Post[]
+  games       Game[]
 
   
 }
@@ -220,4 +221,38 @@ enum EmailStatus {
   CLICKED
   BOUNCED
   FAILED
+}
+
+// GIOCHI
+model Game {
+  id              String      @id @default(cuid())
+  title           String
+  slug            String      @unique
+  description     String?     @db.Text
+  instructions    String?     @db.Text
+  coverImage      String?
+  type            GameType    @default(INTERNAL)
+  entryPath       String?
+  status          GameStatus  @default(DRAFT)
+  isFeatured      Boolean     @default(false)
+  order           Int         @default(0)
+  plays           Int         @default(0)
+  tags            String[]
+  seoTitle        String?
+  seoDescription  String?
+  publishedAt     DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  categoryId      String?
+  category        Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+}
+
+enum GameType {
+  INTERNAL
+  EMBED
+}
+
+enum GameStatus {
+  DRAFT
+  PUBLISHED
 }

@@ -13,6 +13,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
+    "seed:games": "tsx prisma/seed-games.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {

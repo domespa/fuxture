@@ -37,6 +37,21 @@ const games = [
     tags: ["riflessi", "arcade", "veloce"],
     order: 2,
   },
+  {
+    slug: "fuxtrix",
+    title: "Fuxtrix",
+    description:
+      "Incastra i blocchi che cadono e completa le righe prima che la pila arrivi in cima.",
+    instructions:
+      "Da computer: frecce sinistra e destra per muovere, freccia su per ruotare, freccia giu per scendere piu in fretta, barra spaziatrice per far cadere il pezzo di colpo, P per la pausa.\nDa telefono: usa i tasti sotto al campo, oppure trascina il dito sul campo per muovere, verso il basso per far cadere e tocca per ruotare.\nOgni 10 righe completate sali di livello e i pezzi scendono piu veloci. Quattro righe in una volta valgono molto piu di quattro righe singole.",
+    entryPath: "fuxtrix",
+    leaderboard: "ALL_TIME" as const,
+    seoTitle: "Fuxtrix - gioco di blocchi che cadono, online e gratis",
+    seoDescription:
+      "Incastra i blocchi, completa le righe e scala la classifica. Gioco gratis da browser, senza registrazione, anche da telefono.",
+    tags: ["arcade", "blocchi", "classico"],
+    order: 3,
+  },
 ];
 
 async function main() {

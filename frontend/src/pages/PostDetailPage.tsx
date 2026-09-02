@@ -14,6 +14,7 @@ import {
   X,
   Send,
   AlertCircle,
+  Check,
 } from "lucide-react";
 import "./post-content.css";
 
@@ -29,6 +30,51 @@ export default function PostDetailPage() {
   const [commentEmail, setCommentEmail] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
+
+  // ====================================================================== //
+  //        CONDIVISIONE
+  //        Su telefono apre il menu di sistema (WhatsApp, Telegram...),
+  //        su desktop, dove quel menu non esiste, copia il link.
+  // ====================================================================== //
+  const handleShare = async () => {
+    if (!post) return;
+
+    const url = window.location.href;
+    const shareData = {
+      title: post.title,
+      text: post.excerpt || post.title,
+      url,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (error) {
+        // L utente ha chiuso il menu: non e un errore, non si fa niente
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        // Qualunque altro problema: si ripiega sulla copia del link
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2500);
+    } catch {
+      // Clipboard negata (succede senza HTTPS): selezioniamo il link
+      // in una casella temporanea cosi l utente puo copiarlo a mano
+      const input = document.createElement("input");
+      input.value = url;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2500);
+    }
+  };
 
   useEffect(() => {
     if (slug) {
@@ -363,9 +409,23 @@ export default function PostDetailPage() {
             <span>{post.views.toLocaleString()} visualizzazioni</span>
           </div>
 
-          <button className="ml-auto flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
-            <Share2 className="w-5 h-5" />
-            <span className="font-medium">Condividi</span>
+          <button
+            type="button"
+            onClick={handleShare}
+            className="ml-auto flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+            aria-label="Condividi questo articolo"
+          >
+            {shareCopied ? (
+              <>
+                <Check className="w-5 h-5 text-green-600" />
+                <span className="font-medium text-green-600">Link copiato</span>
+              </>
+            ) : (
+              <>
+                <Share2 className="w-5 h-5" />
+                <span className="font-medium">Condividi</span>
+              </>
+            )}
           </button>
         </div>
 

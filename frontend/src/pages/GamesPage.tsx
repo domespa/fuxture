@@ -37,15 +37,15 @@ export default function GamesPage() {
   }, []);
 
   return (
-    <div className="min-h-[calc(100vh-52px)]" style={{ backgroundColor: GAMES_BG }}>
+    <div
+      className="min-h-[calc(100vh-52px)]"
+      style={{ backgroundColor: GAMES_BG }}
+    >
       {/* HERO */}
       <div className="border-b border-slate-800 bg-gradient-to-b from-slate-800 to-transparent">
         <div className="container mx-auto px-4 py-12 text-center">
           <div className="mb-3 flex items-center justify-center gap-2">
-            <Gamepad2 className="h-7 w-7 text-blue-400" />
-            <h1 className="text-3xl font-bold text-white md:text-4xl">
-              Giochi
-            </h1>
+            <Gamepad2 className="h-10 w-10 text-blue-400" />
           </div>
           <p className="mx-auto max-w-2xl text-slate-300">
             Giochi da browser gratuiti, senza registrazione e senza download.

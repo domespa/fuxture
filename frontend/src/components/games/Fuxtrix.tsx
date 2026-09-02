@@ -16,6 +16,7 @@ import {
   ROWS,
   SHAPES,
   dropDistance,
+  getSpeed,
   initialState,
   reducer,
 } from "./fuxtrix.logic";
@@ -57,8 +58,7 @@ export default function Fuxtrix({ onGameOver }: GameComponentProps) {
   useEffect(() => {
     if (status !== "playing") return;
 
-    const speed = Math.max(90, 800 - (level - 1) * 65);
-    const interval = setInterval(() => dispatch({ type: "TICK" }), speed);
+    const interval = setInterval(() => dispatch({ type: "TICK" }), getSpeed(level));
 
     return () => clearInterval(interval);
   }, [status, level]);

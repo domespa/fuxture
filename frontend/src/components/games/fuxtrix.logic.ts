@@ -68,6 +68,13 @@ export type Action =
   | { type: "HARD_DROP" }
   | { type: "TOGGLE_PAUSE" };
 
+// VELOCITA DI DISCESA IN MILLISECONDI.
+// Progressione geometrica: ogni livello toglie il 15%, cosi si sente subito
+// che accelera invece di trascinarsi nei primi livelli.
+// Livello 1 = 600ms, livello 5 = 313ms, livello 10 = 139ms, poi il tetto a 80ms.
+export const getSpeed = (level: number): number =>
+  Math.max(80, Math.round(600 * Math.pow(0.85, level - 1)));
+
 export const createBoard = (): Board =>
   Array.from({ length: ROWS }, () => Array(COLS).fill(0));
 

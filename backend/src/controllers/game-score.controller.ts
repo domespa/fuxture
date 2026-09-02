@@ -12,8 +12,10 @@ import {
   MIN_NAME_LENGTH,
 } from "../utils/leaderboard.utils";
 
-// TETTO DI SICUREZZA: oltre questo il punteggio e sicuramente falso
-const MAX_SCORE = 10000;
+// TETTO DI SICUREZZA: oltre questo il punteggio e sicuramente falso.
+// Tenerlo alto: a Fuxtrix un tetris al livello 10 vale gia 8000 punti da solo,
+// quindi un tetto basso rifiuterebbe le partite dei giocatori bravi.
+const MAX_SCORE = 1_000_000;
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 50;
 

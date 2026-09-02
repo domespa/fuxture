@@ -2,6 +2,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Gamepad2, Info, Loader2, Users } from "lucide-react";
 import toast from "react-hot-toast";
+import { isAxiosError } from "axios";
 import { gamesAPI, leaderboardAPI } from "@/services/api";
 import type { Game, GameScore } from "@/types/game.types";
 import GameEmbed from "@/components/games/GameEmbed";
@@ -107,7 +108,25 @@ export default function GameDetailPage() {
           }
         } catch (error) {
           console.error("Error submitting score", error);
-          toast.error("Punteggio non salvato in classifica");
+
+          // MESSAGGIO SPECIFICO: un errore generico non fa capire se e colpa
+          // della rete, del limite di invii o del punteggio rifiutato
+          const status = isAxiosError(error) ? error.response?.status : null;
+          const serverMessage = isAxiosError(error)
+            ? error.response?.data?.error
+            : null;
+
+          if (status === 429) {
+            toast.error(
+              serverMessage || "Troppi punteggi inviati, riprova tra poco"
+            );
+          } else if (status === 400) {
+            toast.error(serverMessage || "Punteggio rifiutato dal server");
+          } else if (!status) {
+            toast.error("Classifica irraggiungibile: controlla la connessione");
+          } else {
+            toast.error("Punteggio non salvato in classifica");
+          }
         }
       }
 

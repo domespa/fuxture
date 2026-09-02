@@ -10,6 +10,12 @@ interface PostCardProps {
   variant?: "default" | "compact";
 }
 
+// Un post e "nuovo" nelle sue prime 24 ore
+const isNew = (publishedAt: Date | null): boolean => {
+  if (!publishedAt) return false;
+  return Date.now() - new Date(publishedAt).getTime() < 24 * 60 * 60 * 1000;
+};
+
 const PostCardComponent = ({
   post,
   calculateReadTime,
@@ -38,7 +44,12 @@ const PostCardComponent = ({
               {post.category.name}
             </span>
           )}
-          <h3 className="pc-compact__title">{post.title}</h3>
+          <h3 className="pc-compact__title">
+            {isNew(post.publishedAt) && (
+              <span className="pc-compact__new">Nuovo</span>
+            )}
+            {post.title}
+          </h3>
           <div className="pc-compact__meta">
             <span>
               <Calendar size={11} />
@@ -107,6 +118,19 @@ const PostCardComponent = ({
             align-items: center;
             gap: 4px;
           }
+          .pc-compact__new {
+            display: inline-block;
+            margin-right: 6px;
+            padding: 1px 6px;
+            border-radius: 5px;
+            background: #10B981;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            vertical-align: 2px;
+          }
           .pc-compact__title {
             font-size: 14px;
             font-weight: 700;
@@ -148,6 +172,7 @@ const PostCardComponent = ({
             <Sparkles size={24} />
           </div>
         )}
+        {isNew(post.publishedAt) && <span className="pc-card__new">Nuovo</span>}
         {post.category && (
           <span
             className="pc-card__cat"
@@ -216,6 +241,21 @@ const PostCardComponent = ({
           justify-content: center;
           background: linear-gradient(135deg, #1D315E, #0B1120);
           color: rgba(255,255,255,0.25);
+        }
+        .pc-card__new {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          z-index: 2;
+          padding: 3px 9px;
+          border-radius: 6px;
+          background: #10B981;
+          color: #fff;
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          box-shadow: 0 2px 8px rgba(16,185,129,0.4);
         }
         .pc-card__cat {
           position: absolute;

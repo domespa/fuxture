@@ -398,9 +398,15 @@
 .hp-main::before {
   content: "";
   position: absolute;
-  /* Niente sporgenza laterale: su finestre piu strette di 1280px creava
-     40px di scorrimento orizzontale */
-  inset: -60px 0 0;
+  /* Nessuna sporgenza, in nessuna direzione: lo sfondo deve restare dentro
+     il proprio blocco chiaro.
+     - di lato sporgeva 40px e su finestre sotto i 1280px creava scorrimento
+       orizzontale;
+     - in alto sporgeva 60px e finiva sopra la barra breaking news (e sopra
+       la fascia giochi, per il blocco in basso), colorandone il fondo scuro:
+       questi blocchi vengono prima nel documento, quindi lo sfondo di
+       .hp-main ci si sovrappone invece di finirci sotto. */
+  inset: 0;
   z-index: -1;
   pointer-events: none;
   /* Sfuma tutti i bordi. Senza, le sfumature vengono tagliate di netto dal

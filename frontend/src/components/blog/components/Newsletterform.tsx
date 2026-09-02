@@ -1,12 +1,18 @@
 import { useState, FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { Mail, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { isAxiosError } from "axios";
+import { subscribersAPI } from "@/services/api";
 
 export interface NewsletterFormProps {
   variant?: "footer" | "inline";
+  // Da dove arriva l iscritto: si ritrova nella colonna source della dashboard
+  source?: string;
 }
 
-export default function NewsletterForm({}: NewsletterFormProps) {
+export default function NewsletterForm({
+  source = "newsletter-footer",
+}: NewsletterFormProps) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
@@ -37,6 +43,12 @@ export default function NewsletterForm({}: NewsletterFormProps) {
     setIsLoading(true);
 
     try {
+      await subscribersAPI.createSubscriber({
+        email: email.trim(),
+        name: name.trim() || undefined,
+        source,
+      });
+
       // Successo!
       setStatus("success");
       setEmail("");
@@ -49,8 +61,19 @@ export default function NewsletterForm({}: NewsletterFormProps) {
       }, 5000);
     } catch (error) {
       setStatus("error");
-      if (error instanceof Error) {
-        setErrorMessage(error.message);
+
+      // 409 = email già iscritta: non è un errore, è una buona notizia
+      if (isAxiosError(error) && error.response?.status === 409) {
+        setErrorMessage(
+          error.response.data?.error ||
+            "Questa email è già iscritta alla newsletter"
+        );
+      } else if (isAxiosError(error) && error.response?.data?.error) {
+        setErrorMessage(error.response.data.error);
+      } else if (isAxiosError(error) && !error.response) {
+        setErrorMessage(
+          "Server non raggiungibile. Controlla la connessione e riprova."
+        );
       } else {
         setErrorMessage("Si è verificato un errore. Riprova più tardi.");
       }

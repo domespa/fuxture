@@ -1,0 +1,373 @@
+/* Stili della homepage. Estratti dal componente: erano 326 righe dentro un tag <style>. */
+
+.hp-root {
+  min-height: calc(100vh - 52px);
+  background: #F1F5F9;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* MAIN */
+.hp-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* TWO COL GRID */
+.hp-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 32px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .hp-grid { grid-template-columns: 1fr; }
+  .hp-sticky { position: static !important; }
+}
+
+/* STICKY SIDEBAR */
+.hp-sticky {
+  position: sticky;
+  top: 68px;
+}
+
+/* SECTION HEAD */
+.hp-section__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.hp-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: #1D315E;
+  padding: 3px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.hp-tag--live {
+  background: #DC2626;
+  animation: hp-pulse 2s ease-in-out infinite;
+}
+@keyframes hp-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+.hp-section__title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.02em;
+  flex: 1;
+  margin: 0;
+}
+.hp-section__more {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4F46E5;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: gap 0.15s;
+}
+.hp-section__more:hover { gap: 7px; }
+
+/* POSTS */
+.hp-posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.hp-posts-list > *:first-child {
+  margin-bottom: 20px;
+}
+.hp-compact-list {
+  background: #fff;
+  border-radius: 14px;
+  border: 1.5px solid #E2E8F0;
+  padding: 0 16px;
+  overflow: hidden;
+}
+/* Lo scheletro ricalca le misure delle card vere (.pc-card e .pc-compact):
+   card grande 200px di immagine + corpo, poi il box delle 4 compatte da 68px.
+   Se cambiano quelle misure in PostCard, vanno aggiornate anche qui. */
+.hp-posts-skeleton {
+  display: flex;
+  flex-direction: column;
+}
+.hp-post-ghost {
+  background: #E2E8F0;
+  animation: hp-shimmer 1.4s ease-in-out infinite;
+}
+.hp-post-ghost--lead {
+  height: 359px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+.hp-post-ghost-list {
+  background: #fff;
+  border-radius: 14px;
+  border: 1.5px solid #E2E8F0;
+  padding: 0 16px;
+}
+.hp-post-ghost--compact {
+  height: 68px;
+  margin: 16px 0;
+  border-radius: 8px;
+}
+@keyframes hp-shimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* CATEGORIE */
+.hp-cats {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hp-cats-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hp-cat-ghost {
+  height: 40px;
+  border-radius: 8px;
+  background: #E2E8F0;
+  animation: hp-shimmer 1.4s ease-in-out infinite;
+}
+.hp-cat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 9px 12px;
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.hp-cat::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--cat-color, #4F46E5);
+  transform: scaleY(0);
+  transition: transform 0.2s;
+  border-radius: 0 2px 2px 0;
+}
+.hp-cat:hover {
+  border-color: var(--cat-color, #4F46E5);
+  background: #F8FAFC;
+}
+.hp-cat:hover::before { transform: scaleY(1); }
+.hp-cat__icon { font-size: 15px; flex-shrink: 0; }
+.hp-cat__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1E293B;
+  flex: 1;
+}
+.hp-cat__count {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94A3B8;
+  background: #F1F5F9;
+  padding: 1px 6px;
+  border-radius: 20px;
+}
+
+/* CATEGORY GRID */
+.hp-catgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+.hp-catgrid-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+.hp-catgrid-ghost {
+  height: 130px;
+  border-radius: 14px;
+  background: #E2E8F0;
+  animation: hp-shimmer 1.4s ease-in-out infinite;
+}
+.hp-catcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 4px;
+  height: 130px;
+  border-radius: 14px;
+  padding: 16px;
+  text-decoration: none;
+  overflow: hidden;
+  border: 1.5px solid transparent;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  background: #fff;
+}
+.hp-catcard__bg {
+  position: absolute;
+  inset: 0;
+  background: var(--cat-color, #4F46E5);
+  opacity: 0.08;
+  transition: opacity 0.2s;
+}
+.hp-catcard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.1);
+  border-color: var(--cat-color, #4F46E5);
+}
+.hp-catcard:hover .hp-catcard__bg { opacity: 0.22; }
+.hp-catcard__icon {
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+.hp-catcard__name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1E293B;
+  line-height: 1.2;
+}
+.hp-catcard__count {
+  font-size: 11px;
+  color: #94A3B8;
+  font-weight: 500;
+}
+.hp-catcard__arrow {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  color: var(--cat-color, #4F46E5);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.hp-catcard:hover .hp-catcard__arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* CTA */
+.hp-cta {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0B1120 0%, #1D315E 60%, #1E1B4B 100%);
+  padding: 48px 48px;
+}
+.hp-cta__glow {
+  position: absolute;
+  right: -80px; top: -80px;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hp-cta__content { position: relative; z-index: 1; }
+.hp-cta__eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #818CF8;
+  margin: 0 0 8px;
+}
+.hp-cta__title {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.03em;
+  margin: 0 0 20px;
+}
+.hp-cta__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #4F46E5;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 11px 20px;
+  border-radius: 9px;
+  text-decoration: none;
+  transition: background 0.15s, gap 0.15s, transform 0.15s;
+}
+.hp-cta__btn:hover {
+  background: #4338CA;
+  gap: 12px;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+  .hp-main { padding: 20px 16px 60px; gap: 36px; }
+  .hp-cta { padding: 32px 20px; }
+}
+
+/* Blocco inferiore della home, dopo la fascia giochi */
+.hp-main--bottom {
+  padding-top: 48px;
+}
+
+/* Titolo di sezione con spazio sopra, per il secondo widget della sidebar */
+.hp-section__head--spaced {
+  margin-top: 28px;
+}
+
+/* BANDA NEWSLETTER */
+.hp-newsletter {
+  background: linear-gradient(135deg, #1E293B, #0F172A);
+  border-radius: 18px;
+  padding: 40px 32px;
+}
+
+.hp-newsletter__content {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hp-newsletter__title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin: 10px 0 0;
+}
+
+.hp-newsletter__sub {
+  font-size: 14px;
+  color: #94A3B8;
+  margin: 8px 0 0;
+}
+
+.hp-newsletter__form {
+  margin-top: 24px;
+  text-align: left;
+}
+
+@media (max-width: 640px) {
+  .hp-newsletter { padding: 28px 20px; }
+  .hp-newsletter__title { font-size: 21px; }
+}

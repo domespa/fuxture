@@ -398,9 +398,15 @@
 .hp-main::before {
   content: "";
   position: absolute;
-  inset: -60px -40px 0;
+  /* Niente sporgenza laterale: su finestre piu strette di 1280px creava
+     40px di scorrimento orizzontale */
+  inset: -60px 0 0;
   z-index: -1;
   pointer-events: none;
+  /* Sfuma tutti i bordi. Senza, le sfumature vengono tagliate di netto dal
+     rettangolo dello pseudo-elemento e si vede un riquadro azzurro squadrato */
+  -webkit-mask-image: radial-gradient(125% 95% at 50% 20%, #000 42%, transparent 100%);
+  mask-image: radial-gradient(125% 95% at 50% 20%, #000 42%, transparent 100%);
 }
 
 /* Livello grana: toglie la sensazione di grigio piatto senza farsi notare */
@@ -426,9 +432,7 @@
 .hp-bg--dots .hp-main::before {
   background-image: radial-gradient(rgba(71, 85, 105, 0.14) 1px, transparent 1px);
   background-size: 22px 22px;
-  /* Sfuma ai bordi, altrimenti il reticolo taglia di netto */
-  -webkit-mask-image: radial-gradient(120% 90% at 50% 20%, #000 40%, transparent 100%);
-  mask-image: radial-gradient(120% 90% at 50% 20%, #000 40%, transparent 100%);
+  /* La sfumatura dei bordi e gia nella regola base .hp-main::before */
 }
 
 /* VARIANTE 3: nessuna decorazione */

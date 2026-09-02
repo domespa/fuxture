@@ -178,14 +178,14 @@ export default function FeaturedPost() {
       <style>{`
         .fp-wrap {
           position: relative;
-          height: clamp(380px, 55vh, 560px);
+          height: clamp(300px, 42vh, 460px);
           overflow: hidden;
           background: #0B1120;
         }
 
         /* BG */
         .fp-skeleton {
-          height: clamp(380px, 55vh, 560px);
+          height: clamp(300px, 42vh, 460px);
           background: linear-gradient(135deg, #0B1120, #1D315E);
           animation: fp-shimmer 1.4s ease-in-out infinite;
         }

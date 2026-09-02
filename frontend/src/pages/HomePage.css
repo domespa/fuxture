@@ -371,3 +371,85 @@
   .hp-newsletter { padding: 28px 20px; }
   .hp-newsletter__title { font-size: 21px; }
 }
+
+/* ====================================================================== */
+/*  SFONDO DELLE SEZIONI CHIARE                                           */
+/*                                                                        */
+/*  Per cambiare aspetto basta cambiare la classe su .hp-root in          */
+/*  HomePage.tsx, senza toccare altro:                                    */
+/*                                                                        */
+/*    hp-bg--aurora   macchie di colore sfumate (predefinito)             */
+/*    hp-bg--dots     reticolo di puntini, aria piu tecnica               */
+/*    hp-bg--flat     niente, solo il grigio pieno di prima               */
+/*                                                                        */
+/*  Aggiungendo anche hp-bg--motion l aurora si muove molto lentamente.   */
+/*  Tutto in CSS: nessun canvas, nessun JavaScript, nessun ridisegno      */
+/*  durante lo scroll.                                                    */
+/* ====================================================================== */
+
+.hp-main {
+  position: relative;
+  /* Crea un contesto di impilamento, cosi lo sfondo sta dietro al contenuto
+     ma davanti al colore di fondo della pagina */
+  isolation: isolate;
+}
+
+/* Livello decorativo: sfumature o puntini */
+.hp-main::before {
+  content: "";
+  position: absolute;
+  inset: -60px -40px 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Livello grana: toglie la sensazione di grigio piatto senza farsi notare */
+.hp-main::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* VARIANTE 1: aurora (stessa tecnica del riquadro CTA in fondo alla pagina) */
+.hp-bg--aurora .hp-main::before {
+  background:
+    radial-gradient(620px 340px at 10% 0%, rgba(79, 70, 229, 0.13), transparent 68%),
+    radial-gradient(540px 320px at 92% 14%, rgba(37, 99, 235, 0.11), transparent 70%),
+    radial-gradient(460px 300px at 45% 100%, rgba(14, 165, 233, 0.07), transparent 72%);
+}
+
+/* VARIANTE 2: reticolo di puntini */
+.hp-bg--dots .hp-main::before {
+  background-image: radial-gradient(rgba(71, 85, 105, 0.14) 1px, transparent 1px);
+  background-size: 22px 22px;
+  /* Sfuma ai bordi, altrimenti il reticolo taglia di netto */
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 20%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(120% 90% at 50% 20%, #000 40%, transparent 100%);
+}
+
+/* VARIANTE 3: nessuna decorazione */
+.hp-bg--flat .hp-main::before,
+.hp-bg--flat .hp-main::after {
+  display: none;
+}
+
+/* Movimento facoltativo: ciclo lento, gestito dalla GPU */
+.hp-bg--motion .hp-main::before {
+  animation: hp-aurora-drift 28s ease-in-out infinite alternate;
+}
+
+@keyframes hp-aurora-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(-2%, 1.5%, 0) scale(1.06); }
+}
+
+/* Chi ha chiesto meno animazioni al sistema non le riceve */
+@media (prefers-reduced-motion: reduce) {
+  .hp-bg--motion .hp-main::before {
+    animation: none;
+  }
+}

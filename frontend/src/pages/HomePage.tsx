@@ -54,8 +54,10 @@ export default function HomePage() {
       .finally(() => setPostsLoading(false));
   }, []);
 
+  // Sfondo della pagina: hp-bg--aurora | hp-bg--dots | hp-bg--flat,
+  // piu hp-bg--motion per il movimento lento. Le varianti sono in HomePage.css.
   return (
-    <div className="hp-root">
+    <div className="hp-root hp-bg--aurora">
       {/* ── FEATURED ───────────────────────────────── */}
       <FeaturedPost />
 

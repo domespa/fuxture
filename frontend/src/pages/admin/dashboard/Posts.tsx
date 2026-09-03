@@ -162,7 +162,9 @@ export default function Posts() {
       setDeleteDialog({ open: false, postId: null, postTitle: "" });
     } catch (err: any) {
       console.error("Errore eliminazione post:", err);
-      toast.error("Errore nell'eliminazione del post");
+      toast.error(
+        err?.response?.data?.error || "Errore nell'eliminazione del post"
+      );
     }
   };
 

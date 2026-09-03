@@ -49,7 +49,7 @@ const TiptapEditorComponent = ({
     "tradeDoublerBanner" | "awinBannerLink" | "awinBanner"
   >("tradeDoublerBanner");
   const editorContainerRef = useRef<HTMLDivElement>(null);
-  const initialContentRef = useRef<string | null>(null);
+  const lastEmittedRef = useRef<string | null>(null);
 
   const editor = useEditor({
     extensions: [
@@ -84,6 +84,8 @@ const TiptapEditorComponent = ({
     content: content,
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
+      // MEMORIZZIAMO CIO CHE ABBIAMO EMESSO, PER RICONOSCERE L ECO IN ARRIVO
+      lastEmittedRef.current = html;
       console.log("🔍 HTML SALVATO:", html);
       onChange(html);
     },
@@ -97,10 +99,16 @@ const TiptapEditorComponent = ({
 
   useEffect(() => {
     if (!editor || !content) return;
-    if (initialContentRef.current !== content) {
-      editor.commands.setContent(content);
-      initialContentRef.current = content;
-    }
+
+    // IL PROP TORNA INDIETRO DOPO OGNI MODIFICA (onUpdate -> stato del padre -> prop).
+    // RIAPPLICARLO CON setContent RICOSTRUISCE IL DOCUMENTO E SPOSTA IL CURSORE IN FONDO,
+    // QUINDI IGNORIAMO L ECO DI CIO CHE ABBIAMO APPENA EMESSO NOI.
+    if (content === lastEmittedRef.current) return;
+    if (content === editor.getHTML()) return;
+
+    // QUI IL CONTENUTO ARRIVA DAVVERO DALL ESTERNO (es. post caricato dall API)
+    editor.commands.setContent(content, { emitUpdate: false });
+    lastEmittedRef.current = content;
   }, [editor, content]);
 
   useEffect(() => {

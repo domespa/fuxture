@@ -98,7 +98,7 @@ model Comment {
   authorEmail String
   status      CommentStatus @default(PENDING)
   postId      String
-  post        Post          @relation(fields: [postId], references: [id])
+  post        Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
   parentId    String?
   parent      Comment?      @relation("CommentReplies", fields: [parentId], references: [id])
   replies     Comment[]     @relation("CommentReplies")

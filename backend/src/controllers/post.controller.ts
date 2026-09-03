@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/database";
+import { Prisma } from "@prisma/client";
 import {
   CreatePostRequest,
   UpdatePostRequest,
@@ -430,6 +431,25 @@ export async function deletePost(req: Request, res: Response): Promise<void> {
     });
   } catch (error) {
     console.error("Error deleting post:", error);
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // POST GIA ELIMINATO NEL FRATTEMPO
+      if (error.code === "P2025") {
+        res.status(404).json({ error: "Post not found" });
+        return;
+      }
+
+      // VINCOLO FK: QUALCOSA REFERENZIA ANCORA IL POST
+      if (error.code === "P2003") {
+        res.status(409).json({
+          error:
+            "Impossibile eliminare il post: esistono dati collegati che lo referenziano",
+          code: error.code,
+        });
+        return;
+      }
+    }
+
     res.status(500).json({ error: "Failed to delete post" });
   }
 }

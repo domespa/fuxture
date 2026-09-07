@@ -163,6 +163,30 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
               </option>
             ))}
           </datalist>
+          {/* Il datalist da solo non si vede: i destinatari recenti vanno
+              mostrati, altrimenti la rubrica esiste ma non la trova nessuno. */}
+          {contacts.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <span className="text-xs text-muted-foreground">Recenti:</span>
+              {contacts.slice(0, 6).map((contact) => (
+                <button
+                  key={contact.id}
+                  type="button"
+                  title={contact.email}
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      toEmail: contact.email,
+                    }))
+                  }
+                  className="rounded-full border border-gray-200 px-3 py-1 text-xs text-gray-700 transition-colors hover:border-indigo-400 hover:text-indigo-700"
+                >
+                  {contact.name ?? contact.email}
+                </button>
+              ))}
+            </div>
+          )}
+
           <p className="text-sm text-muted-foreground">
             L'email sarà inviata a questo indirizzo per l'approvazione della
             campagna

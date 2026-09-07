@@ -449,6 +449,11 @@ export async function sendTestEmail(
     const fromName =
       campaign.fromName || process.env.SMTP_FROM_NAME || "Fuxture";
 
+    // La rubrica registra il tentativo, non l'esito: un indirizzo scritto a
+    // mano resta utile anche se l'invio fallisce, ed e' anzi il caso in cui
+    // serve di piu', perche' si riprovera'.
+    await rememberContact(testEmail);
+
     // INVIA EMAIL
     const result = await sendEmail({
       to: testEmail,
@@ -464,8 +469,6 @@ export async function sendTestEmail(
       });
       return;
     }
-
-    await rememberContact(testEmail);
 
     res.status(200).json({
       success: true,
@@ -722,6 +725,11 @@ export async function sendPreviewEmail(
     // sendEmail() cattura internamente gli errori SMTP e li restituisce nel
     // risultato invece di sollevarli: senza questo controllo l'endpoint
     // rispondeva "inviata con successo" anche quando l'invio era fallito.
+    // Solo gli invii manuali alimentano la rubrica: le campagne pescano da
+    // Subscriber, dove il consenso e' registrato, e non devono aggiungere
+    // nulla qui.
+    await rememberContact(toEmail);
+
     const result = await sendEmail({
       to: toEmail,
       subject: subject,
@@ -736,10 +744,6 @@ export async function sendPreviewEmail(
       });
       return;
     }
-
-    // La rubrica si popola solo dagli invii manuali. Le campagne pescano da
-    // Subscriber e non devono aggiungere nulla qui.
-    await rememberContact(toEmail);
 
     res.status(200).json({
       success: true,

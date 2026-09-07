@@ -753,9 +753,13 @@ export async function sendPreviewEmail(
     });
   } catch (error) {
     console.error("Errore invio email preview:", error);
-    res
-      .status(500)
-      .json({ error: "Errore durante l'invio dell'email preview" });
+    // L'endpoint e' riservato agli amministratori: restituire il messaggio
+    // reale evita di dover leggere i log del server per capire cosa e'
+    // successo. Un "errore generico" costa piu' tempo di quanto protegga.
+    res.status(500).json({
+      error: "Errore durante l'invio dell'email preview",
+      detail: error instanceof Error ? error.message : String(error),
+    });
   }
 }
 

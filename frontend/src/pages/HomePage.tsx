@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import "./HomePage.css";
-import { categoriesAPI, postsAPI } from "@/services/api";
+import { categoriesAPI, postsAPI, newsletterIssueAPI } from "@/services/api";
 import type { Category } from "@/types/category.types";
 import type { PostResponse, PostStatus } from "@/types/post.types";
 import { Link } from "react-router-dom";
@@ -12,12 +12,19 @@ import { PostCard } from "@/components/blog/components/post/PostCard";
 import MostRead from "@/components/blog/components/MostRead";
 import GamesStrip from "@/components/blog/components/GamesStrip";
 import NewsletterForm from "@/components/blog/components/Newsletterform";
+import RecentlyViewed from "@/components/blog/components/RecentlyViewed";
+import TagCloud from "@/components/blog/components/TagCloud";
+import RecentComments from "@/components/blog/components/RecentComments";
 
 export default function HomePage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [recentPosts, setRecentPosts] = useState<PostResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [postsLoading, setPostsLoading] = useState(true);
+  const [latestIssue, setLatestIssue] = useState<{
+    subject: string;
+    sentAt: string;
+  } | null>(null);
 
   const formatDate = useCallback((date: Date | null) => {
     if (!date) return "";
@@ -52,6 +59,9 @@ export default function HomePage() {
       })
       .catch(console.error)
       .finally(() => setPostsLoading(false));
+
+    // Ultimo numero spedito: se non ce n'e' ancora, la riga non compare
+    newsletterIssueAPI.getLatest().then(setLatestIssue).catch(console.error);
   }, []);
 
   // Sfondo della pagina: hp-bg--aurora | hp-bg--dots | hp-bg--flat,
@@ -140,6 +150,9 @@ export default function HomePage() {
       <GamesStrip />
 
       <div className="hp-main hp-main--bottom">
+        {/* RIPRENDI DA DOVE ERI (solo per chi torna) */}
+        <RecentlyViewed />
+
         {/* SEZIONE CATEGORIE VISIVA */}
         <section className="hp-section">
           <div className="hp-section__head">
@@ -181,6 +194,24 @@ export default function HomePage() {
           )}
         </section>
 
+        {/* ARGOMENTI */}
+        <section className="hp-section">
+          <div className="hp-section__head">
+            <span className="hp-tag">Argomenti</span>
+            <h2 className="hp-section__title">Cerca per tag</h2>
+          </div>
+          <TagCloud />
+        </section>
+
+        {/* COMMENTI RECENTI */}
+        <section className="hp-section">
+          <div className="hp-section__head">
+            <span className="hp-tag">In corso</span>
+            <h2 className="hp-section__title">Se ne sta parlando</h2>
+          </div>
+          <RecentComments />
+        </section>
+
         {/* NEWSLETTER */}
         <section className="hp-newsletter">
           <div className="hp-newsletter__content">
@@ -191,23 +222,26 @@ export default function HomePage() {
             <p className="hp-newsletter__sub">
               Una selezione ragionata, senza spam. Ti disiscrivi con un click.
             </p>
+            {latestIssue && (
+              <p className="hp-newsletter__issue">
+                Ultimo numero: <strong>{latestIssue.subject}</strong>
+                {latestIssue.sentAt && (
+                  <>
+                    {" — "}
+                    {new Date(latestIssue.sentAt).toLocaleDateString("it-IT", {
+                      day: "2-digit",
+                      month: "long",
+                    })}
+                  </>
+                )}
+              </p>
+            )}
             <div className="hp-newsletter__form">
               <NewsletterForm source="home-banda" />
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="hp-cta">
-          <div className="hp-cta__glow" aria-hidden />
-          <div className="hp-cta__content">
-            <p className="hp-cta__eyebrow">Ogni giorno, senza rumore</p>
-            <h2 className="hp-cta__title">Le notizie che contano</h2>
-            <Link to="/posts" className="hp-cta__btn">
-              Esplora tutti gli articoli <ArrowRight size={15} />
-            </Link>
-          </div>
-        </section>
       </div>
     </div>
   );

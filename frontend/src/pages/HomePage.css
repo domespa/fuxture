@@ -463,3 +463,219 @@
     animation: none;
   }
 }
+
+/* ── Riprendi da dove eri ─────────────────────────────────────────────── */
+/* Barra sottile e sottotono: e' un promemoria, non una sezione editoriale.
+   Se pesasse quanto le altre ruberebbe attenzione ai contenuti nuovi. */
+
+.rv-band {
+  margin-bottom: 28px;
+  padding: 14px 18px;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+}
+
+.rv-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.rv-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748B;
+}
+
+.rv-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 11px;
+  color: #94A3B8;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.rv-clear:hover {
+  color: #475569;
+}
+
+.rv-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rv-item {
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 7px 12px;
+  background: #fff;
+  border: 1px solid #E2E8F0;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.rv-item:hover {
+  border-color: #94A3B8;
+  color: #0F172A;
+}
+
+/* ── Argomenti ────────────────────────────────────────────────────────── */
+
+.tc-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tc-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #E2E8F0;
+  border-radius: 999px;
+  background: #fff;
+  color: #334155;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s, transform 0.15s;
+}
+
+.tc-pill:hover {
+  border-color: #4F46E5;
+  color: #4F46E5;
+  transform: translateY(-1px);
+}
+
+/* Tre soli livelli di peso: il confronto resta leggibile a colpo d'occhio */
+.tc-pill--sm { padding: 5px 11px; font-size: 12px; }
+.tc-pill--md { padding: 7px 14px; font-size: 13px; font-weight: 600; }
+.tc-pill--lg { padding: 9px 17px; font-size: 15px; font-weight: 700; }
+
+.tc-pill__count {
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: #94A3B8;
+}
+
+.tc-ghost {
+  width: 84px;
+  height: 30px;
+  border-radius: 999px;
+  background: #E2E8F0;
+  animation: hp-shimmer 1.4s ease-in-out infinite;
+}
+
+/* ── Se ne sta parlando ───────────────────────────────────────────────── */
+
+.rc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.rc-card {
+  display: block;
+  padding: 16px 18px;
+  background: #fff;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  text-decoration: none;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.rc-card:hover {
+  border-color: #CBD5E1;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.rc-card--static:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.rc-card__icon {
+  color: #CBD5E1;
+  margin-bottom: 8px;
+}
+
+.rc-card__text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #334155;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rc-card__meta {
+  margin-top: 10px;
+  font-size: 11px;
+  color: #94A3B8;
+}
+
+.rc-card__author {
+  font-weight: 700;
+  color: #475569;
+}
+
+.rc-card__sep {
+  margin: 0 5px;
+}
+
+.rc-card__post {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #4F46E5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rc-ghost {
+  height: 118px;
+  border-radius: 14px;
+  background: #E2E8F0;
+  animation: hp-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes hp-shimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* ── Ultimo numero della newsletter ───────────────────────────────────── */
+/* Sta dentro il pannello scuro, quindi testo chiaro */
+
+.hp-newsletter__issue {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: #CBD5E1;
+}
+
+.hp-newsletter__issue strong {
+  color: #fff;
+  font-weight: 700;
+}

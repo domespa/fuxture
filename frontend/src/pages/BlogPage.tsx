@@ -64,6 +64,12 @@ export default function BlogPage() {
     [searchParams],
   );
 
+  // Argomento selezionato dalla nuvola di tag in home
+  const selectedTag = useMemo(
+    () => searchParams.get("tags") || "",
+    [searchParams],
+  );
+
   const selectedCategoryData = useMemo(() => {
     if (selectedCategory === "all") return null;
     return categories.find((cat) => cat.slug === selectedCategory);
@@ -86,10 +92,20 @@ export default function BlogPage() {
     setSearchQuery(searchTerm);
   }, [searchTerm]);
 
+  // Il filtro per argomento si toglie senza perdere categoria e ricerca
+  const clearTag = () => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.delete("tags");
+      next.delete("page");
+      return next;
+    });
+  };
+
   const fetchPosts = useCallback(async () => {
     if (!categoriesLoadedRef.current) return;
 
-    const currentParams = `${selectedCategory}-${currentPage}-${searchTerm}`;
+    const currentParams = `${selectedCategory}-${currentPage}-${searchTerm}-${selectedTag}`;
     if (lastFetchParams.current === currentParams) {
       return;
     }
@@ -118,6 +134,10 @@ export default function BlogPage() {
         filters.search = searchTerm.trim();
       }
 
+      if (selectedTag.trim()) {
+        filters.tags = [selectedTag.trim()];
+      }
+
       const response = await postsAPI.getPosts(filters);
       const postsData = "posts" in response ? response.posts : response;
       const paginationData =
@@ -134,7 +154,7 @@ export default function BlogPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedCategory, currentPage, searchTerm, categories]);
+  }, [selectedCategory, currentPage, searchTerm, selectedTag, categories]);
 
   useEffect(() => {
     fetchPosts();
@@ -256,6 +276,25 @@ export default function BlogPage() {
         onCategoryChange={handleCategoryChange}
         isLoading={isLoading || isPending}
       />
+
+      {selectedTag && (
+        <div className="container mx-auto px-4 pt-8">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-sm text-gray-600">Argomento:</span>
+            <span className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-1.5 text-sm font-semibold text-indigo-700">
+              {selectedTag}
+              <button
+                type="button"
+                onClick={clearTag}
+                className="text-indigo-400 transition-colors hover:text-indigo-700"
+                aria-label="Rimuovi il filtro per argomento"
+              >
+                ✕
+              </button>
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className="container mx-auto px-4 py-12">
         <div className="relative min-h-[600px]">

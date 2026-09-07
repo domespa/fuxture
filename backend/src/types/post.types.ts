@@ -110,3 +110,9 @@ export interface PostListResponse {
     hasPrev: boolean;
   };
 }
+
+// ARGOMENTO: tag con il numero di articoli pubblicati che lo usano
+export interface PostTag {
+  name: string;
+  count: number;
+}

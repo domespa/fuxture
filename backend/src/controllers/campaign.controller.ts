@@ -745,3 +745,29 @@ export async function sendPreviewEmail(
       .json({ error: "Errore durante l'invio dell'email preview" });
   }
 }
+
+// ====================================================================================================== //
+//                         ULTIMO NUMERO INVIATO (PUBBLICO)
+//
+// Serve al form di iscrizione in home: mostrare l'oggetto dell'ultima
+// comunicazione spedita trasforma un invito generico in una prova di cosa si
+// riceve. Escono solo oggetto e data, niente contenuto e niente destinatari.
+// GET /campaigns/latest
+// ====================================================================================================== //
+export async function getLatestSentCampaign(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    const campaign = await prisma.emailCampaign.findFirst({
+      where: { status: CampaignStatus.SENT },
+      orderBy: { sentAt: "desc" },
+      select: { subject: true, sentAt: true },
+    });
+
+    res.status(200).json({ success: true, data: campaign });
+  } catch (error) {
+    console.error("Errore recupero ultima campagna:", error);
+    res.status(500).json({ error: "Errore durante il recupero" });
+  }
+}

@@ -19,13 +19,18 @@ export interface CommentResponse {
   id: string;
   content: string;
   authorName: string;
-  authorEmail: string;
+  // Presente solo nelle risposte agli amministratori: l'endpoint pubblico
+  // non restituisce l'indirizzo di chi commenta
+  authorEmail?: string;
   status: CommentStatus;
   postId: string;
   parentId: string | null;
   createdAt: Date;
   updatedAt: Date;
   replies?: CommentResponse[];
+  // Titolo e slug dell'articolo commentato, per mostrarlo fuori dalla
+  // pagina dell'articolo
+  post?: { title: string; slug: string };
 }
 
 // ADMIN - AGGIORNARE COMMENTO

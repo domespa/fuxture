@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { postsAPI, commentsAPI, api } from "@/services/api";
+import { rememberPost } from "@/lib/recentlyViewed";
 import type { PostResponse } from "@/types/post.types";
 import type { CommentResponse, CommentStatus } from "@/types/comment.types";
 import {
@@ -201,6 +202,10 @@ export default function PostDetailPage() {
       setIsLoading(true);
       const data = await postsAPI.getPostBySlug(slug!);
       setPost(data);
+
+      // Traccia locale per la sezione "Riprendi da dove eri" in home.
+      // Resta sul dispositivo: non viene inviata da nessuna parte.
+      rememberPost({ slug: data.slug, title: data.title });
     } catch (error) {
       console.error("Error fetching post", error);
     } finally {

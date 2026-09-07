@@ -4,6 +4,7 @@ import {
   getPosts,
   getPostById,
   getPostBySlug,
+  getPostTags,
   updatePost,
   deletePost,
   toggleFeatured,
@@ -44,6 +45,9 @@ router.get("/check-slug/:slug", async (req, res) => {
 
 // OTTIENI POST PER SLUG
 // GET /posts/slug/:slug
+// ARGOMENTI: prima di /:id, altrimenti "tags" verrebbe letto come un id
+router.get("/tags", getPostTags);
+
 router.get("/slug/:slug", getPostBySlug);
 
 // LISTA POST FILTRATI

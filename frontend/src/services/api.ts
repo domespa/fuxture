@@ -14,6 +14,7 @@ import type {
 import {
   CreatePostRequest,
   PostFilters,
+  PostTag,
   PostListResponse,
   PostResponse,
   UpdatePostRequest,
@@ -105,6 +106,15 @@ export const postsAPI = {
       params: filters,
     });
     return response.data.data;
+  },
+
+  // ARGOMENTI: tag aggregati degli articoli pubblicati
+  getTags: async (limit = 20): Promise<PostTag[]> => {
+    const response = await api.get<{
+      success: boolean;
+      data: { tags: PostTag[] };
+    }>("/posts/tags", { params: { limit } });
+    return response.data.data.tags;
   },
 
   // OTTIENI SINGOLO POST
@@ -334,6 +344,17 @@ export const campaignsAPI = {
 // ======================================================================================
 //                                  LISTE EMAIL
 // ======================================================================================
+// ULTIMO NUMERO DELLA NEWSLETTER (PUBBLICO)
+export const newsletterIssueAPI = {
+  getLatest: async (): Promise<{ subject: string; sentAt: string } | null> => {
+    const response = await api.get<{
+      success: boolean;
+      data: { subject: string; sentAt: string } | null;
+    }>("/campaigns/latest");
+    return response.data.data;
+  },
+};
+
 export const emailListsAPI = {
   // OTTIENI TUTTE LE LISTE
   getEmailLists: async (): Promise<EmailList[]> => {

@@ -182,12 +182,23 @@ export const getComments = async (
           parentId: true,
           createdAt: true,
           updatedAt: true,
+          // Titolo e slug servono a mostrare i commenti fuori dalla pagina
+          // dell'articolo, per esempio in home.
+          post: { select: { title: true, slug: true } },
         },
       }),
       prisma.comment.count({ where }),
     ]);
 
-    const comments = rawComments as unknown as CommentResponse[];
+    // L'indirizzo e-mail di chi commenta e' un dato personale e non ha
+    // ragione di uscire da qui: prima veniva restituito a chiunque
+    // interrogasse l'endpoint pubblico. Resta visibile solo agli amministratori.
+    const isAdmin = req.user?.role === "ADMIN";
+
+    const comments = rawComments.map((comment) => {
+      const { authorEmail, ...rest } = comment;
+      return (isAdmin ? comment : rest) as unknown as CommentResponse;
+    });
     const totalPages = Math.ceil(total / limitNum);
 
     const response: CommentListResponse = {

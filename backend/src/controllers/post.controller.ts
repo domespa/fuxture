@@ -86,7 +86,6 @@ export async function createPost(req: Request, res: Response): Promise<void> {
             id: true,
             firstName: true,
             lastName: true,
-            email: true,
           },
         },
         category: true,
@@ -141,8 +140,14 @@ export async function getPosts(req: Request, res: Response): Promise<void> {
 
     // FILTRO TAGS
     if (filters.tags && filters.tags.length > 0) {
+      // ?tags=a arriva come stringa, ?tags[]=a&tags[]=b come array:
+      // hasSome accetta solo la seconda forma.
+      const tags = Array.isArray(filters.tags)
+        ? filters.tags
+        : [String(filters.tags)];
+
       where.tags = {
-        hasSome: filters.tags,
+        hasSome: tags,
       };
     }
 
@@ -179,7 +184,6 @@ export async function getPosts(req: Request, res: Response): Promise<void> {
               id: true,
               firstName: true,
               lastName: true,
-              email: true,
             },
           },
           category: true,
@@ -228,7 +232,6 @@ export async function getPostById(req: Request, res: Response): Promise<void> {
             id: true,
             firstName: true,
             lastName: true,
-            email: true,
           },
         },
         category: true,
@@ -343,7 +346,6 @@ export async function updatePost(req: Request, res: Response): Promise<void> {
             id: true,
             firstName: true,
             lastName: true,
-            email: true,
           },
         },
         category: true,
@@ -471,7 +473,6 @@ export const getPostBySlug = async (req: Request, res: Response) => {
             id: true,
             firstName: true,
             lastName: true,
-            email: true,
           },
         },
         category: {
@@ -509,5 +510,51 @@ export const getPostBySlug = async (req: Request, res: Response) => {
       success: false,
       message: "Errore nel recupero del post",
     });
+  }
+};
+
+// ====================================================================================================== //
+//                            ARGOMENTI: TAG AGGREGATI DEGLI ARTICOLI PUBBLICATI
+//
+// Il campo tags esiste da sempre su ogni post e non e' mai stato mostrato da
+// nessuna parte. Serve un endpoint dedicato perche' ricavarli dal listing
+// significherebbe scaricare il testo integrale degli articoli solo per
+// leggerne le etichette: qui viaggiano due colonne e torna un elenco corto.
+// GET /posts/tags
+// ====================================================================================================== //
+export const getPostTags = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const limit = Math.min(
+      Math.max(parseInt(String(req.query.limit ?? 20), 10) || 20, 1),
+      100
+    );
+
+    const posts = await prisma.post.findMany({
+      where: { status: "PUBLISHED" },
+      select: { tags: true },
+    });
+
+    const counts = new Map<string, number>();
+
+    for (const post of posts) {
+      for (const raw of post.tags) {
+        const tag = raw.trim();
+        if (!tag) continue;
+        counts.set(tag, (counts.get(tag) ?? 0) + 1);
+      }
+    }
+
+    const tags = Array.from(counts.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, "it"))
+      .slice(0, limit);
+
+    res.status(200).json({ success: true, data: { tags } });
+  } catch (error) {
+    console.error("Errore recupero tag:", error);
+    res.status(500).json({ error: "Errore durante il recupero dei tag" });
   }
 };

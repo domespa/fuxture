@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createCampaign,
   getCampaigns,
+  getLatestSentCampaign,
   getCampaignById,
   updateCampaign,
   deleteCampaign,
@@ -42,6 +43,10 @@ router.post(
 
 // OTTIENI TUTTE FILTRATE
 // GET /campaigns
+// ULTIMO NUMERO INVIATO: rotta pubblica, prima di /:id.
+// Espone solo oggetto e data, serve alla prova sociale del form in home.
+router.get("/latest", getLatestSentCampaign);
+
 router.get("/", authenticateToken, requireRole("ADMIN"), getCampaigns);
 
 // OTTIENI SINGOLA

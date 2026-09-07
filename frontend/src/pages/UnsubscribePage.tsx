@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Mail, Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { subscribersAPI } from "@/services/api";
 
 export default function UnsubscribePage() {
   // Il footer delle campagne rimanda a /unsubscribe/:id, cosi' chi arriva dal
@@ -22,18 +23,9 @@ export default function UnsubscribePage() {
     setError("");
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/subscribers/preferences/${id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ subscribed: false }),
-        }
-      );
-      if (!response.ok) {
-        setError("Non è stato possibile completare la cancellazione. Riprova.");
-        return;
-      }
+      await subscribersAPI.updatePreferences(id as string, {
+        subscribed: false,
+      });
       setSubmitted(true);
     } catch {
       setError("Errore di connessione. Riprova più tardi.");
@@ -57,11 +49,7 @@ export default function UnsubscribePage() {
     setError("");
 
     try {
-      await fetch(`${import.meta.env.VITE_API_URL}/subscribers/unsubscribe`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+      await subscribersAPI.unsubscribeByEmail(email);
 
       // Mostriamo sempre successo, anche se l'email non esiste
       setSubmitted(true);

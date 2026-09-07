@@ -8,6 +8,7 @@ import {
   Loader2,
   Save,
 } from "lucide-react";
+import { subscribersAPI } from "@/services/api";
 
 // ============================================================================
 // AREA PREFERENZE
@@ -41,18 +42,11 @@ export default function PreferencesPage() {
 
   const loadPreferences = useCallback(async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/subscribers/preferences/${id}`
-      );
-      if (!response.ok) {
-        setError(
-          "Non abbiamo trovato questa iscrizione. Il link potrebbe essere scaduto."
-        );
-        return;
-      }
-      setPreferences(await response.json());
+      setPreferences(await subscribersAPI.getPreferences(id as string));
     } catch {
-      setError("Errore di connessione. Riprova più tardi.");
+      setError(
+        "Non abbiamo trovato questa iscrizione, oppure il servizio non è raggiungibile."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -71,21 +65,10 @@ export default function PreferencesPage() {
     setError("");
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/subscribers/preferences/${id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(changes),
-        }
+      const result = await subscribersAPI.updatePreferences(
+        id as string,
+        changes
       );
-
-      if (!response.ok) {
-        setError("Non è stato possibile salvare le preferenze. Riprova.");
-        return;
-      }
-
-      const result = await response.json();
       setPreferences({ ...preferences, ...result.preferences });
       setSaved(true);
     } catch {

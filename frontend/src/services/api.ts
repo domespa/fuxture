@@ -487,6 +487,38 @@ export const subscribersAPI = {
   deleteSubscriber: async (id: string): Promise<void> => {
     await api.delete(`/subscribers/${id}`);
   },
+
+  // CENTRO PREFERENZE - LETTURA
+  getPreferences: async (
+    id: string
+  ): Promise<{
+    email: string;
+    name: string | null;
+    subscribed: boolean;
+    trackingConsent: boolean;
+    subscribedAt: string;
+  }> => {
+    const response = await api.get(`/subscribers/preferences/${id}`);
+    return response.data;
+  },
+
+  // CENTRO PREFERENZE - REVOCA, ANCHE GRANULARE
+  updatePreferences: async (
+    id: string,
+    data: { trackingConsent?: boolean; subscribed?: boolean }
+  ): Promise<{
+    success: boolean;
+    message: string;
+    preferences: { subscribed: boolean; trackingConsent: boolean };
+  }> => {
+    const response = await api.put(`/subscribers/preferences/${id}`, data);
+    return response.data;
+  },
+
+  // DISISCRIZIONE TRAMITE INDIRIZZO
+  unsubscribeByEmail: async (email: string): Promise<void> => {
+    await api.post("/subscribers/unsubscribe", { email });
+  },
 };
 // ======================================================================================
 // ======================================================================================

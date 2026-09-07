@@ -118,3 +118,77 @@ export const getEmailLogSummary = async (
     res.status(500).json({ error: "Errore durante il recupero del riepilogo" });
   }
 };
+
+// ====================================================================================================== //
+//                    INVII MANUALI RECENTI (per riprenderli e rimandarli)
+//
+// Elenco leggero: niente corpo del messaggio, che su una lista peserebbe
+// parecchio e non serve finche' non si sceglie quale riprendere.
+// GET /email-logs/manual?limit=
+// ====================================================================================================== //
+export const getManualSends = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const limit = Math.min(
+      Math.max(parseInt(String(req.query.limit ?? 15), 10) || 15, 1),
+      50
+    );
+
+    const logs = await prisma.emailLog.findMany({
+      where: {
+        campaignId: null,
+        subscriberId: null,
+        content: { not: null },
+      },
+      orderBy: { sentAt: "desc" },
+      take: limit,
+      select: {
+        id: true,
+        subject: true,
+        recipientEmail: true,
+        sentAt: true,
+        status: true,
+      },
+    });
+
+    res.status(200).json({ success: true, data: { logs } });
+  } catch (error) {
+    console.error("Errore recupero invii manuali:", error);
+    res.status(500).json({ error: "Errore durante il recupero degli invii" });
+  }
+};
+
+// SINGOLO INVIO, CORPO COMPRESO
+// GET /email-logs/:id
+export const getEmailLogById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    const log = await prisma.emailLog.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        subject: true,
+        recipientEmail: true,
+        content: true,
+        sentAt: true,
+        status: true,
+      },
+    });
+
+    if (!log) {
+      res.status(404).json({ error: "Invio non trovato" });
+      return;
+    }
+
+    res.status(200).json({ success: true, data: { log } });
+  } catch (error) {
+    console.error("Errore recupero invio:", error);
+    res.status(500).json({ error: "Errore durante il recupero dell'invio" });
+  }
+};

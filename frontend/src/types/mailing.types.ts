@@ -51,3 +51,17 @@ export interface EmailLogSummary {
   failed: number;
   lastSentAt: string | null;
 }
+
+// Invio manuale ripetibile: elenco leggero, senza corpo del messaggio
+export interface ManualSend {
+  id: string;
+  subject: string | null;
+  recipientEmail: string | null;
+  sentAt: string;
+  status: EmailLogStatus;
+}
+
+// Singolo invio con il corpo, per riprenderlo nell'editor
+export interface EmailLogDetail extends ManualSend {
+  content: string | null;
+}

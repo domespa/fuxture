@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/database";
+import { emailConfig } from "../config/config.email";
 import { personalizeForRecipient } from "../services/tracking.service";
 import { rememberContact } from "./address-book.controller";
 import {
@@ -439,11 +440,8 @@ export async function sendTestEmail(
     }
 
     // PLACEHOLDER PER TEST (usa email di test come ID)
-    // Anteprime ed email di test usano la pagina di disiscrizione pubblica,
-    // che funziona per chiunque inserendo il proprio indirizzo. Un segnaposto
-    // come /unsubscribe/test porterebbe chi approva la creativita' su un link
-    // che non puo' funzionare.
-    const testUnsubscribeUrl = `${process.env.FRONTEND_URL}/unsubscribe`;
+    // Tutti gli invii usano la stessa pagina pubblica di disiscrizione.
+    const testUnsubscribeUrl = emailConfig.email.unsubscribeUrl;
     const testPreferencesUrl = `${process.env.FRONTEND_URL}/preferenze/test`;
     const personalizedContent = campaign.content
       .replace(/\{\{unsubscribe_url\}\}/g, testUnsubscribeUrl)
@@ -603,7 +601,7 @@ export async function sendCampaign(req: Request, res: Response): Promise<void> {
     let strippedRecipients = 0;
 
     const recipients = subscribers.map((subscriber) => {
-      const unsubscribeUrl = `${process.env.FRONTEND_URL}/unsubscribe/${subscriber.id}`;
+      const unsubscribeUrl = emailConfig.email.unsubscribeUrl;
       // IL LINK ALLE PREFERENZE USA L'ID INTERNO, NON IL trackingId: quest'ultimo
       // viaggia verso i server di terzi a ogni apertura e non deve dare accesso
       // all'area di gestione dei consensi.
@@ -714,7 +712,7 @@ export async function sendPreviewEmail(
       fromName?.trim() || process.env.SMTP_FROM_NAME || "Fuxture";
 
     // PLACEHOLDER PER PREVIEW
-    const previewUnsubscribeUrl = `${process.env.FRONTEND_URL}/unsubscribe`;
+    const previewUnsubscribeUrl = emailConfig.email.unsubscribeUrl;
     const previewWebVersionUrl = `${process.env.FRONTEND_URL}/email/preview`;
 
     const personalizedContent = content

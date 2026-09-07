@@ -2,6 +2,8 @@ import type {
   Contact,
   EmailLogPage,
   EmailLogSummary,
+  EmailLogDetail,
+  ManualSend,
 } from "@/types/mailing.types";
 import axios from "axios";
 import type {
@@ -396,6 +398,24 @@ export const emailLogsAPI = {
       { params }
     );
     return response.data.data;
+  },
+
+  // Invii manuali recenti, senza corpo: serve solo l'elenco
+  getManualSends: async (limit = 15): Promise<ManualSend[]> => {
+    const response = await api.get<{
+      success: boolean;
+      data: { logs: ManualSend[] };
+    }>("/email-logs/manual", { params: { limit } });
+    return response.data.data.logs;
+  },
+
+  // Singolo invio con il corpo, per riprenderlo nell'editor
+  getById: async (id: string): Promise<EmailLogDetail> => {
+    const response = await api.get<{
+      success: boolean;
+      data: { log: EmailLogDetail };
+    }>(`/email-logs/${id}`);
+    return response.data.data.log;
   },
 
   getSummary: async (): Promise<EmailLogSummary> => {

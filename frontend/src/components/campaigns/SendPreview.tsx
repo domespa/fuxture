@@ -5,19 +5,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import toast from "react-hot-toast";
-import { Code, Eye } from "lucide-react";
-import { campaignsAPI, addressBookAPI } from "@/services/api";
-import type { Contact } from "@/types/mailing.types";
+import { Code, Eye, History, Loader2, RotateCcw } from "lucide-react";
+import { campaignsAPI, addressBookAPI, emailLogsAPI } from "@/services/api";
+import type { Contact, ManualSend } from "@/types/mailing.types";
 
 export const SendPreview = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [activeTab, setActiveTab] = useState<"html" | "preview">("html");
+  const [activeTab, setActiveTab] = useState<"html" | "preview" | "recent">(
+    "html"
+  );
 
   // Rubrica per il completamento del destinatario. Se la chiamata fallisce
   // resta un campo di testo normale: e' una comodita', non un requisito.
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [webVersionUrl, setWebVersionUrl] = useState("");
+  const [recentSends, setRecentSends] = useState<ManualSend[]>([]);
+  const [loadingRecent, setLoadingRecent] = useState(false);
+  const [resumingId, setResumingId] = useState<string | null>(null);
 
   useEffect(() => {
     addressBookAPI
@@ -25,6 +30,46 @@ export const SendPreview = () => {
       .then(setContacts)
       .catch(() => setContacts([]));
   }, []);
+
+  // L'elenco si carica quando si apre la tab, non all'apertura della pagina:
+  // chi scrive una comunicazione nuova non deve pagarne il costo.
+  useEffect(() => {
+    if (activeTab !== "recent" || recentSends.length > 0) return;
+
+    setLoadingRecent(true);
+    emailLogsAPI
+      .getManualSends(15)
+      .then(setRecentSends)
+      .catch(() => toast.error("Errore nel caricamento degli invii recenti"))
+      .finally(() => setLoadingRecent(false));
+  }, [activeTab, recentSends.length]);
+
+  // Riprende un invio precedente: oggetto e corpo tornano nell'editor, il
+  // destinatario resta da scegliere, perche' di norma si inoltra a qualcun altro.
+  const resumeSend = async (id: string) => {
+    try {
+      setResumingId(id);
+      const log = await emailLogsAPI.getById(id);
+
+      if (!log.content) {
+        toast.error("Di questo invio non è stato conservato il contenuto");
+        return;
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        subject: log.subject ?? prev.subject,
+        content: log.content as string,
+      }));
+      setWebVersionUrl("");
+      setActiveTab("html");
+      toast.success("Contenuto ripreso: controlla destinatario e oggetto");
+    } catch {
+      toast.error("Errore nel recupero dell'invio");
+    } finally {
+      setResumingId(null);
+    }
+  };
 
   const [formData, setFormData] = useState({
     fromName: "Fuxture",
@@ -252,6 +297,10 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
                 <Eye className="h-4 w-4 mr-2" />
                 Anteprima
               </TabsTrigger>
+              <TabsTrigger value="recent">
+                <History className="h-4 w-4 mr-2" />
+                Ultime inviate
+              </TabsTrigger>
             </TabsList>
 
             {/* Tab HTML */}
@@ -280,6 +329,70 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
                   sandbox="allow-same-origin allow-popups"
                 />
               </div>
+            </TabsContent>
+
+            {/* Tab ULTIME INVIATE */}
+            <TabsContent
+              value="recent"
+              className="border rounded-lg bg-white"
+            >
+              {loadingRecent ? (
+                <div className="flex h-40 items-center justify-center">
+                  <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+                </div>
+              ) : recentSends.length === 0 ? (
+                <div className="px-6 py-12 text-center">
+                  <History className="mx-auto mb-3 h-8 w-8 text-gray-300" />
+                  <p className="text-sm text-gray-500">
+                    Nessun invio manuale ancora. Le comunicazioni inviate da
+                    questa schermata compariranno qui, pronte da riprendere.
+                  </p>
+                </div>
+              ) : (
+                <ul className="divide-y divide-gray-100">
+                  {recentSends.map((send) => (
+                    <li
+                      key={send.id}
+                      className="flex items-center gap-4 px-5 py-3"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <span className="block truncate font-medium text-gray-900">
+                          {send.subject || "(senza oggetto)"}
+                        </span>
+                        <span className="block truncate text-xs text-gray-500">
+                          {send.recipientEmail ?? "destinatario non registrato"}
+                          {" · "}
+                          {new Date(send.sentAt).toLocaleString("it-IT", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                          {send.status === "FAILED" && (
+                            <span className="ml-2 font-semibold text-red-600">
+                              non riuscito
+                            </span>
+                          )}
+                        </span>
+                      </div>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => resumeSend(send.id)}
+                        disabled={resumingId === send.id}
+                      >
+                        {resumingId === send.id ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          <RotateCcw className="mr-2 h-4 w-4" />
+                        )}
+                        Riprendi
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </TabsContent>
           </Tabs>
         </div>

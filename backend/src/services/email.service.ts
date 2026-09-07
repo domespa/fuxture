@@ -32,6 +32,13 @@ export const verifyEmailConnection = async (): Promise<boolean> => {
   }
 };
 
+// Il corpo si conserva solo per gli invii manuali: quelli senza campagna e
+// senza iscritto collegato, cioe' anteprime ed email di test. Sulle campagne
+// l'HTML e' gia' su EmailCampaign e ripeterlo per ogni destinatario
+// gonfierebbe la tabella senza aggiungere nulla.
+const contentToStore = (options: SendEmailOptions): string | null =>
+  options.campaignId || options.subscriberId ? null : options.html;
+
 // FUNZIONE PER INVIARE SINGOLA EMAIL
 export const sendEmail = async (
   options: SendEmailOptions
@@ -62,6 +69,7 @@ export const sendEmail = async (
         sentAt: new Date(),
         recipientEmail: options.to,
         subject: options.subject,
+        content: contentToStore(options),
         ...(options.campaignId && { campaignId: options.campaignId }),
         ...(options.subscriberId && { subscriberId: options.subscriberId }),
       },
@@ -88,6 +96,7 @@ export const sendEmail = async (
         errorMessage,
         recipientEmail: options.to,
         subject: options.subject,
+        content: contentToStore(options),
         ...(options.campaignId && { campaignId: options.campaignId }),
         ...(options.subscriberId && { subscriberId: options.subscriberId }),
       },
@@ -297,9 +306,7 @@ export const createEmailTemplate = (content: string): string => {
 // disiscrizione sia l'area preferenze.
 const resolvePlaceholders = (html: string, subscriberId?: string): string => {
   const base = process.env.FRONTEND_URL || "";
-  const unsubscribeUrl = subscriberId
-    ? `${base}/unsubscribe/${subscriberId}`
-    : `${base}/unsubscribe`;
+  const unsubscribeUrl = emailConfig.email.unsubscribeUrl;
   const preferencesUrl = subscriberId
     ? `${base}/preferenze/${subscriberId}`
     : `${base}/unsubscribe`;

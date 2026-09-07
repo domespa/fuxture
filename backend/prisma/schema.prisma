@@ -252,6 +252,11 @@ model EmailLog {
   // partito", e le anteprime producevano righe prive di qualunque riferimento
   recipientEmail String?
   subject        String?
+
+  // Corpo del messaggio, salvato solo per gli invii manuali (anteprime ed
+  // email di test): serve a poterli riprendere e rimandare. Per le campagne
+  // resta vuoto, altrimenti si duplicherebbe l'HTML su ogni destinatario.
+  content        String?         @db.Text
   
   campaignId    String?
   campaign      EmailCampaign?   @relation(fields: [campaignId], references: [id])

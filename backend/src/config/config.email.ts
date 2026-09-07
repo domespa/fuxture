@@ -9,6 +9,10 @@ export const emailConfig = {
         pass: process.env.SMTP_PASSWORD || "",
       },
     },
+    // Pagina pubblica di disiscrizione, usata in tutti gli invii.
+    // Sovrascrivibile con UNSUBSCRIBE_URL se il dominio cambia.
+    unsubscribeUrl:
+      process.env.UNSUBSCRIBE_URL || "https://www.fuxture.net/unsubscribe",
     from: {
       email: process.env.SMTP_FROM_EMAIL || "noreply@example.com",
       name: process.env.SMTP_FROM_NAME || "My Blog",

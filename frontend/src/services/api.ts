@@ -665,8 +665,7 @@ export const leaderboardAPI = {
     return response.data.data;
   },
 
-  // MODERAZIONE (ADMIN)
-  // MODERAZIONE: elenco completo, tutti i periodi, bozze comprese
+  // MODERAZIONE (ADMIN): elenco completo, tutti i periodi, bozze comprese
   getScoresForModeration: async (params?: {
     gameId?: string;
     search?: string;

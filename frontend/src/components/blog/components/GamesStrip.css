@@ -150,3 +150,83 @@
   .gs-band { padding: 32px 16px; }
   .gs-head { flex-direction: column; align-items: flex-start; }
 }
+
+/* ── Podio dentro la card ─────────────────────────────────────────────── */
+/* Separato dalla descrizione da una linea sottile: e' un blocco di dati,
+   non prosa, e va letto come tale. */
+
+.gs-board {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #334155;
+}
+
+.gs-board__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.gs-board__row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.gs-board__medal {
+  flex-shrink: 0;
+  font-size: 11px;
+}
+
+.gs-board__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #CBD5E1;
+}
+
+/* Cifre a larghezza fissa: incolonnate, i punteggi si confrontano a colpo
+   d'occhio invece di ballare da una riga all'altra. */
+.gs-board__score {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: #fff;
+}
+
+.gs-board__cta {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #60A5FA;
+}
+
+.gs-board__cta strong {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+}
+
+.gs-board__empty {
+  display: block;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #60A5FA;
+}
+
+.gs-card__dot {
+  margin: 0 2px;
+  color: #475569;
+}
+
+/* Le card ora contengono il podio: lo scheletro di caricamento cresce con
+   loro, altrimenti al termine del fetch la pagina fa un salto. */
+.gs-ghost {
+  height: 190px;
+}

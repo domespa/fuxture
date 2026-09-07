@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,12 +6,24 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import toast from "react-hot-toast";
 import { Code, Eye } from "lucide-react";
-import { campaignsAPI } from "@/services/api";
+import { campaignsAPI, addressBookAPI } from "@/services/api";
+import type { Contact } from "@/types/mailing.types";
 
 export const SendPreview = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState<"html" | "preview">("html");
+
+  // Rubrica per il completamento del destinatario. Se la chiamata fallisce
+  // resta un campo di testo normale: e' una comodita', non un requisito.
+  const [contacts, setContacts] = useState<Contact[]>([]);
+
+  useEffect(() => {
+    addressBookAPI
+      .getContacts({ limit: 50 })
+      .then(setContacts)
+      .catch(() => setContacts([]));
+  }, []);
 
   const [formData, setFormData] = useState({
     fromName: "Fuxture",
@@ -136,6 +148,7 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
           <Input
             id="toEmail"
             type="email"
+            list="address-book"
             placeholder="affiliazione@example.com"
             value={formData.toEmail}
             onChange={(e) =>
@@ -143,6 +156,13 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
             }
             disabled={isSubmitting}
           />
+          <datalist id="address-book">
+            {contacts.map((contact) => (
+              <option key={contact.id} value={contact.email}>
+                {contact.name ?? ""}
+              </option>
+            ))}
+          </datalist>
           <p className="text-sm text-muted-foreground">
             L'email sarà inviata a questo indirizzo per l'approvazione della
             campagna

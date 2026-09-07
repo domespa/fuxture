@@ -1,3 +1,8 @@
+import type {
+  Contact,
+  EmailLogPage,
+  EmailLogSummary,
+} from "@/types/mailing.types";
 import axios from "axios";
 import type {
   LoginRequest,
@@ -344,6 +349,64 @@ export const campaignsAPI = {
 // ======================================================================================
 //                                  LISTE EMAIL
 // ======================================================================================
+// ======================================================================================
+//                        RUBRICA DEGLI INVII MANUALI (ADMIN)
+// ======================================================================================
+export const addressBookAPI = {
+  getContacts: async (params?: {
+    search?: string;
+    limit?: number;
+  }): Promise<Contact[]> => {
+    const response = await api.get<{
+      success: boolean;
+      data: { contacts: Contact[] };
+    }>("/address-book", { params });
+    return response.data.data.contacts;
+  },
+
+  updateContact: async (
+    id: string,
+    data: { name?: string; note?: string }
+  ): Promise<Contact> => {
+    const response = await api.patch<{
+      success: boolean;
+      data: { contact: Contact };
+    }>(`/address-book/${id}`, data);
+    return response.data.data.contact;
+  },
+
+  deleteContact: async (id: string): Promise<void> => {
+    await api.delete(`/address-book/${id}`);
+  },
+};
+
+// ======================================================================================
+//                        CRONOLOGIA INVII (ADMIN)
+// ======================================================================================
+export const emailLogsAPI = {
+  getLogs: async (params?: {
+    search?: string;
+    status?: string;
+    campaignId?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<EmailLogPage> => {
+    const response = await api.get<{ success: boolean; data: EmailLogPage }>(
+      "/email-logs",
+      { params }
+    );
+    return response.data.data;
+  },
+
+  getSummary: async (): Promise<EmailLogSummary> => {
+    const response = await api.get<{
+      success: boolean;
+      data: EmailLogSummary;
+    }>("/email-logs/summary");
+    return response.data.data;
+  },
+};
+
 // ULTIMO NUMERO DELLA NEWSLETTER (PUBBLICO)
 export const newsletterIssueAPI = {
   getLatest: async (): Promise<{ subject: string; sentAt: string } | null> => {

@@ -60,6 +60,8 @@ export const sendEmail = async (
       data: {
         status: EmailStatus.SENT,
         sentAt: new Date(),
+        recipientEmail: options.to,
+        subject: options.subject,
         ...(options.campaignId && { campaignId: options.campaignId }),
         ...(options.subscriberId && { subscriberId: options.subscriberId }),
       },
@@ -76,18 +78,20 @@ export const sendEmail = async (
 
     console.error(`❌ Failed to send email to ${options.to}:`, errorMessage);
 
-    let emailLog;
-    if (options.subscriberId || options.campaignId) {
-      emailLog = await prisma.emailLog.create({
-        data: {
-          status: EmailStatus.FAILED,
-          sentAt: new Date(),
-          errorMessage,
-          ...(options.campaignId && { campaignId: options.campaignId }),
-          ...(options.subscriberId && { subscriberId: options.subscriberId }),
-        },
-      });
-    }
+    // Un invio fallito va registrato sempre: prima il log si scriveva solo
+    // per campagne e iscritti, quindi i fallimenti delle anteprime e delle
+    // email di test non lasciavano alcuna traccia.
+    const emailLog = await prisma.emailLog.create({
+      data: {
+        status: EmailStatus.FAILED,
+        sentAt: new Date(),
+        errorMessage,
+        recipientEmail: options.to,
+        subject: options.subject,
+        ...(options.campaignId && { campaignId: options.campaignId }),
+        ...(options.subscriberId && { subscriberId: options.subscriberId }),
+      },
+    });
 
     return {
       success: false,

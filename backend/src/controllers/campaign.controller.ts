@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/database";
 import { personalizeForRecipient } from "../services/tracking.service";
+import { rememberContact } from "./address-book.controller";
 import {
   CreateCampaignRequest,
   UpdateCampaignRequest,
@@ -464,6 +465,8 @@ export async function sendTestEmail(
       return;
     }
 
+    await rememberContact(testEmail);
+
     res.status(200).json({
       success: true,
       message: `Test email sent successfully to ${testEmail}`,
@@ -733,6 +736,10 @@ export async function sendPreviewEmail(
       });
       return;
     }
+
+    // La rubrica si popola solo dagli invii manuali. Le campagne pescano da
+    // Subscriber e non devono aggiungere nulla qui.
+    await rememberContact(toEmail);
 
     res.status(200).json({
       success: true,

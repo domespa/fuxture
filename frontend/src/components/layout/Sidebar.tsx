@@ -9,6 +9,7 @@ import {
   ListChecks,
   FolderTree,
   Gamepad2,
+  History,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarProps, MenuItem } from "@/types/layout.types";
@@ -21,6 +22,7 @@ const menuItems: MenuItem[] = [
   { name: "Comments", path: "/dashboard/comments", icon: MessageSquare },
   { name: "Campaigns", path: "/dashboard/campaigns", icon: Mail },
   { name: "Email Lists", path: "/dashboard/email-lists", icon: ListChecks },
+  { name: "Cronologia invii", path: "/dashboard/email-logs", icon: History },
   { name: "Users", path: "/dashboard/users", icon: Users },
 ];
 

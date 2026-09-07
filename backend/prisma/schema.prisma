@@ -247,6 +247,11 @@ model EmailLog {
   openedAt      DateTime?
   clickedAt     DateTime?
   errorMessage  String?
+
+  // Destinatario e oggetto: senza questi il log dice solo che "qualcosa e'
+  // partito", e le anteprime producevano righe prive di qualunque riferimento
+  recipientEmail String?
+  subject        String?
   
   campaignId    String?
   campaign      EmailCampaign?   @relation(fields: [campaignId], references: [id])
@@ -264,6 +269,30 @@ enum EmailStatus {
   CLICKED
   BOUNCED
   FAILED
+}
+
+// RUBRICA
+// Indirizzi usati negli invii manuali (anteprime, email di test), raccolti
+// per comodita' di chi scrive: servono a non riscrivere ogni volta lo stesso
+// destinatario.
+//
+// NON e' una lista di invio e non deve diventarlo: queste persone non hanno
+// prestato alcun consenso a ricevere comunicazioni promozionali. Le campagne
+// pescano esclusivamente da Subscriber, dove il consenso e' registrato e
+// dimostrabile. Tenere separate le due cose e' il motivo per cui esiste
+// questo modello invece di riusare Subscriber.
+model Contact {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  note          String?
+  timesUsed     Int       @default(1)
+  firstUsedAt   DateTime  @default(now())
+  lastUsedAt    DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([lastUsedAt])
 }
 
 // GIOCHI

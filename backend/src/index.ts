@@ -6,6 +6,8 @@ import path from "path";
 import postRoutes from "./routes/post.routes";
 import commentRoutes from "./routes/comment.routes";
 import { startScheduler } from "./utils/Postscheduler";
+import addressBookRoutes from "./routes/address-book.routes";
+import emailLogRoutes from "./routes/email-log.routes";
 import { verifyEmailConnection } from "./services/email.service";
 import subscriberRoutes from "./routes/subscriber.routes";
 import campaignRoutes from "./routes/campaign.routes";
@@ -86,6 +88,12 @@ app.use(`${API_PREFIX}/subscribers`, subscriberRoutes);
 
 // CAMPAGNE
 app.use(`${API_PREFIX}/campaigns`, campaignRoutes);
+
+// RUBRICA DEGLI INVII MANUALI (da non confondere con /contact, il form del sito)
+app.use(`${API_PREFIX}/address-book`, addressBookRoutes);
+
+// CRONOLOGIA INVII
+app.use(`${API_PREFIX}/email-logs`, emailLogRoutes);
 
 // LISTE ISCRITTI
 app.use(`${API_PREFIX}/email-lists`, emailListRoutes);

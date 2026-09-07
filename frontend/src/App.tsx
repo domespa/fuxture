@@ -11,6 +11,7 @@ import { CreatePost } from "./components/editor/CreatePost";
 import { EditPost } from "./components/editor/EditPost";
 import Comments from "./pages/admin/dashboard/Comments";
 import Campaigns from "./pages/admin/dashboard/Campaigns";
+import SendHistory from "./pages/admin/dashboard/SendHistory";
 import CreateCampaing from "./pages/admin/dashboard/CreateCampaign";
 import { EditCampaign } from "./pages/admin/dashboard/EditCampaign";
 import { SendPreview } from "./components/campaigns/SendPreview";
@@ -95,6 +96,7 @@ function App() {
           <Route path="games" element={<AdminGamesPage />} />
           <Route path="comments" element={<Comments />} />
           <Route path="campaigns" element={<Campaigns />} />
+          <Route path="email-logs" element={<SendHistory />} />
           <Route path="campaigns/create" element={<CreateCampaing />} />
           <Route path="campaigns/edit/:id" element={<EditCampaign />} />
           <Route

@@ -8,6 +8,7 @@ import {
   BatchEmailResult,
 } from "../types/email.types";
 import { EmailStatus } from "@prisma/client";
+import type { EmailLog, Prisma } from "@prisma/client";
 
 // TRANSPORTER
 const transporter = nodemailer.createTransport({
@@ -39,6 +40,22 @@ export const verifyEmailConnection = async (): Promise<boolean> => {
 const contentToStore = (options: SendEmailOptions): string | null =>
   options.campaignId || options.subscriberId ? null : options.html;
 
+// Il messaggio parte prima che il log venga scritto: se la scrittura
+// fallisce - una colonna mancante, il database irraggiungibile - l'invio e'
+// comunque avvenuto, e propagare l'errore trasformerebbe un successo in un
+// 500. Chi ha inviato riproverebbe, e il destinatario riceverebbe due volte.
+// Il log e' una registrazione, non una condizione di riuscita.
+const writeEmailLog = async (
+  data: Prisma.EmailLogUncheckedCreateInput
+): Promise<EmailLog | undefined> => {
+  try {
+    return await prisma.emailLog.create({ data });
+  } catch (error) {
+    console.error("⚠️ Impossibile registrare il log di invio:", error);
+    return undefined;
+  }
+};
+
 // FUNZIONE PER INVIARE SINGOLA EMAIL
 export const sendEmail = async (
   options: SendEmailOptions
@@ -63,16 +80,14 @@ export const sendEmail = async (
     );
 
     // SALVA LOG
-    const emailLog = await prisma.emailLog.create({
-      data: {
-        status: EmailStatus.SENT,
-        sentAt: new Date(),
-        recipientEmail: options.to,
-        subject: options.subject,
-        content: contentToStore(options),
-        ...(options.campaignId && { campaignId: options.campaignId }),
-        ...(options.subscriberId && { subscriberId: options.subscriberId }),
-      },
+    const emailLog = await writeEmailLog({
+      status: EmailStatus.SENT,
+      sentAt: new Date(),
+      recipientEmail: options.to,
+      subject: options.subject,
+      content: contentToStore(options),
+      ...(options.campaignId && { campaignId: options.campaignId }),
+      ...(options.subscriberId && { subscriberId: options.subscriberId }),
     });
 
     return {
@@ -89,17 +104,15 @@ export const sendEmail = async (
     // Un invio fallito va registrato sempre: prima il log si scriveva solo
     // per campagne e iscritti, quindi i fallimenti delle anteprime e delle
     // email di test non lasciavano alcuna traccia.
-    const emailLog = await prisma.emailLog.create({
-      data: {
-        status: EmailStatus.FAILED,
-        sentAt: new Date(),
-        errorMessage,
-        recipientEmail: options.to,
-        subject: options.subject,
-        content: contentToStore(options),
-        ...(options.campaignId && { campaignId: options.campaignId }),
-        ...(options.subscriberId && { subscriberId: options.subscriberId }),
-      },
+    const emailLog = await writeEmailLog({
+      status: EmailStatus.FAILED,
+      sentAt: new Date(),
+      errorMessage,
+      recipientEmail: options.to,
+      subject: options.subject,
+      content: contentToStore(options),
+      ...(options.campaignId && { campaignId: options.campaignId }),
+      ...(options.subscriberId && { subscriberId: options.subscriberId }),
     });
 
     return {

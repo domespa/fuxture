@@ -16,6 +16,8 @@ import {
   getScores,
   submitScore,
   deleteScore,
+  renameScore,
+  listScoresForModeration,
 } from "../controllers/game-score.controller";
 import {
   authenticateToken,
@@ -82,6 +84,22 @@ router.put(
 );
 
 // MODERAZIONE CLASSIFICHE: PRIMA DI /:id, ALTRIMENTI "scores" VIENE LETTO COME UN ID
+// L'elenco sta su /scores/moderation e non su /scores per non collidere con
+// la rotta pubblica /:slug/scores, che ha la stessa forma a due segmenti.
+router.get(
+  "/scores/moderation",
+  authenticateToken,
+  requireRole("ADMIN"),
+  listScoresForModeration
+);
+
+router.patch(
+  "/scores/:id",
+  authenticateToken,
+  requireRole("ADMIN"),
+  renameScore
+);
+
 router.delete(
   "/scores/:id",
   authenticateToken,

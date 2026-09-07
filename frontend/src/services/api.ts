@@ -46,6 +46,7 @@ import type {
   LeaderboardResponse,
   SubmitScoreRequest,
   SubmitScoreResponse,
+  ModerationScore,
 } from "@/types/game.types";
 
 // URL
@@ -665,6 +666,32 @@ export const leaderboardAPI = {
   },
 
   // MODERAZIONE (ADMIN)
+  // MODERAZIONE: elenco completo, tutti i periodi, bozze comprese
+  getScoresForModeration: async (params?: {
+    gameId?: string;
+    search?: string;
+    limit?: number;
+  }): Promise<ModerationScore[]> => {
+    const response = await api.get<{
+      success: boolean;
+      data: { scores: ModerationScore[] };
+    }>("/games/scores/moderation", { params });
+    return response.data.data.scores;
+  },
+
+  // MODERAZIONE: rinomina conservando il punteggio
+  renameScore: async (
+    id: string,
+    playerName: string
+  ): Promise<{ id: string; playerName: string; score: number }> => {
+    const response = await api.patch<{
+      success: boolean;
+      message: string;
+      data: { id: string; playerName: string; score: number };
+    }>(`/games/scores/${id}`, { playerName });
+    return response.data.data;
+  },
+
   deleteScore: async (id: string): Promise<void> => {
     await api.delete(`/games/scores/${id}`);
   },

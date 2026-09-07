@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/database";
 import type { GameScore } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import type {
   GameScoreResponse,
   SubmitScoreRequest,
@@ -11,6 +12,10 @@ import {
   sanitizePlayerName,
   MIN_NAME_LENGTH,
 } from "../utils/leaderboard.utils";
+import {
+  containsBannedWord,
+  findBannedWord,
+} from "../utils/profanity.utils";
 
 // TETTO DI SICUREZZA: oltre questo il punteggio e sicuramente falso.
 // Tenerlo alto: a Fuxtrix un tetris al livello 10 vale gia 8000 punti da solo,
@@ -110,6 +115,20 @@ export const submitScore = async (
     if (cleanName.length < MIN_NAME_LENGTH) {
       res.status(400).json({
         error: `Il nome deve avere almeno ${MIN_NAME_LENGTH} caratteri`,
+      });
+      return;
+    }
+
+    // Il termine che ha fatto scattare il blocco resta nei log e non viene
+    // restituito: dirlo al giocatore trasformerebbe il messaggio di errore in
+    // una mappa per aggirare il filtro.
+    const bannedWord = findBannedWord(cleanName);
+    if (bannedWord) {
+      console.warn(
+        `⚠️ Nome rifiutato in classifica: "${cleanName}" (termine: ${bannedWord})`
+      );
+      res.status(400).json({
+        error: "Questo nome non è ammesso in classifica. Scegline un altro.",
       });
       return;
     }
@@ -233,3 +252,149 @@ export const deleteScore = async (
 };
 // ====================================================================================================== //
 // ====================================================================================================== //
+
+// ====================================================================================================== //
+//                          RINOMINA UN NOME IN CLASSIFICA (ADMIN)
+//
+// L'alternativa era solo cancellare il punteggio, che pero' punisce il
+// giocatore anche quando il problema e' il solo nickname. Rinominare conserva
+// il risultato e toglie la scritta.
+// PATCH /games/scores/:id
+// ====================================================================================================== //
+export const renameScore = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const cleanName = sanitizePlayerName(req.body?.playerName);
+
+    if (cleanName.length < MIN_NAME_LENGTH) {
+      res.status(400).json({
+        error: `Il nome deve avere almeno ${MIN_NAME_LENGTH} caratteri`,
+      });
+      return;
+    }
+
+    // Il filtro vale anche qui: non c'e' ragione per cui una moderazione
+    // debba poter reintrodurre proprio cio' che sta rimuovendo.
+    if (containsBannedWord(cleanName)) {
+      res.status(400).json({
+        error: "Questo nome non è ammesso in classifica",
+      });
+      return;
+    }
+
+    const existing = await prisma.gameScore.findUnique({ where: { id } });
+
+    if (!existing) {
+      res.status(404).json({ error: "Punteggio non trovato" });
+      return;
+    }
+
+    try {
+      const updated = await prisma.gameScore.update({
+        where: { id },
+        data: { playerName: cleanName },
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "Nome aggiornato con successo",
+        data: {
+          id: updated.id,
+          playerName: updated.playerName,
+          score: updated.score,
+        },
+      });
+    } catch (error) {
+      // Un solo record per giocatore nel periodo: il nuovo nome puo'
+      // collidere con un punteggio gia' presente nella stessa classifica.
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        res.status(409).json({
+          error:
+            "Esiste già un punteggio con questo nome nella stessa classifica",
+        });
+        return;
+      }
+      throw error;
+    }
+  } catch (error) {
+    console.error("Errore rinomina punteggio:", error);
+    res.status(500).json({ error: "Errore durante la rinomina del punteggio" });
+  }
+};
+
+// ====================================================================================================== //
+//                        ELENCO PUNTEGGI PER LA MODERAZIONE (ADMIN)
+//
+// getScores() serve la classifica pubblica: solo il periodo corrente, solo
+// giochi pubblicati, massimo 50 righe. Per moderare serve l'opposto: tutti i
+// periodi, bozze comprese, perche' un nome offensivo nella classifica di ieri
+// resta comunque in tabella.
+// GET /games/scores/moderation?gameId=&search=&limit=
+// ====================================================================================================== //
+const MODERATION_LIMIT = 200;
+const MODERATION_MAX_LIMIT = 500;
+
+export const listScoresForModeration = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { gameId, search } = req.query;
+
+    const limit = Math.min(
+      Math.max(
+        parseInt(String(req.query.limit ?? MODERATION_LIMIT), 10) ||
+          MODERATION_LIMIT,
+        1
+      ),
+      MODERATION_MAX_LIMIT
+    );
+
+    const where: Prisma.GameScoreWhereInput = {};
+
+    if (gameId) {
+      where.gameId = String(gameId);
+    }
+
+    if (search && String(search).trim()) {
+      where.playerName = {
+        contains: String(search).trim(),
+        mode: "insensitive",
+      };
+    }
+
+    const scores = await prisma.gameScore.findMany({
+      where,
+      orderBy: [{ periodKey: "desc" }, { score: "desc" }],
+      take: limit,
+      include: {
+        game: { select: { title: true, slug: true } },
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        scores: scores.map((entry) => ({
+          id: entry.id,
+          playerName: entry.playerName,
+          score: entry.score,
+          detail: entry.detail,
+          periodKey: entry.periodKey,
+          gameId: entry.gameId,
+          gameTitle: entry.game.title,
+          createdAt: entry.createdAt,
+        })),
+      },
+    });
+  } catch (error) {
+    console.error("Errore elenco punteggi per moderazione:", error);
+    res.status(500).json({ error: "Errore durante il recupero dei punteggi" });
+  }
+};

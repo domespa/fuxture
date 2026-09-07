@@ -449,12 +449,20 @@ export async function sendTestEmail(
       campaign.fromName || process.env.SMTP_FROM_NAME || "Fuxture";
 
     // INVIA EMAIL
-    await sendEmail({
+    const result = await sendEmail({
       to: testEmail,
       subject: `[TEST] ${campaign.subject}`,
       html: personalizedContent,
       fromName,
     });
+
+    if (!result.success) {
+      res.status(502).json({
+        error: "Invio non riuscito",
+        detail: result.error,
+      });
+      return;
+    }
 
     res.status(200).json({
       success: true,
@@ -708,12 +716,23 @@ export async function sendPreviewEmail(
       );
 
     // INVIA EMAIL
-    await sendEmail({
+    // sendEmail() cattura internamente gli errori SMTP e li restituisce nel
+    // risultato invece di sollevarli: senza questo controllo l'endpoint
+    // rispondeva "inviata con successo" anche quando l'invio era fallito.
+    const result = await sendEmail({
       to: toEmail,
       subject: subject,
       html: personalizedContent,
       fromName: senderName,
     });
+
+    if (!result.success) {
+      res.status(502).json({
+        error: "Invio non riuscito",
+        detail: result.error,
+      });
+      return;
+    }
 
     res.status(200).json({
       success: true,

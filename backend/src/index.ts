@@ -6,6 +6,7 @@ import path from "path";
 import postRoutes from "./routes/post.routes";
 import commentRoutes from "./routes/comment.routes";
 import { startScheduler } from "./utils/Postscheduler";
+import { verifyEmailConnection } from "./services/email.service";
 import subscriberRoutes from "./routes/subscriber.routes";
 import campaignRoutes from "./routes/campaign.routes";
 import emailListRoutes from "./routes/email-list.routes";
@@ -121,6 +122,17 @@ app.listen(PORT, () => {
   console.log(`😒 Siamo in ${process.env.NODE_ENV}`);
   console.log(`🔗 API routes mounted at: ${API_PREFIX}`);
   startScheduler();
+
+  // La configurazione SMTP e' tutta su variabili d'ambiente, con valori di
+  // ripiego fittizi (smtp.example.com): se in produzione mancano, l'invio
+  // fallisce in silenzio. Meglio accorgersene all'avvio che da un destinatario
+  // che non riceve nulla.
+  if (!process.env.SMTP_HOST) {
+    console.error(
+      "❌ SMTP_HOST non configurato: nessuna email verra' recapitata"
+    );
+  }
+  verifyEmailConnection();
 });
 // ====================================================================================================== //
 // ====================================================================================================== //

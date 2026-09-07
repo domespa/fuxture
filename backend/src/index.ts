@@ -52,7 +52,12 @@ app.use(
 //                                             MIDDLEWARE
 // ====================================================================================================== //
 
-app.use(express.json());
+// Le creativita' DEM di inserzionisti e agenzie sono HTML voluminosi: il
+// singolo file supera i 200 KB, oltre il limite predefinito di 100 KB del body
+// parser, che faceva fallire con 413 l'anteprima e il salvataggio delle
+// campagne piu' grandi.
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 // ====================================================================================================== //
 // ====================================================================================================== //

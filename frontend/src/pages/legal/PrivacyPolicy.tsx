@@ -350,12 +350,23 @@ export default function PrivacyPolicy() {
                   a)
                 </span>
                 <div>
-                  <strong className="text-gray-900">Invio Newsletter</strong>
+                  <strong className="text-gray-900">
+                    Invio di newsletter e comunicazioni promozionali
+                  </strong>
                   <p className="text-gray-700 mt-1">
                     Invio di comunicazioni periodiche relative a nuovi articoli,
-                    contenuti esclusivi e aggiornamenti del blog. Puoi
+                    contenuti esclusivi e aggiornamenti del blog, e di
+                    comunicazioni promozionali di inserzionisti terzi, che
+                    possono riguardare i settori credito e finanza, energia,
+                    assicurazioni, automotive, casa e ristrutturazioni, largo
+                    consumo, formazione e viaggi. In questo secondo caso la
+                    creatività è predisposta dall'inserzionista e recapitata da
+                    noi: restiamo il mittente del messaggio, mentre i dati
+                    rilevati dai pixel presenti nella creatività sono trattati
+                    anche dall'inserzionista per le proprie finalità. Puoi
                     disiscriverti in qualsiasi momento cliccando sul link in
-                    fondo a ogni email.
+                    fondo a ogni email, oppure disattivare il solo tracciamento
+                    dall'area preferenze.
                   </p>
                 </div>
               </div>

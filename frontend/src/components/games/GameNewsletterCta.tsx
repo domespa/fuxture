@@ -4,7 +4,12 @@ import { Loader2, Mail, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { subscribersAPI } from "@/services/api";
-import { NEWSLETTER_CONSENT_TEXT } from "@/lib/consent";
+import {
+  NEWSLETTER_CONSENT_TEXT,
+  NEWSLETTER_CONSENT_NOTICE,
+  NEWSLETTER_PRIVACY_LINK_TEXT,
+  NEWSLETTER_CONSENT_RECORD,
+} from "@/lib/consent";
 import { PANEL_CLASS } from "./theme";
 
 interface GameNewsletterCtaProps {
@@ -46,7 +51,7 @@ export default function GameNewsletterCta({
       await subscribersAPI.createSubscriber({
         email: email.trim(),
         source: `gioco-${gameSlug}`,
-        consentText: NEWSLETTER_CONSENT_TEXT,
+        consentText: NEWSLETTER_CONSENT_RECORD,
       });
       setIsDone(true);
       setEmail("");
@@ -103,23 +108,26 @@ export default function GameNewsletterCta({
           </Button>
         </div>
 
-        <label className="flex items-start gap-2 text-xs text-slate-400">
-          <input
-            type="checkbox"
-            checked={acceptedPrivacy}
-            onChange={(e) => setAcceptedPrivacy(e.target.checked)}
-            className="mt-0.5 accent-blue-500"
-          />
-          <span>
-            Ho letto la{" "}
+        <div className="space-y-2">
+          <label className="flex items-start gap-2 text-xs text-slate-400">
+            <input
+              type="checkbox"
+              checked={acceptedPrivacy}
+              onChange={(e) => setAcceptedPrivacy(e.target.checked)}
+              className="mt-0.5 accent-blue-500"
+            />
+            <span>{NEWSLETTER_CONSENT_TEXT}</span>
+          </label>
+
+          {/* Presa visione dell'informativa: atto distinto dal consenso */}
+          <p className="text-[11px] text-slate-500 pl-5">
+            {NEWSLETTER_CONSENT_NOTICE}{" "}
             <Link to="/privacy-policy" className="text-blue-400 underline">
-              Privacy Policy
-            </Link>{" "}
-            e acconsento al trattamento dei miei dati per ricevere la newsletter
-            e per la misurazione delle aperture tramite pixel di tracciamento,
-            disattivabile in qualsiasi momento dall'area preferenze.
-          </span>
-        </label>
+              {NEWSLETTER_PRIVACY_LINK_TEXT}
+            </Link>
+            .
+          </p>
+        </div>
 
         {error && <p className="text-xs text-red-400">{error}</p>}
       </form>

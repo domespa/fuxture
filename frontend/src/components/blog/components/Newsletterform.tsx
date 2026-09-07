@@ -3,7 +3,12 @@ import { Link } from "react-router-dom";
 import { Mail, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { isAxiosError } from "axios";
 import { subscribersAPI } from "@/services/api";
-import { NEWSLETTER_CONSENT_TEXT } from "@/lib/consent";
+import {
+  NEWSLETTER_CONSENT_TEXT,
+  NEWSLETTER_CONSENT_NOTICE,
+  NEWSLETTER_PRIVACY_LINK_TEXT,
+  NEWSLETTER_CONSENT_RECORD,
+} from "@/lib/consent";
 
 export interface NewsletterFormProps {
   variant?: "footer" | "inline";
@@ -48,7 +53,7 @@ export default function NewsletterForm({
         email: email.trim(),
         name: name.trim() || undefined,
         source,
-        consentText: NEWSLETTER_CONSENT_TEXT,
+        consentText: NEWSLETTER_CONSENT_RECORD,
       });
 
       // Successo!
@@ -129,34 +134,39 @@ export default function NewsletterForm({
         </div>
 
         {/* Privacy Checkbox */}
-        <div className="flex items-start gap-3">
-          <input
-            type="checkbox"
-            id="privacy-checkbox"
-            checked={acceptedPrivacy}
-            onChange={(e) => setAcceptedPrivacy(e.target.checked)}
-            className="mt-1 w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
-            required
-            disabled={isLoading}
-          />
-          <label
-            htmlFor="privacy-checkbox"
-            className="text-sm text-gray-400 cursor-pointer"
-          >
-            Ho letto la{" "}
+        <div className="space-y-2">
+          <div className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="privacy-checkbox"
+              checked={acceptedPrivacy}
+              onChange={(e) => setAcceptedPrivacy(e.target.checked)}
+              className="mt-1 w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
+              required
+              disabled={isLoading}
+            />
+            <label
+              htmlFor="privacy-checkbox"
+              className="text-sm text-gray-400 cursor-pointer"
+            >
+              {NEWSLETTER_CONSENT_TEXT} *
+            </label>
+          </div>
+
+          {/* La presa visione dell'informativa e' un atto distinto dal
+              consenso e resta fuori dalla dichiarazione di volonta'. */}
+          <p className="text-xs text-gray-500 pl-7">
+            {NEWSLETTER_CONSENT_NOTICE}{" "}
             <Link
               to="/privacy-policy"
-              className="text-blue-400 hover:text-blue-300 underline font-medium"
+              className="text-blue-400 hover:text-blue-300 underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Privacy Policy
-            </Link>{" "}
-            e acconsento al trattamento dei miei dati personali per ricevere la
-            newsletter e per la misurazione delle aperture tramite pixel di
-            tracciamento, disattivabile in qualsiasi momento dall'area
-            preferenze. *
-          </label>
+              {NEWSLETTER_PRIVACY_LINK_TEXT}
+            </Link>
+            .
+          </p>
         </div>
 
         {/* Error Message */}

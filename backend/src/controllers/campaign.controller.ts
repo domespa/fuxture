@@ -439,7 +439,11 @@ export async function sendTestEmail(
     }
 
     // PLACEHOLDER PER TEST (usa email di test come ID)
-    const testUnsubscribeUrl = `${process.env.FRONTEND_URL}/unsubscribe/test`;
+    // Anteprime ed email di test usano la pagina di disiscrizione pubblica,
+    // che funziona per chiunque inserendo il proprio indirizzo. Un segnaposto
+    // come /unsubscribe/test porterebbe chi approva la creativita' su un link
+    // che non puo' funzionare.
+    const testUnsubscribeUrl = `${process.env.FRONTEND_URL}/unsubscribe`;
     const testPreferencesUrl = `${process.env.FRONTEND_URL}/preferenze/test`;
     const personalizedContent = campaign.content
       .replace(/\{\{unsubscribe_url\}\}/g, testUnsubscribeUrl)
@@ -710,7 +714,7 @@ export async function sendPreviewEmail(
       fromName?.trim() || process.env.SMTP_FROM_NAME || "Fuxture";
 
     // PLACEHOLDER PER PREVIEW
-    const previewUnsubscribeUrl = `${process.env.FRONTEND_URL}/unsubscribe/preview`;
+    const previewUnsubscribeUrl = `${process.env.FRONTEND_URL}/unsubscribe`;
     const previewWebVersionUrl = `${process.env.FRONTEND_URL}/email/preview`;
 
     const personalizedContent = content

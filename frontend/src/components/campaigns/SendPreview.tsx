@@ -17,6 +17,7 @@ export const SendPreview = () => {
   // Rubrica per il completamento del destinatario. Se la chiamata fallisce
   // resta un campo di testo normale: e' una comodita', non un requisito.
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [webVersionUrl, setWebVersionUrl] = useState("");
 
   useEffect(() => {
     addressBookAPI
@@ -38,6 +39,28 @@ Questo messaggio contiene pixel di tracciamento: immagini di dimensioni minime, 
 Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679/06. Per cancellarti, clicca sul seguente <a href="{{unsubscribe_url}}">link</a>. Puoi prendere visione dell'informativa privacy cliccando <a href="https://fuxture.net/privacy-policy/">qui</a>.<br><p>Lancio su</p>
 <p>Per esito e modifiche PW scrivere a <a href="mailto:dumiii1988@gmail.com">Dumiii1988@gmail.com</a></p></p>`,
   });
+
+  // Il link "guarda la versione web" nel footer: l'input lo riscrive
+  // direttamente nell'HTML, cosi' quello che si vede nell'editor e' anche
+  // quello che parte. Svuotando il campo torna il segnaposto, che il backend
+  // sostituisce con l'indirizzo di anteprima.
+  const WEB_VERSION_ANCHOR =
+    /(<a\s+href=")([^"]*)("[^>]*>\s*guarda la versione web\s*<\/a>)/i;
+
+  const applyWebVersionUrl = (html: string, url: string): string =>
+    html.replace(
+      WEB_VERSION_ANCHOR,
+      (_match, before: string, _old: string, after: string) =>
+        `${before}${url.trim() || "{{web_version_url}}"}${after}`
+    );
+
+  const handleWebVersionChange = (url: string) => {
+    setWebVersionUrl(url);
+    setFormData((prev) => ({
+      ...prev,
+      content: applyWebVersionUrl(prev.content, url),
+    }));
+  };
 
   const validateForm = (): boolean => {
     if (!formData.subject || formData.subject.trim().length < 3) {
@@ -190,6 +213,23 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
           <p className="text-sm text-muted-foreground">
             L'email sarà inviata a questo indirizzo per l'approvazione della
             campagna
+          </p>
+        </div>
+
+        {/* VERSIONE WEB */}
+        <div className="space-y-2">
+          <Label htmlFor="webVersionUrl">Versione web</Label>
+          <Input
+            id="webVersionUrl"
+            type="url"
+            placeholder="https://www.fuxture.net/newsletter/NomeCreativita.html"
+            value={webVersionUrl}
+            onChange={(e) => handleWebVersionChange(e.target.value)}
+            disabled={isSubmitting}
+          />
+          <p className="text-sm text-muted-foreground">
+            Aggiorna il link "guarda la versione web" nel footer mentre scrivi.
+            Lasciandolo vuoto resta il segnaposto.
           </p>
         </div>
 

@@ -9,6 +9,10 @@ export default function UnsubscribePage() {
   // parte da sola al caricamento: alcuni client di posta precaricano i link,
   // e una disiscrizione involontaria non e' una scelta dell'interessato.
   const { id } = useParams<{ id?: string }>();
+  // Le anteprime e le email di test usano segnaposto al posto di un vero
+  // iscritto: senza questo caso il destinatario di un'anteprima cliccherebbe
+  // il link e riceverebbe un errore.
+  const isPlaceholder = id === "preview" || id === "test";
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -95,6 +99,15 @@ export default function UnsubscribePage() {
             >
               ← Torna alla Homepage
             </Link>
+          </div>
+        ) : isPlaceholder ? (
+          <div className="rounded-lg border-l-4 border-blue-500 bg-blue-50 p-6">
+            <h3 className="mb-1 font-bold text-blue-900">Link di anteprima</h3>
+            <p className="m-0 text-sm text-blue-800">
+              Stai guardando un'anteprima della comunicazione. Nell'invio reale
+              questo link porta alla cancellazione dell'iscrizione di chi lo
+              apre, con un solo clic di conferma.
+            </p>
           </div>
         ) : id ? (
           /* Arrivo dal link personale nel footer: basta una conferma */

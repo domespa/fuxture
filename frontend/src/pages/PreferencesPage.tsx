@@ -33,6 +33,7 @@ interface Preferences {
 
 export default function PreferencesPage() {
   const { id } = useParams<{ id: string }>();
+  const isPlaceholder = id === "preview" || id === "test";
 
   const [preferences, setPreferences] = useState<Preferences | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -41,6 +42,13 @@ export default function PreferencesPage() {
   const [error, setError] = useState("");
 
   const loadPreferences = useCallback(async () => {
+    // Nelle anteprime l'id e' un segnaposto: non esiste alcuna iscrizione da
+    // caricare, e interrogarla darebbe un errore fuorviante.
+    if (isPlaceholder) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
       setPreferences(await subscribersAPI.getPreferences(id as string));
     } catch {
@@ -50,7 +58,7 @@ export default function PreferencesPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [id]);
+  }, [id, isPlaceholder]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -98,6 +106,17 @@ export default function PreferencesPage() {
             <p className="text-gray-600 text-sm">{preferences.email}</p>
           )}
         </div>
+
+        {isPlaceholder && (
+          <div className="mb-6 rounded-lg border-l-4 border-blue-500 bg-blue-50 p-5">
+            <h3 className="mb-1 font-bold text-blue-900">Link di anteprima</h3>
+            <p className="m-0 text-sm text-blue-800">
+              Nell'invio reale questa pagina mostra le preferenze di chi riceve
+              il messaggio, con la possibilità di disattivare i soli pixel di
+              tracciamento continuando a ricevere la newsletter.
+            </p>
+          </div>
+        )}
 
         {error && (
           <div className="flex items-start gap-2 bg-red-50 text-red-800 px-4 py-3 rounded-lg border border-red-200 mb-6">

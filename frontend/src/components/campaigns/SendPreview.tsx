@@ -22,6 +22,7 @@ export const SendPreview = () => {
 <hr>
 
 <p style="text-align: center;">Questa email ti è stata inviata dal titolare del trattamento Spampinato Domenico, Carlentini 96013 P.IVA IT01937400891 <a href="mailto:info@fuxture.net">info@fuxture.net</a> perchè hai partecipato ad una delle nostre iniziative o perchè sei iscritto a Fuxture.<br>
+Questo messaggio contiene pixel di tracciamento: immagini di dimensioni minime, ospitate su server esterni, che segnalano a noi e ai nostri inserzionisti l'avvenuta apertura. Puoi disattivarli continuando a ricevere le nostre comunicazioni dall'<a href="{{preferences_url}}">area preferenze</a>.<br>
 Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679/06. Per cancellarti, clicca sul seguente <a href="{{unsubscribe_url}}">link</a>. Puoi prendere visione dell'informativa privacy cliccando <a href="https://fuxture.net/privacy-policy/">qui</a>.<br><p>Lancio su</p>
 <p>Per esito e modifiche PW scrivere a <a href="mailto:dumiii1988@gmail.com">Dumiii1988@gmail.com</a></p></p>`,
   });

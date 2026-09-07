@@ -26,7 +26,7 @@ export default function PrivacyPolicy() {
             Privacy Policy
           </h1>
           <p className="text-gray-600">
-            Ultimo aggiornamento: <strong>01/09/2026</strong>
+            Ultimo aggiornamento: <strong>07/09/2026</strong>
           </p>
           <p className="text-sm text-gray-500 mt-2">
             Conforme al Regolamento UE 2016/679 (GDPR)
@@ -198,11 +198,27 @@ export default function PrivacyPolicy() {
                     <strong>Log di invio</strong>: esito tecnico dell'invio
                     (inviata, non consegnata/bounce, errore) e relativa data
                   </li>
+                  <li>
+                    <strong>Dati di apertura</strong>: se hai prestato il
+                    consenso, i pixel di tracciamento contenuti nel messaggio
+                    rilevano l'avvenuta apertura, la data e l'ora, l'indirizzo
+                    IP e il tipo di dispositivo o client di posta impiegato
+                  </li>
                 </ul>
-                <p className="text-sm text-gray-600 mt-3 italic">
-                  ℹ️ Non utilizziamo pixel di tracciamento né link tracciati:
-                  non rileviamo se apri le email o su quali link clicchi.
-                </p>
+                <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded mt-4">
+                  <p className="text-sm text-gray-800 m-0">
+                    <strong>Pixel di tracciamento.</strong> Le nostre
+                    comunicazioni promozionali contengono pixel di
+                    tracciamento: immagini di dimensioni minime, ospitate su
+                    server esterni, che al momento in cui apri il messaggio
+                    segnalano l'apertura a noi e agli inserzionisti che ci
+                    affidano le creatività. Servono a misurare l'efficacia
+                    delle campagne e ad adattarne frequenza e contenuti. Puoi
+                    disattivarli in qualsiasi momento, continuando a ricevere
+                    le nostre comunicazioni, dall'area preferenze raggiungibile
+                    dal link presente nel footer di ogni messaggio.
+                  </p>
+                </div>
               </div>
 
               {/* Commenti */}
@@ -423,14 +439,17 @@ export default function PrivacyPolicy() {
               </div>
             </div>
 
-            <div className="bg-green-50 border-l-4 border-green-600 p-5 rounded-lg mt-6">
+            <div className="bg-amber-50 border-l-4 border-amber-500 p-5 rounded-lg mt-6">
               <p className="text-gray-800 m-0">
-                <strong>Nessuna profilazione.</strong> Non effettuiamo
-                profilazione né processi decisionali automatizzati ai sensi
-                dell'art. 22 GDPR, non tracciamo aperture e clic delle
-                newsletter, non utilizziamo strumenti di analisi di terze parti
-                (come Google Analytics) e non trattiamo categorie particolari di
-                dati (art. 9 GDPR).
+                <strong>Misurazione delle campagne.</strong> Le comunicazioni
+                promozionali contengono pixel di tracciamento, nostri e degli
+                inserzionisti che ci affidano le creatività, che rilevano
+                l'apertura del messaggio e i dati tecnici a essa collegati. Li
+                utilizziamo per misurare l'efficacia degli invii e adattarne
+                frequenza e contenuti. Non effettuiamo processi decisionali
+                automatizzati ai sensi dell'art. 22 GDPR e non trattiamo
+                categorie particolari di dati (art. 9 GDPR). Puoi opporti al
+                solo tracciamento senza rinunciare a ricevere la newsletter.
               </p>
             </div>
           </section>
@@ -872,7 +891,11 @@ export default function PrivacyPolicy() {
               tecnica: la preferenza espressa nel banner cookie e, per i soli
               utenti dell'area riservata, il token di sessione necessario a
               mantenere l'accesso. <strong>Non</strong> utilizziamo cookie di
-              profilazione, pubblicitari o di analisi di terze parti. Per
+              profilazione, pubblicitari o di analisi di terze parti. Le
+              comunicazioni di posta elettronica seguono regole proprie: i
+              pixel di tracciamento contenuti nelle nostre newsletter e DEM
+              sono descritti nella sezione dedicata alla newsletter e si
+              disattivano dall'area preferenze, non da questo banner. Per
               informazioni dettagliate su tipologie, finalità e gestione,
               consulta la nostra:
             </p>
@@ -899,6 +922,28 @@ export default function PrivacyPolicy() {
               Ti invitiamo a consultare periodicamente questa pagina per essere
               informato sulle modalità di trattamento dei tuoi dati personali.
             </p>
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 mb-4">
+              <h3 className="font-bold text-gray-900 mb-2">
+                Revisione del 07/09/2026
+              </h3>
+              <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4 m-0">
+                <li>
+                  Descritti i pixel di tracciamento presenti nelle comunicazioni
+                  promozionali, le finalità perseguite e i dati raccolti, in
+                  adeguamento alle Linee Guida del Garante per la protezione dei
+                  dati personali del 17 aprile 2026
+                </li>
+                <li>
+                  Corrette le precedenti indicazioni secondo cui non venivano
+                  rilevate le aperture delle newsletter
+                </li>
+                <li>
+                  Introdotta l'area preferenze, che consente di disattivare il
+                  solo tracciamento continuando a ricevere le comunicazioni
+                </li>
+              </ul>
+            </div>
+
             <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
               <h3 className="font-bold text-gray-900 mb-2">
                 Revisione del 01/09/2026
@@ -914,7 +959,7 @@ export default function PrivacyPolicy() {
                 </li>
                 <li>
                   Aggiunte le informazioni su liste di iscrizione e log di invio
-                  della newsletter, precisando che non tracciamo aperture e clic
+                  della newsletter
                 </li>
                 <li>
                   Aggiunta la sezione sugli account dell'area riservata e la

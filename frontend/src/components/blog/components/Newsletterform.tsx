@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Mail, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { isAxiosError } from "axios";
 import { subscribersAPI } from "@/services/api";
+import { NEWSLETTER_CONSENT_TEXT } from "@/lib/consent";
 
 export interface NewsletterFormProps {
   variant?: "footer" | "inline";
@@ -47,6 +48,7 @@ export default function NewsletterForm({
         email: email.trim(),
         name: name.trim() || undefined,
         source,
+        consentText: NEWSLETTER_CONSENT_TEXT,
       });
 
       // Successo!
@@ -141,7 +143,7 @@ export default function NewsletterForm({
             htmlFor="privacy-checkbox"
             className="text-sm text-gray-400 cursor-pointer"
           >
-            Ho letto e accetto la{" "}
+            Ho letto la{" "}
             <Link
               to="/privacy-policy"
               className="text-blue-400 hover:text-blue-300 underline font-medium"
@@ -151,7 +153,9 @@ export default function NewsletterForm({
               Privacy Policy
             </Link>{" "}
             e acconsento al trattamento dei miei dati personali per ricevere la
-            newsletter. *
+            newsletter e per la misurazione delle aperture tramite pixel di
+            tracciamento, disattivabile in qualsiasi momento dall'area
+            preferenze. *
           </label>
         </div>
 

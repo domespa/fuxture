@@ -375,16 +375,29 @@ export default function CookiePolicy() {
                   Cookie di reti pubblicitarie o di programmi di affiliazione
                   (nessun banner pubblicitario è attualmente attivo sul Sito)
                 </li>
-                <li>
-                  Pixel di tracciamento nelle newsletter: non rileviamo aperture
-                  né clic sui link
-                </li>
               </ul>
               <p className="text-xs text-gray-600 mt-3 italic">
                 ℹ️ Se in futuro dovessimo introdurre cookie di terze parti,
                 questa policy sarà aggiornata di conseguenza e ti verrà
                 richiesto il consenso esplicito.
               </p>
+
+              <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded mt-4">
+                <p className="text-sm text-gray-800 m-0">
+                  <strong>Le newsletter sono un caso a parte.</strong> Quanto
+                  sopra riguarda il Sito. Le nostre comunicazioni di posta
+                  elettronica promozionali contengono invece pixel di
+                  tracciamento, nostri e degli inserzionisti che ci affidano le
+                  creatività, che rilevano l'apertura del messaggio. Sono
+                  descritti nella{" "}
+                  <Link to="/privacy-policy" className="underline">
+                    Privacy Policy
+                  </Link>{" "}
+                  e si disattivano dall'area preferenze, il cui link trovi nel
+                  footer di ogni messaggio: puoi farlo continuando a ricevere la
+                  newsletter.
+                </p>
+              </div>
             </div>
           </section>
 

@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/database";
 import type { Subscriber, Prisma } from "@prisma/client";
+import { ConsentType } from "@prisma/client";
 import type {
   CreateSubscriberRequest,
   UpdateSubscriberRequest,
   UnsubscribeRequest,
+  UpdatePreferencesRequest,
   SubscriberResponse,
   SubscriberListResponse,
   SubscriberActionResponse,
@@ -28,11 +30,60 @@ const toSubscriberResponse = (subscriber: Subscriber): SubscriberResponse => ({
   updatedAt: subscriber.updatedAt,
 });
 
+// Il Garante impone che "tutte le scelte dell'interessato siano debitamente
+// registrate dal titolare, anche ai fini della dimostrazione cui questi
+// potrebbe essere chiamato" (Linee Guida tracking pixel 17/04/2026, par. 6;
+// art. 7 par. 1 GDPR). Da qui la registrazione di ogni consenso e revoca.
+const getClientIp = (req: Request): string | null => {
+  const forwarded = req.headers["x-forwarded-for"];
+  if (typeof forwarded === "string" && forwarded.length > 0) {
+    return forwarded.split(",")[0].trim();
+  }
+  return req.ip || null;
+};
+
+const getUserAgent = (req: Request): string | null => {
+  const agent = req.headers["user-agent"];
+  return typeof agent === "string" ? agent.slice(0, 500) : null;
+};
+
+const recordConsent = async (params: {
+  subscriberId: string;
+  type: ConsentType;
+  granted: boolean;
+  text?: string | null;
+  source?: string | null;
+  req: Request;
+}): Promise<void> => {
+  try {
+    await prisma.consentLog.create({
+      data: {
+        subscriberId: params.subscriberId,
+        type: params.type,
+        granted: params.granted,
+        text: params.text || null,
+        source: params.source || null,
+        ipAddress: getClientIp(params.req),
+        userAgent: getUserAgent(params.req),
+      },
+    });
+  } catch (error) {
+    // La registrazione della prova non deve mai far fallire l'operazione
+    // richiesta dall'interessato, ma va segnalata.
+    console.error("⚠️ Impossibile registrare il consenso:", error);
+  }
+};
+
 // ISCRIZIONE NEWSLETTER
 // POST /subscribers
 export const subscribe = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, name, source }: CreateSubscriberRequest = req.body;
+    const {
+      email,
+      name,
+      source,
+      consentText,
+    }: CreateSubscriberRequest = req.body;
     const normalizedEmail = email.toLowerCase().trim();
 
     // CHECK SE ESISTE GIà
@@ -57,7 +108,31 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
           unsubscribedAt: null,
           name: name?.trim() || existingSubscriber.name,
           source: source || existingSubscriber.source,
+          // NUOVA MANIFESTAZIONE DI VOLONTA': sostituisce la precedente
+          consentAt: new Date(),
+          consentSource: source || existingSubscriber.source,
+          consentText: consentText || null,
+          consentIp: getClientIp(req),
+          trackingConsent: true,
+          trackingConsentAt: new Date(),
         },
+      });
+
+      await recordConsent({
+        subscriberId: reactivated.id,
+        type: ConsentType.NEWSLETTER,
+        granted: true,
+        text: consentText,
+        source: source || existingSubscriber.source,
+        req,
+      });
+      await recordConsent({
+        subscriberId: reactivated.id,
+        type: ConsentType.TRACKING,
+        granted: true,
+        text: consentText,
+        source: source || existingSubscriber.source,
+        req,
       });
 
       // EMAIL DI BENVENUTO RIATTIVAZIONE
@@ -65,6 +140,7 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
         await sendWelcomeEmail(
           reactivated.email,
           reactivated.name || undefined,
+          reactivated.id,
         );
         console.log(
           `✅ Welcome email sent to ${reactivated.email} (reactivated)`,
@@ -89,12 +165,43 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
         source: source || null,
         status: "ACTIVE",
         subscribedAt: new Date(),
+        // Il consenso unico raccolto al momento dell'iscrizione copre anche il
+        // tracciamento: il Garante ammette espressamente che quest'ultimo sia
+        // "ricompreso in quello, piu' generale, alla ricezione delle
+        // comunicazioni promozionali" (par. 6), purche' l'informativa lo dica.
+        consentAt: new Date(),
+        consentSource: source || null,
+        consentText: consentText || null,
+        consentIp: getClientIp(req),
+        trackingConsent: true,
+        trackingConsentAt: new Date(),
       },
+    });
+
+    await recordConsent({
+      subscriberId: subscriber.id,
+      type: ConsentType.NEWSLETTER,
+      granted: true,
+      text: consentText,
+      source,
+      req,
+    });
+    await recordConsent({
+      subscriberId: subscriber.id,
+      type: ConsentType.TRACKING,
+      granted: true,
+      text: consentText,
+      source,
+      req,
     });
 
     // EMAIL DI BENVENUTO
     try {
-      await sendWelcomeEmail(subscriber.email, subscriber.name || undefined);
+      await sendWelcomeEmail(
+        subscriber.email,
+        subscriber.name || undefined,
+        subscriber.id,
+      );
       console.log(`✅ Welcome email sent to ${subscriber.email}`);
     } catch (emailError) {
       console.error("⚠️ Failed to send welcome email:", emailError);
@@ -348,11 +455,21 @@ export const unsubscribe = async (
       },
     });
 
+    // REVOCA TOTALE DEL CONSENSO: va registrata (art. 7 par. 1 GDPR)
+    await recordConsent({
+      subscriberId: updatedSubscriber.id,
+      type: ConsentType.NEWSLETTER,
+      granted: false,
+      source: "form-disiscrizione",
+      req,
+    });
+
     // INVIA EMAIL DI CONFERMA CANCELLAZIONE
     try {
       await sendUnsubscribeConfirmationEmail(
         updatedSubscriber.email,
         updatedSubscriber.name || undefined,
+        updatedSubscriber.id,
       );
       console.log(
         `✅ Unsubscribe confirmation email sent to ${updatedSubscriber.email}`,
@@ -409,10 +526,20 @@ export const unsubscribeById = async (
       },
     });
 
+    // REVOCA TOTALE DEL CONSENSO: va registrata (art. 7 par. 1 GDPR)
+    await recordConsent({
+      subscriberId: updated.id,
+      type: ConsentType.NEWSLETTER,
+      granted: false,
+      source: "link-disiscrizione",
+      req,
+    });
+
     try {
       await sendUnsubscribeConfirmationEmail(
         updated.email,
         updated.name || undefined,
+        updated.id,
       );
     } catch (emailError) {
       console.error(
@@ -428,5 +555,152 @@ export const unsubscribeById = async (
   } catch (error) {
     console.error("Errore unsubscribeById:", error);
     res.status(500).json({ error: "Errore durante disiscrizione" });
+  }
+};
+
+// ====================================================================================================== //
+//                          CENTRO PREFERENZE - REVOCA GRANULARE
+//
+// Le Linee Guida del Garante del 17/04/2026 (par. 6) impongono che
+// l'interessato possa revocare il consenso "anche in modo granulare: optando
+// cioe' per la revoca del consenso unico prestato, con l'effetto di impedire
+// la futura ricezione di ulteriori messaggi, oppure revocandolo solo
+// parzialmente, con esclusivo riguardo soltanto al tracciamento connesso alla
+// ricezione di tracking pixel".
+//
+// Chi rifiuta il solo tracciamento continua a ricevere le comunicazioni:
+// "alla persona che intenda rifiutare il tracciamento dovra' essere garantita
+// la piena fruibilita' del servizio, che non dovra' comunque subire, per
+// questa sola ragione, alcuna limitazione".
+// ====================================================================================================== //
+
+// LEGGE LE PREFERENZE CORRENTI
+// GET /subscribers/preferences/:id
+export const getPreferences = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    const subscriber = await prisma.subscriber.findUnique({
+      where: { id },
+    });
+
+    if (!subscriber) {
+      res.status(404).json({ error: "Iscrizione non trovata" });
+      return;
+    }
+
+    res.status(200).json({
+      email: subscriber.email,
+      name: subscriber.name,
+      subscribed: subscriber.status === "ACTIVE",
+      trackingConsent: subscriber.trackingConsent,
+      subscribedAt: subscriber.subscribedAt,
+    });
+  } catch (error) {
+    console.error("Errore lettura preferenze:", error);
+    res
+      .status(500)
+      .json({ error: "Errore durante il recupero delle preferenze" });
+  }
+};
+
+// AGGIORNA LE PREFERENZE
+// PUT /subscribers/preferences/:id
+export const updatePreferences = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { trackingConsent, subscribed }: UpdatePreferencesRequest = req.body;
+
+    const subscriber = await prisma.subscriber.findUnique({
+      where: { id },
+    });
+
+    if (!subscriber) {
+      res.status(404).json({ error: "Iscrizione non trovata" });
+      return;
+    }
+
+    const data: Prisma.SubscriberUpdateInput = {};
+
+    // REVOCA DEL SOLO TRACCIAMENTO: L'ISCRIZIONE RESTA ATTIVA
+    if (
+      typeof trackingConsent === "boolean" &&
+      trackingConsent !== subscriber.trackingConsent
+    ) {
+      data.trackingConsent = trackingConsent;
+      data.trackingConsentAt = new Date();
+    }
+
+    // REVOCA COMPLETA: DISISCRIZIONE
+    if (typeof subscribed === "boolean") {
+      const isActive = subscriber.status === "ACTIVE";
+      if (!subscribed && isActive) {
+        data.status = "UNSUBSCRIBED";
+        data.unsubscribedAt = new Date();
+      }
+      if (subscribed && !isActive) {
+        data.status = "ACTIVE";
+        data.unsubscribedAt = null;
+        data.subscribedAt = new Date();
+        data.consentAt = new Date();
+      }
+    }
+
+    if (Object.keys(data).length === 0) {
+      res.status(200).json({
+        success: true,
+        message: "Nessuna modifica da applicare",
+        preferences: {
+          subscribed: subscriber.status === "ACTIVE",
+          trackingConsent: subscriber.trackingConsent,
+        },
+      });
+      return;
+    }
+
+    const updated = await prisma.subscriber.update({
+      where: { id },
+      data,
+    });
+
+    // REGISTRAZIONE DELLE SCELTE (art. 7 par. 1 GDPR)
+    if (data.trackingConsent !== undefined) {
+      await recordConsent({
+        subscriberId: updated.id,
+        type: ConsentType.TRACKING,
+        granted: updated.trackingConsent,
+        source: "centro-preferenze",
+        req,
+      });
+    }
+    if (data.status !== undefined) {
+      await recordConsent({
+        subscriberId: updated.id,
+        type: ConsentType.NEWSLETTER,
+        granted: updated.status === "ACTIVE",
+        source: "centro-preferenze",
+        req,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Preferenze aggiornate",
+      preferences: {
+        subscribed: updated.status === "ACTIVE",
+        trackingConsent: updated.trackingConsent,
+      },
+    });
+  } catch (error) {
+    console.error("Errore aggiornamento preferenze:", error);
+    res
+      .status(500)
+      .json({ error: "Errore durante l'aggiornamento delle preferenze" });
   }
 };

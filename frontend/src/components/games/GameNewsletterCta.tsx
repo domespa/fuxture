@@ -4,6 +4,7 @@ import { Loader2, Mail, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { subscribersAPI } from "@/services/api";
+import { NEWSLETTER_CONSENT_TEXT } from "@/lib/consent";
 import { PANEL_CLASS } from "./theme";
 
 interface GameNewsletterCtaProps {
@@ -45,6 +46,7 @@ export default function GameNewsletterCta({
       await subscribersAPI.createSubscriber({
         email: email.trim(),
         source: `gioco-${gameSlug}`,
+        consentText: NEWSLETTER_CONSENT_TEXT,
       });
       setIsDone(true);
       setEmail("");
@@ -109,10 +111,13 @@ export default function GameNewsletterCta({
             className="mt-0.5 accent-blue-500"
           />
           <span>
-            Accetto la{" "}
+            Ho letto la{" "}
             <Link to="/privacy-policy" className="text-blue-400 underline">
               Privacy Policy
-            </Link>
+            </Link>{" "}
+            e acconsento al trattamento dei miei dati per ricevere la newsletter
+            e per la misurazione delle aperture tramite pixel di tracciamento,
+            disattivabile in qualsiasi momento dall'area preferenze.
           </span>
         </label>
 

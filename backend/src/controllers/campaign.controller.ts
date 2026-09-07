@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/database";
+import { personalizeForRecipient } from "../services/tracking.service";
 import {
   CreateCampaignRequest,
   UpdateCampaignRequest,
@@ -438,10 +439,10 @@ export async function sendTestEmail(
 
     // PLACEHOLDER PER TEST (usa email di test come ID)
     const testUnsubscribeUrl = `${process.env.FRONTEND_URL}/unsubscribe/test`;
-    const personalizedContent = campaign.content.replace(
-      /\{\{unsubscribe_url\}\}/g,
-      testUnsubscribeUrl
-    );
+    const testPreferencesUrl = `${process.env.FRONTEND_URL}/preferenze/test`;
+    const personalizedContent = campaign.content
+      .replace(/\{\{unsubscribe_url\}\}/g, testUnsubscribeUrl)
+      .replace(/\{\{preferences_url\}\}/g, testPreferencesUrl);
 
     // DETERMINA FROM_NAME
     const fromName =
@@ -581,19 +582,46 @@ export async function sendCampaign(req: Request, res: Response): Promise<void> {
       campaign.fromName || process.env.SMTP_FROM_NAME || "Fuxture";
 
     // PREPARA RECIPIENTS CON CONTENT PERSONALIZZATO
+    let strippedRecipients = 0;
+
     const recipients = subscribers.map((subscriber) => {
       const unsubscribeUrl = `${process.env.FRONTEND_URL}/unsubscribe/${subscriber.id}`;
-      const personalizedContent = campaign.content.replace(
-        /\{\{unsubscribe_url\}\}/g,
-        unsubscribeUrl
+      // IL LINK ALLE PREFERENZE USA L'ID INTERNO, NON IL trackingId: quest'ultimo
+      // viaggia verso i server di terzi a ogni apertura e non deve dare accesso
+      // all'area di gestione dei consensi.
+      const preferencesUrl = `${process.env.FRONTEND_URL}/preferenze/${subscriber.id}`;
+
+      const personalizedContent = campaign.content
+        .replace(/\{\{unsubscribe_url\}\}/g, unsubscribeUrl)
+        .replace(/\{\{preferences_url\}\}/g, preferencesUrl);
+
+      // SOSTITUISCE LE MACRO {email} DELLE CREATIVITA' DI TERZI CON
+      // L'IDENTIFICATIVO OPACO E, PER CHI HA REVOCATO IL SOLO CONSENSO AL
+      // TRACCIAMENTO, RIMUOVE I MARCATORI RECAPITANDO COMUNQUE LA CAMPAGNA.
+      const { html, strippedPixels } = personalizeForRecipient(
+        personalizedContent,
+        {
+          trackingId: subscriber.trackingId,
+          trackingConsent: subscriber.trackingConsent,
+        }
       );
+
+      if (strippedPixels.length > 0) {
+        strippedRecipients++;
+      }
 
       return {
         email: subscriber.email,
-        html: personalizedContent,
+        html,
         subscriberId: subscriber.id,
       };
     });
+
+    if (strippedRecipients > 0) {
+      console.log(
+        `🔒 Tracciamento rimosso per ${strippedRecipients} destinatari che hanno revocato il consenso`
+      );
+    }
 
     // INVIO BATCH
     console.log(`Starting campaign ${id} to ${recipients.length} subscribers`);
@@ -673,7 +701,11 @@ export async function sendPreviewEmail(
 
     const personalizedContent = content
       .replace(/\{\{unsubscribe_url\}\}/g, previewUnsubscribeUrl)
-      .replace(/\{\{web_version_url\}\}/g, previewWebVersionUrl);
+      .replace(/\{\{web_version_url\}\}/g, previewWebVersionUrl)
+      .replace(
+        /\{\{preferences_url\}\}/g,
+        `${process.env.FRONTEND_URL}/preferenze/preview`
+      );
 
     // INVIA EMAIL
     await sendEmail({

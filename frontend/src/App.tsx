@@ -30,6 +30,7 @@ import GamesPage from "./pages/GamesPage";
 import GameDetailPage from "./pages/GameDetailPage";
 import AdminGamesPage from "./pages/admin/dashboard/GamesPage";
 import UnsubscribePage from "./pages/UnsubscribePage";
+import PreferencesPage from "./pages/PreferencesPage";
 
 function App() {
   return (
@@ -104,6 +105,9 @@ function App() {
           <Route path="users" element={<UsersPage />} />
         </Route>
         <Route path="/unsubscribe" element={<UnsubscribePage />} />
+        <Route path="/unsubscribe/:id" element={<UnsubscribePage />} />
+        {/* Area preferenze: revoca granulare ex Linee Guida Garante 17/04/2026 */}
+        <Route path="/preferenze/:id" element={<PreferencesPage />} />
         {/* 404 - Pagina non trovata */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>

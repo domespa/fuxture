@@ -462,6 +462,9 @@ export const subscribersAPI = {
     email: string;
     name?: string;
     source?: string;
+    // Formulazione esatta del consenso accettato, registrata come prova
+    // (art. 7 par. 1 GDPR)
+    consentText?: string;
   }): Promise<{
     success: boolean;
     message: string;

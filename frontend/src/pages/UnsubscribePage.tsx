@@ -1,8 +1,13 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Mail, Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 
 export default function UnsubscribePage() {
+  // Il footer delle campagne rimanda a /unsubscribe/:id, cosi' chi arriva dal
+  // messaggio non deve reinserire il proprio indirizzo. La cancellazione non
+  // parte da sola al caricamento: alcuni client di posta precaricano i link,
+  // e una disiscrizione involontaria non e' una scelta dell'interessato.
+  const { id } = useParams<{ id?: string }>();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -11,6 +16,31 @@ export default function UnsubscribePage() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const handleConfirmById = async () => {
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/subscribers/preferences/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ subscribed: false }),
+        }
+      );
+      if (!response.ok) {
+        setError("Non è stato possibile completare la cancellazione. Riprova.");
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setError("Errore di connessione. Riprova più tardi.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleSubmit = async () => {
     if (!email.trim()) {
@@ -77,6 +107,50 @@ export default function UnsubscribePage() {
             >
               ← Torna alla Homepage
             </Link>
+          </div>
+        ) : id ? (
+          /* Arrivo dal link personale nel footer: basta una conferma */
+          <div className="space-y-5">
+            <p className="text-gray-700 text-center m-0">
+              Confermi di volerti cancellare dalla newsletter?
+            </p>
+
+            {error && (
+              <p className="text-red-600 text-sm flex items-center justify-center gap-1">
+                <AlertCircle className="w-4 h-4" />
+                {error}
+              </p>
+            )}
+
+            <button
+              onClick={handleConfirmById}
+              disabled={isSubmitting}
+              className="w-full bg-blue-600 text-white px-8 py-3 rounded-lg font-bold text-base hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Invio in corso...
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  Conferma cancellazione
+                </>
+              )}
+            </button>
+
+            <p className="text-xs text-gray-500 text-center">
+              Se vuoi soltanto disattivare i pixel di tracciamento continuando a
+              ricevere la newsletter, puoi farlo dall'
+              <Link
+                to={`/preferenze/${id}`}
+                className="text-blue-600 underline"
+              >
+                area preferenze
+              </Link>
+              .
+            </p>
           </div>
         ) : (
           /* Form */

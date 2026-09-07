@@ -7,6 +7,24 @@ export interface CreateSubscriberRequest {
   email: string;
   name?: string;
   source?: string;
+  // TESTO ESATTO DEL CONSENSO ACCETTATO: serve a dimostrare a quale
+  // formulazione l'interessato abbia prestato il consenso (art. 7 par. 1 GDPR)
+  consentText?: string;
+}
+
+// CENTRO PREFERENZE: revoca granulare ex par. 6 delle Linee Guida del
+// Garante del 17/04/2026 in materia di tracking pixel
+export interface UpdatePreferencesRequest {
+  trackingConsent?: boolean;
+  subscribed?: boolean;
+}
+
+export interface PreferencesResponse {
+  email: string;
+  name: string | null;
+  subscribed: boolean;
+  trackingConsent: boolean;
+  subscribedAt: Date;
 }
 
 export interface UpdateSubscriberRequest {

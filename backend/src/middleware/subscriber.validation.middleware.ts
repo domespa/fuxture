@@ -136,3 +136,43 @@ export const validateUnsubscribe = (
 
   next();
 };
+
+// ====================================================================================================== //
+//                                    MIDDLEWARE: CENTRO PREFERENZE
+// ====================================================================================================== //
+export const validateUpdatePreferences = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const errors: Array<{ field: string; message: string }> = [];
+  const { trackingConsent, subscribed } = req.body;
+
+  if (trackingConsent === undefined && subscribed === undefined) {
+    errors.push({
+      field: "general",
+      message: "Indicare almeno una preferenza (trackingConsent, subscribed)",
+    });
+  }
+
+  if (trackingConsent !== undefined && typeof trackingConsent !== "boolean") {
+    errors.push({
+      field: "trackingConsent",
+      message: "trackingConsent deve essere un booleano",
+    });
+  }
+
+  if (subscribed !== undefined && typeof subscribed !== "boolean") {
+    errors.push({
+      field: "subscribed",
+      message: "subscribed deve essere un booleano",
+    });
+  }
+
+  if (errors.length > 0) {
+    res.status(400).json({ errors });
+    return;
+  }
+
+  next();
+};

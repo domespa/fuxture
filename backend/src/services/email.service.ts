@@ -268,7 +268,15 @@ export const createEmailTemplate = (content: string): string => {
     </div>
     <div class="email-footer">
       <p>Hai ricevuto questa email perché sei iscritto alla nostra newsletter.</p>
-      <p><a href="{{unsubscribe_url}}">Annulla iscrizione</a></p>
+      <p>
+        Questo messaggio può contenere pixel di tracciamento che ci segnalano
+        l'avvenuta apertura. Puoi disattivarli continuando a ricevere la
+        newsletter dall'area preferenze.
+      </p>
+      <p>
+        <a href="{{preferences_url}}">Gestisci le preferenze</a> &middot;
+        <a href="{{unsubscribe_url}}">Annulla iscrizione</a>
+      </p>
       <p>&copy; ${new Date().getFullYear()} ${
     emailConfig.email.from.name
   }. Tutti i diritti riservati.</p>
@@ -279,10 +287,30 @@ export const createEmailTemplate = (content: string): string => {
   `;
 };
 
+// SOSTITUISCE I SEGNAPOSTO DEL TEMPLATE.
+// Senza questo passaggio i link del footer venivano recapitati come testo
+// letterale "{{unsubscribe_url}}", rendendo di fatto irraggiungibili sia la
+// disiscrizione sia l'area preferenze.
+const resolvePlaceholders = (html: string, subscriberId?: string): string => {
+  const base = process.env.FRONTEND_URL || "";
+  const unsubscribeUrl = subscriberId
+    ? `${base}/unsubscribe/${subscriberId}`
+    : `${base}/unsubscribe`;
+  const preferencesUrl = subscriberId
+    ? `${base}/preferenze/${subscriberId}`
+    : `${base}/unsubscribe`;
+
+  return html
+    .replace(/\{\{unsubscribe_url\}\}/g, unsubscribeUrl)
+    .replace(/\{\{preferences_url\}\}/g, preferencesUrl)
+    .replace(/\{\{subscribe_url\}\}/g, `${base}/#newsletter`);
+};
+
 // EMAIL DI BENVENUTO
 export const sendWelcomeEmail = async (
   subscriberEmail: string,
-  subscriberName?: string
+  subscriberName?: string,
+  subscriberId?: string
 ): Promise<EmailSendResult> => {
   const content = `
     <h2>Benvenuto nella nostra community! 🎉</h2>
@@ -300,14 +328,16 @@ export const sendWelcomeEmail = async (
   return sendEmail({
     to: subscriberEmail,
     subject: `Benvenuto su ${emailConfig.email.from.name}!`,
-    html: createEmailTemplate(content),
+    html: resolvePlaceholders(createEmailTemplate(content), subscriberId),
+    subscriberId,
   });
 };
 
 // CANCELLAZIONE NEWSLETTER
 export const sendUnsubscribeConfirmationEmail = async (
   subscriberEmail: string,
-  subscriberName?: string
+  subscriberName?: string,
+  subscriberId?: string
 ): Promise<EmailSendResult> => {
   const content = `
     <h2>Cancellazione iscrizione confermata 👋</h2>
@@ -325,6 +355,7 @@ export const sendUnsubscribeConfirmationEmail = async (
   return sendEmail({
     to: subscriberEmail,
     subject: "Cancellazione iscrizione confermata",
-    html: createEmailTemplate(content),
+    html: resolvePlaceholders(createEmailTemplate(content), subscriberId),
+    subscriberId,
   });
 };

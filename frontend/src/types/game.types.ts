@@ -102,3 +102,16 @@ export interface SubmitScoreResponse extends LeaderboardResponse {
   isPersonalBest: boolean;
   playerName: string;
 }
+
+// PUNTEGGIO NELLA VISTA DI MODERAZIONE: include il periodo e il gioco,
+// che nella classifica pubblica sono impliciti nel contesto
+export interface ModerationScore {
+  id: string;
+  playerName: string;
+  score: number;
+  detail: string | null;
+  periodKey: string;
+  gameId: string;
+  gameTitle: string;
+  createdAt: string;
+}

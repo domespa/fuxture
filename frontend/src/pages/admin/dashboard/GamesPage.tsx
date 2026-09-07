@@ -1,9 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, Pencil, Trash2, Eye, EyeOff, ExternalLink } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  Eye,
+  EyeOff,
+  ExternalLink,
+  Trophy,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { gamesAPI } from "@/services/api";
 import GameDialog from "@/components/games/GameDialog";
+import ScoresModerationDialog from "@/components/games/ScoresModerationDialog";
 import type { Game } from "@/types/game.types";
 import toast from "react-hot-toast";
 
@@ -13,6 +22,8 @@ export default function GamesPage() {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
+  const [scoresGame, setScoresGame] = useState<Game | null>(null);
+  const [scoresOpen, setScoresOpen] = useState(false);
 
   // FETCH GAMES (ADMIN: VEDE ANCHE LE BOZZE)
   const fetchGames = async () => {
@@ -193,6 +204,20 @@ export default function GamesPage() {
                           </Button>
                         </Link>
 
+                        {game.leaderboard !== "NONE" && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            title="Modera la classifica"
+                            onClick={() => {
+                              setScoresGame(game);
+                              setScoresOpen(true);
+                            }}
+                          >
+                            <Trophy className="h-4 w-4 text-amber-600" />
+                          </Button>
+                        )}
+
                         <Button
                           variant="ghost"
                           size="icon"
@@ -246,6 +271,12 @@ export default function GamesPage() {
         onOpenChange={setDialogOpen}
         editGame={editingGame}
         onSuccess={fetchGames}
+      />
+
+      <ScoresModerationDialog
+        game={scoresGame}
+        open={scoresOpen}
+        onOpenChange={setScoresOpen}
       />
     </div>
   );

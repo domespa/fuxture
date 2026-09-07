@@ -25,6 +25,7 @@ export const GAME_REGISTRY: Record<
   "parola-del-giorno": lazy(() => import("./ParolaDelGiorno")),
   riflessi: lazy(() => import("./Riflessi")),
   fuxtrix: lazy(() => import("./Fuxtrix")),
+  "2048": lazy(() => import("./Game2048")),
 };
 
 export const getGameComponent = (entryPath: string | null) => {

@@ -19,6 +19,10 @@ import {
   emailLogsAPI,
 } from "@/services/api";
 import type { Contact, ManualSend } from "@/types/mailing.types";
+import {
+  ricavaSuggerimenti,
+  type SuggerimentiCreativita,
+} from "@/lib/creativeSuggestions";
 
 export const SendPreview = () => {
   const navigate = useNavigate();
@@ -35,6 +39,10 @@ export const SendPreview = () => {
   const [creativeName, setCreativeName] = useState("");
   const [lancioSu, setLancioSu] = useState("");
   const [importingCreative, setImportingCreative] = useState(false);
+  const [suggerimenti, setSuggerimenti] = useState<SuggerimentiCreativita>({
+    mittenti: [],
+    oggetti: [],
+  });
   const [recentSends, setRecentSends] = useState<ManualSend[]>([]);
   const [loadingRecent, setLoadingRecent] = useState(false);
   const [resumingId, setResumingId] = useState<string | null>(null);
@@ -78,6 +86,8 @@ export const SendPreview = () => {
       }));
       setCreativeName("");
       setLancioSu("");
+      // Verrebbero da un'altra creatività: tenerli sarebbe fuorviante.
+      setSuggerimenti({ mittenti: [], oggetti: [] });
       setActiveTab("html");
       toast.success("Contenuto ripreso: controlla destinatario e oggetto");
     } catch {
@@ -240,6 +250,9 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
         return;
       }
 
+      // Sul file intero, non sul solo corpo: il <title> sta nell'head.
+      setSuggerimenti(ricavaSuggerimenti(scaricato));
+
       // Reinseriamo anche link e lancio: il blocco appena importato non li ha.
       setFormData((prev) => ({
         ...prev,
@@ -333,6 +346,26 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
             }
             disabled={isSubmitting}
           />
+          {suggerimenti.mittenti.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <span className="text-xs text-muted-foreground">
+                Dalla creatività:
+              </span>
+              {suggerimenti.mittenti.map((voce) => (
+                <button
+                  key={voce}
+                  type="button"
+                  onClick={() =>
+                    setFormData((prev) => ({ ...prev, fromName: voce }))
+                  }
+                  disabled={isSubmitting}
+                  className="rounded-full border border-gray-200 px-3 py-1 text-xs text-gray-700 transition-colors hover:border-indigo-400 hover:text-indigo-700"
+                >
+                  {voce}
+                </button>
+              ))}
+            </div>
+          )}
           <p className="text-sm text-muted-foreground">
             Se vuoto, verrà usato "Fuxture"
           </p>
@@ -354,6 +387,27 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
             maxLength={200}
             disabled={isSubmitting}
           />
+          {suggerimenti.oggetti.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <span className="text-xs text-muted-foreground">
+                Dalla creatività:
+              </span>
+              {suggerimenti.oggetti.map((voce) => (
+                <button
+                  key={voce}
+                  type="button"
+                  title={voce}
+                  onClick={() =>
+                    setFormData((prev) => ({ ...prev, subject: voce }))
+                  }
+                  disabled={isSubmitting}
+                  className="max-w-[22rem] truncate rounded-full border border-gray-200 px-3 py-1 text-xs text-gray-700 transition-colors hover:border-indigo-400 hover:text-indigo-700"
+                >
+                  {voce}
+                </button>
+              ))}
+            </div>
+          )}
           <p className="text-sm text-muted-foreground">
             {formData.subject.length}/200 caratteri
           </p>

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +17,6 @@ import {
   campaignsAPI,
   addressBookAPI,
   emailLogsAPI,
-  newsletterIssueAPI,
 } from "@/services/api";
 import type { Contact, ManualSend } from "@/types/mailing.types";
 
@@ -200,14 +198,45 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
       return;
     }
 
+    // Le creatività sono file statici del frontend (public/newsletter/): in
+    // produzione le serve Vercel sullo stesso dominio del pannello, in sviluppo
+    // le serve Vite dalla cartella locale. Chiedendole con un percorso relativo
+    // la richiesta resta same-origin e parte dal browser: niente CORS, e niente
+    // filtro anti-bot di Cloudflare, che invece risponde 403 alle chiamate
+    // server-to-server in uscita da Render.
+    const percorso = `/newsletter/${normalizedName}${NEWSLETTER_EXT}`;
+
     try {
       setImportingCreative(true);
-      const { html } =
-        await newsletterIssueAPI.getCreativeHtml(normalizedName);
-      const body = extractBody(html);
+      const risposta = await fetch(percorso);
+
+      if (risposta.status === 404) {
+        toast.error(
+          `Creatività non trovata: ${normalizedName}${NEWSLETTER_EXT}`,
+        );
+        return;
+      }
+
+      if (!risposta.ok) {
+        toast.error(`Il server ha risposto ${risposta.status} per ${percorso}`);
+        return;
+      }
+
+      const scaricato = await risposta.text();
+
+      // Se un domani le rotte sconosciute venissero rimandate all'app,
+      // riceveremmo la pagina del pannello al posto della creatività.
+      if (scaricato.includes('id="root"')) {
+        toast.error(
+          `Creatività non trovata: ${normalizedName}${NEWSLETTER_EXT}`,
+        );
+        return;
+      }
+
+      const body = extractBody(scaricato);
 
       if (!body) {
-        toast.error("La creatività scaricata è vuota");
+        toast.error("La creatività è vuota");
         return;
       }
 
@@ -223,11 +252,8 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
         ),
       }));
       toast.success("HTML della creatività importato");
-    } catch (error) {
-      const dettaglio = axios.isAxiosError(error)
-        ? (error.response?.data as { error?: string } | undefined)?.error
-        : undefined;
-      toast.error(dettaglio || "Impossibile importare la creatività");
+    } catch {
+      toast.error("Impossibile leggere la creatività");
     } finally {
       setImportingCreative(false);
     }

@@ -1,12 +1,25 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import toast from "react-hot-toast";
-import { Code, Eye, History, Loader2, RotateCcw } from "lucide-react";
-import { campaignsAPI, addressBookAPI, emailLogsAPI } from "@/services/api";
+import {
+  Code,
+  Download,
+  Eye,
+  History,
+  Loader2,
+  RotateCcw,
+} from "lucide-react";
+import {
+  campaignsAPI,
+  addressBookAPI,
+  emailLogsAPI,
+  newsletterIssueAPI,
+} from "@/services/api";
 import type { Contact, ManualSend } from "@/types/mailing.types";
 
 export const SendPreview = () => {
@@ -19,7 +32,11 @@ export const SendPreview = () => {
   // Rubrica per il completamento del destinatario. Se la chiamata fallisce
   // resta un campo di testo normale: e' una comodita', non un requisito.
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [webVersionUrl, setWebVersionUrl] = useState("");
+  // Della versione web si digita solo il nome del file: prefisso ed estensione
+  // sono sempre gli stessi, riscriverli ogni volta e' solo occasione di errori.
+  const [creativeName, setCreativeName] = useState("");
+  const [lancioSu, setLancioSu] = useState("");
+  const [importingCreative, setImportingCreative] = useState(false);
   const [recentSends, setRecentSends] = useState<ManualSend[]>([]);
   const [loadingRecent, setLoadingRecent] = useState(false);
   const [resumingId, setResumingId] = useState<string | null>(null);
@@ -61,7 +78,8 @@ export const SendPreview = () => {
         subject: log.subject ?? prev.subject,
         content: log.content as string,
       }));
-      setWebVersionUrl("");
+      setCreativeName("");
+      setLancioSu("");
       setActiveTab("html");
       toast.success("Contenuto ripreso: controlla destinatario e oggetto");
     } catch {
@@ -99,12 +117,120 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
         `${before}${url.trim() || "{{web_version_url}}"}${after}`,
     );
 
-  const handleWebVersionChange = (url: string) => {
-    setWebVersionUrl(url);
+  const NEWSLETTER_BASE = "https://www.fuxture.net/newsletter/";
+  const NEWSLETTER_EXT = ".html";
+
+  // Se per abitudine si incolla l'indirizzo intero, o si aggiunge .html,
+  // riduciamo al solo nome invece di comporre un URL doppio.
+  const normalizeCreativeName = (raw: string): string =>
+    raw
+      .trim()
+      .replace(/^https?:\/\/(www\.)?fuxture\.net\/newsletter\//i, "")
+      .replace(/\.html?$/i, "")
+      .replace(/^\/+|\/+$/g, "");
+
+  // Il campo mostra quello che si digita; l'URL lo ricaviamo a parte, cosi la
+  // normalizzazione non combatte con chi sta ancora scrivendo.
+  const normalizedName = normalizeCreativeName(creativeName);
+  const webVersionUrl = normalizedName
+    ? `${NEWSLETTER_BASE}${normalizedName}${NEWSLETTER_EXT}`
+    : "";
+
+  const handleCreativeNameChange = (raw: string) => {
+    setCreativeName(raw);
+    const name = normalizeCreativeName(raw);
+    const url = name ? `${NEWSLETTER_BASE}${name}${NEWSLETTER_EXT}` : "";
     setFormData((prev) => ({
       ...prev,
       content: applyWebVersionUrl(prev.content, url),
     }));
+  };
+
+  // La riga "Lancio su" nel piede legale: si compila da qui invece di andarla
+  // a cercare a mano dentro l'HTML.
+  const LANCIO_ANCHOR = /(<p>\s*Lancio su)([^<]*)(<\/p>)/i;
+
+  const applyLancioSu = (html: string, value: string): string =>
+    html.replace(
+      LANCIO_ANCHOR,
+      (_match, before: string, _old: string, after: string) => {
+        const testo = value.trim();
+        return `${before}${testo ? ` ${testo}` : ""}${after}`;
+      },
+    );
+
+  const handleLancioChange = (value: string) => {
+    setLancioSu(value);
+    setFormData((prev) => ({
+      ...prev,
+      content: applyLancioSu(prev.content, value),
+    }));
+  };
+
+  // Del file preso dal sito serve il corpo: infilare <html> e <head> dentro
+  // l'email produce markup annidato che i client di posta scartano.
+  const extractBody = (html: string): string => {
+    const match = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    return (match ? match[1] : html).trim();
+  };
+
+  // I marcatori delimitano la creativita dentro il corpo dell'email: servono a
+  // reimportare sostituendo, invece di accodare una copia a ogni clic.
+  const CREATIVE_BLOCK =
+    /<!-- creativita:inizio -->[\s\S]*?<!-- creativita:fine -->/i;
+
+  // La creativita entra fra l'intestazione "guarda la versione web" e l'<hr>
+  // che apre il piede legale, cosi i due paragrafi fissi restano dove sono.
+  const applyCreativeHtml = (current: string, creative: string): string => {
+    const block = `<!-- creativita:inizio -->\n${creative}\n<!-- creativita:fine -->`;
+
+    if (CREATIVE_BLOCK.test(current)) {
+      return current.replace(CREATIVE_BLOCK, block);
+    }
+
+    const hr = current.search(/<hr\s*\/?>/i);
+    if (hr === -1) return `${current}\n\n${block}`;
+
+    return `${current.slice(0, hr)}${block}\n\n${current.slice(hr)}`;
+  };
+
+  const importCreative = async () => {
+    if (!normalizedName) {
+      toast.error("Inserisci il nome della creatività");
+      return;
+    }
+
+    try {
+      setImportingCreative(true);
+      const { html } =
+        await newsletterIssueAPI.getCreativeHtml(normalizedName);
+      const body = extractBody(html);
+
+      if (!body) {
+        toast.error("La creatività scaricata è vuota");
+        return;
+      }
+
+      // Reinseriamo anche link e lancio: il blocco appena importato non li ha.
+      setFormData((prev) => ({
+        ...prev,
+        content: applyLancioSu(
+          applyWebVersionUrl(
+            applyCreativeHtml(prev.content, body),
+            webVersionUrl,
+          ),
+          lancioSu,
+        ),
+      }));
+      toast.success("HTML della creatività importato");
+    } catch (error) {
+      const dettaglio = axios.isAxiosError(error)
+        ? (error.response?.data as { error?: string } | undefined)?.error
+        : undefined;
+      toast.error(dettaglio || "Impossibile importare la creatività");
+    } finally {
+      setImportingCreative(false);
+    }
   };
 
   const validateForm = (): boolean => {
@@ -263,18 +389,66 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
 
         {/* VERSIONE WEB */}
         <div className="space-y-2">
-          <Label htmlFor="webVersionUrl">Versione web</Label>
+          <Label htmlFor="creativeName">Versione web</Label>
+          <div className="flex items-center gap-2">
+            <div className="flex flex-1 items-center rounded-md border border-input bg-background focus-within:ring-2 focus-within:ring-ring">
+              <span className="hidden whitespace-nowrap pl-3 text-sm text-muted-foreground sm:inline">
+                {NEWSLETTER_BASE}
+              </span>
+              <input
+                id="creativeName"
+                type="text"
+                placeholder="NomeCreativita"
+                value={creativeName}
+                onChange={(e) => handleCreativeNameChange(e.target.value)}
+                disabled={isSubmitting}
+                className="min-w-0 flex-1 bg-transparent px-1 py-2 text-sm focus:outline-none disabled:opacity-50"
+              />
+              <span className="hidden pr-3 text-sm text-muted-foreground sm:inline">
+                {NEWSLETTER_EXT}
+              </span>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={importCreative}
+              disabled={isSubmitting || importingCreative || !normalizedName}
+            >
+              {importingCreative ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="mr-2 h-4 w-4" />
+              )}
+              Importa HTML
+            </Button>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {normalizedName ? (
+              <>
+                Link nel footer:{" "}
+                <span className="font-mono">{webVersionUrl}</span>
+              </>
+            ) : (
+              "Scrivi solo il nome del file: prefisso ed estensione li aggiunge da sé."
+            )}
+          </p>
+        </div>
+
+        {/* LANCIO SU */}
+        <div className="space-y-2">
+          <Label htmlFor="lancioSu">Lancio su</Label>
           <Input
-            id="webVersionUrl"
-            type="url"
-            placeholder="https://www.fuxture.net/newsletter/NomeCreativita.html"
-            value={webVersionUrl}
-            onChange={(e) => handleWebVersionChange(e.target.value)}
+            id="lancioSu"
+            type="text"
+            placeholder="Es: Database Fuxture"
+            value={lancioSu}
+            onChange={(e) => handleLancioChange(e.target.value)}
             disabled={isSubmitting}
           />
           <p className="text-sm text-muted-foreground">
-            Aggiorna il link "guarda la versione web" nel footer mentre scrivi.
-            Lasciandolo vuoto resta il segnaposto.
+            Compila la riga "Lancio su" nel piede legale. Vuoto, resta la sola
+            dicitura.
           </p>
         </div>
 

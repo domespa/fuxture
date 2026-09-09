@@ -3,6 +3,7 @@ import {
   createCampaign,
   getCampaigns,
   getLatestSentCampaign,
+  getNewsletterCreative,
   getCampaignById,
   updateCampaign,
   deleteCampaign,
@@ -48,6 +49,16 @@ router.post(
 router.get("/latest", getLatestSentCampaign);
 
 router.get("/", authenticateToken, requireRole("ADMIN"), getCampaigns);
+
+// HTML DI UNA CREATIVITA NEWSLETTER: anche questa prima di /:id,
+// altrimenti "newsletter-creative" verrebbe letto come un id campagna.
+// GET /campaigns/newsletter-creative/:name
+router.get(
+  "/newsletter-creative/:name",
+  authenticateToken,
+  requireRole("ADMIN"),
+  getNewsletterCreative
+);
 
 // OTTIENI SINGOLA
 // GET /campaigns/:id

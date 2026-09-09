@@ -429,6 +429,18 @@ export const emailLogsAPI = {
 
 // ULTIMO NUMERO DELLA NEWSLETTER (PUBBLICO)
 export const newsletterIssueAPI = {
+  // HTML della creativita pubblicata sotto /newsletter/. Passa dal backend
+  // perche il fetch diretto dal browser sarebbe cross-origin fuori produzione.
+  getCreativeHtml: async (
+    name: string
+  ): Promise<{ html: string; url: string }> => {
+    const response = await api.get<{
+      success: boolean;
+      data: { html: string; url: string };
+    }>(`/campaigns/newsletter-creative/${encodeURIComponent(name)}`);
+    return response.data.data;
+  },
+
   getLatest: async (): Promise<{ subject: string; sentAt: string } | null> => {
     const response = await api.get<{
       success: boolean;

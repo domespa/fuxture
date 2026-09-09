@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import axios from "axios";
 import { prisma } from "../config/database";
 import { emailConfig } from "../config/config.email";
 import { personalizeForRecipient } from "../services/tracking.service";
@@ -788,3 +789,67 @@ export async function getLatestSentCampaign(
     res.status(500).json({ error: "Errore durante il recupero" });
   }
 }
+
+// ====================================================================================================== //
+//                          RECUPERA HTML DI UNA CREATIVITA NEWSLETTER
+// ====================================================================================================== //
+// Le creativita vivono tutte sotto lo stesso percorso pubblico. Il client manda
+// solo il nome del file: l URL lo costruiamo qui, cosi non esiste modo di far
+// puntare la richiesta altrove (niente SSRF). Serve un proxy lato server perche
+// il pannello gira anche da vercel.app e da localhost, dove il fetch diretto
+// verso fuxture.net verrebbe bloccato dal CORS.
+const NEWSLETTER_BASE_URL = "https://www.fuxture.net/newsletter/";
+const CREATIVE_NAME_PATTERN = /^[A-Za-z0-9._-]{1,120}$/;
+
+export async function getNewsletterCreative(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { name } = req.params;
+
+  if (!CREATIVE_NAME_PATTERN.test(name) || name.includes("..")) {
+    res.status(400).json({
+      error:
+        "Nome creativita non valido: ammessi lettere, numeri, punto, trattino e underscore",
+    });
+    return;
+  }
+
+  const url = `${NEWSLETTER_BASE_URL}${name}.html`;
+
+  try {
+    const response = await axios.get(url, {
+      timeout: 10000,
+      responseType: "text",
+      maxRedirects: 3,
+      // Senza questo axios prova a interpretare la risposta come JSON
+      transformResponse: [(data) => data],
+      headers: { "User-Agent": "FuxtureAdmin/1.0" },
+      validateStatus: (status) => status < 500,
+    });
+
+    if (response.status === 404) {
+      res.status(404).json({ error: `Creativita non trovata: ${url}` });
+      return;
+    }
+
+    if (response.status >= 400) {
+      res.status(502).json({
+        error: `Il server ha risposto ${response.status} per ${url}`,
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      data: { html: String(response.data ?? ""), url },
+    });
+  } catch (error) {
+    console.error("Error fetching newsletter creative:", error);
+    res.status(502).json({
+      error: "Impossibile raggiungere la creativita. Controlla il nome del file.",
+    });
+  }
+}
+// ====================================================================================================== //
+// ====================================================================================================== //

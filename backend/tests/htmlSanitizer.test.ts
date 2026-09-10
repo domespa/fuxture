@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sanitizePostHtml } from "./htmlSanitizer";
+import { sanitizePostHtml } from "../src/utils/htmlSanitizer";
 
 describe("sanitizePostHtml", () => {
   it("removes executable markup and unsafe URLs", () => {

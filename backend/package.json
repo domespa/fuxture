@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "test": "vitest run",
+    "test": "vitest run tests",
     "start": "node dist/index.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
@@ -21,6 +21,7 @@
     "@prisma/client": "6.15.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
+    "@types/compression": "^1.8.1",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.0.0",
@@ -28,6 +29,7 @@
     "@types/node-cron": "^3.0.11",
     "@types/nodemailer": "^7.0.4",
     "@types/xml2js": "^0.4.14",
+    "@types/sanitize-html": "^2.16.1",
     "axios": "^1.13.2",
     "bcryptjs": "^3.0.2",
     "compression": "^1.8.1",
@@ -46,9 +48,7 @@
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "@types/compression": "^1.8.1",
     "@types/dotenv": "^6.1.1",
-    "@types/sanitize-html": "^2.16.1",
     "dotenv-cli": "^11.0.0",
     "nodemon": "^3.1.10",
     "tsx": "^4.20.6",

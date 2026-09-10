@@ -21,4 +21,18 @@ describe("sanitizePostHtml", () => {
     expect(result).toContain('href="https://example.com"');
     expect(result).toContain('rel="noopener noreferrer"');
   });
+
+  it("preserves Awin banner placeholders", () => {
+    const result = sanitizePostHtml(
+      '<span data-type="awin-banner" iframeurl="https://www.awin1.com/banner" width="300" height="600" align="center"></span>' +
+        '<span data-type="awin-banner-link" linkurl="https://example.com" imageurl="https://www.awinhosting.com/banner.jpg" align="right"></span>',
+    );
+
+    expect(result).toContain('data-type="awin-banner"');
+    expect(result).toContain('iframeurl="https://www.awin1.com/banner"');
+    expect(result).toContain('data-type="awin-banner-link"');
+    expect(result).toContain(
+      'imageurl="https://www.awinhosting.com/banner.jpg"',
+    );
+  });
 });

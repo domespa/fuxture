@@ -1,15 +1,23 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 import { Request } from "express";
 import crypto from "crypto";
 
 // ====================================================================================================== //
 //                                    MIDDLEWARE: CONFIGURAZIONE
 // ====================================================================================================== //
+
+// Multer non crea la cartella di destinazione: su un ambiente appena
+// installato - o dopo un deploy con filesystem effimero - il primo upload
+// falliva con ENOENT. La si crea all'avvio, una volta sola.
+const UPLOAD_DIR = "uploads/images";
+fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+
 const storage = multer.diskStorage({
   // SCEGLIAMO DOVE SALVARE
   destination: (req, file, cb) => {
-    cb(null, "uploads/images/");
+    cb(null, UPLOAD_DIR);
   },
 
   // COME RINOMINARE

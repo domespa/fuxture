@@ -1,3 +1,6 @@
+// Copia dei tipi di backend/src/types/comment.types.ts: vedi la nota in
+// post.types.ts. I due file vanno tenuti allineati a mano.
+
 // ENUM STATO COMMENTI
 export enum CommentStatus {
   PENDING = "PENDING",

@@ -10,8 +10,77 @@ import {
   CampaignListResponse,
   CampaignResponse,
 } from "../types/campaign.types";
-import { CampaignStatus, SubscriberStatus, Prisma } from "@prisma/client";
+import {
+  CampaignStatus,
+  SubscriberStatus,
+  EmailStatus,
+  Prisma,
+} from "@prisma/client";
 import { sendBatchEmails, sendEmail } from "../services/email.service";
+
+// COLONNE SU CUI E' LECITO ORDINARE (il valore arriva dalla query string)
+const SORTABLE_CAMPAIGN_FIELDS = [
+  "createdAt",
+  "updatedAt",
+  "scheduledAt",
+  "sentAt",
+  "subject",
+  "status",
+];
+
+// ====================================================================================================== //
+//                                   STATISTICHE DI INVIO
+//
+// Prima ogni risposta includeva l'intero elenco degli EmailLog della campagna
+// per poi contarne le righe in memoria: aprire la lista delle campagne
+// significava scaricare una riga per ogni destinatario di ogni campagna in
+// pagina - decine di migliaia di record per due numeri. Il conteggio lo fa il
+// database, con una sola groupBy per l'intera pagina.
+// ====================================================================================================== //
+const SENT_STATUSES: EmailStatus[] = [
+  EmailStatus.SENT,
+  EmailStatus.DELIVERED,
+  EmailStatus.OPENED,
+  EmailStatus.CLICKED,
+];
+const FAILED_STATUSES: EmailStatus[] = [
+  EmailStatus.BOUNCED,
+  EmailStatus.FAILED,
+];
+
+type EmailStats = { totalSent: number; totalFailed: number };
+
+const EMPTY_STATS: EmailStats = { totalSent: 0, totalFailed: 0 };
+
+async function getEmailStatsByCampaign(
+  campaignIds: string[]
+): Promise<Map<string, EmailStats>> {
+  const stats = new Map<string, EmailStats>();
+
+  if (campaignIds.length === 0) return stats;
+
+  const grouped = await prisma.emailLog.groupBy({
+    by: ["campaignId", "status"],
+    where: { campaignId: { in: campaignIds } },
+    _count: { _all: true },
+  });
+
+  for (const row of grouped) {
+    if (!row.campaignId) continue;
+
+    const current = stats.get(row.campaignId) ?? { ...EMPTY_STATS };
+
+    if (SENT_STATUSES.includes(row.status)) {
+      current.totalSent += row._count._all;
+    } else if (FAILED_STATUSES.includes(row.status)) {
+      current.totalFailed += row._count._all;
+    }
+
+    stats.set(row.campaignId, current);
+  }
+
+  return stats;
+}
 
 // ====================================================================================================== //
 //                                   HELPER: BUILD CAMPAIGN RESPONSE
@@ -19,37 +88,26 @@ import { sendBatchEmails, sendEmail } from "../services/email.service";
 async function buildCampaignResponse(
   campaignId: string
 ): Promise<CampaignResponse> {
-  const campaign = await prisma.emailCampaign.findUnique({
-    where: { id: campaignId },
-    include: {
-      createdBy: {
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
+  const [campaign, stats] = await Promise.all([
+    prisma.emailCampaign.findUnique({
+      where: { id: campaignId },
+      include: {
+        createdBy: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
         },
       },
-      emailLogs: {
-        select: {
-          status: true,
-        },
-      },
-    },
-  });
+    }),
+    getEmailStatsByCampaign([campaignId]),
+  ]);
 
   if (!campaign) {
     throw new Error("Campaign not found");
   }
-
-  // CALCOLA STATISTICHE
-  const totalSent = campaign.emailLogs.filter((log) =>
-    ["SENT", "DELIVERED", "OPENED", "CLICKED"].includes(log.status)
-  ).length;
-
-  const totalFailed = campaign.emailLogs.filter((log) =>
-    ["BOUNCED", "FAILED"].includes(log.status)
-  ).length;
 
   return {
     id: campaign.id,
@@ -62,10 +120,7 @@ async function buildCampaignResponse(
     createdAt: campaign.createdAt,
     updatedAt: campaign.updatedAt,
     createdBy: campaign.createdBy,
-    emailStats: {
-      totalSent,
-      totalFailed,
-    },
+    emailStats: stats.get(campaign.id) ?? { ...EMPTY_STATS },
   };
 }
 // ====================================================================================================== //
@@ -159,9 +214,12 @@ export async function getCampaigns(req: Request, res: Response): Promise<void> {
     const skip = (page - 1) * limit;
 
     // ORDINE
-    type SortByField = keyof Prisma.EmailCampaignOrderByWithRelationInput;
-    const sortBy = (filters.sortBy as SortByField) || "createdAt";
-    const sortOrder = filters.sortOrder || "desc";
+    // Elenco chiuso: sortBy arriva dalla query string e finisce in orderBy,
+    // dove un nome di colonna inesistente diventa un 500.
+    const sortBy = SORTABLE_CAMPAIGN_FIELDS.includes(filters.sortBy as string)
+      ? (filters.sortBy as string)
+      : "createdAt";
+    const sortOrder = filters.sortOrder === "asc" ? "asc" : "desc";
 
     // WHERE
     const where: Prisma.EmailCampaignWhereInput = {
@@ -210,26 +268,18 @@ export async function getCampaigns(req: Request, res: Response): Promise<void> {
               lastName: true,
             },
           },
-          emailLogs: {
-            select: {
-              status: true,
-            },
-          },
         },
       }),
       prisma.emailCampaign.count({ where }),
     ]);
 
+    // STATISTICHE DELL'INTERA PAGINA IN UNA SOLA QUERY
+    const statsByCampaign = await getEmailStatsByCampaign(
+      campaigns.map((campaign) => campaign.id)
+    );
+
     // BUILD RESPONSES CON STATS
     const campaignResponses: CampaignResponse[] = campaigns.map((campaign) => {
-      const totalSent = campaign.emailLogs.filter((log) =>
-        ["SENT", "DELIVERED", "OPENED", "CLICKED"].includes(log.status)
-      ).length;
-
-      const totalFailed = campaign.emailLogs.filter((log) =>
-        ["BOUNCED", "FAILED"].includes(log.status)
-      ).length;
-
       return {
         id: campaign.id,
         subject: campaign.subject,
@@ -241,10 +291,7 @@ export async function getCampaigns(req: Request, res: Response): Promise<void> {
         createdAt: campaign.createdAt,
         updatedAt: campaign.updatedAt,
         createdBy: campaign.createdBy,
-        emailStats: {
-          totalSent,
-          totalFailed,
-        },
+        emailStats: statsByCampaign.get(campaign.id) ?? { ...EMPTY_STATS },
       };
     });
 
@@ -341,10 +388,13 @@ export async function updateCampaign(
         fromName: data.fromName?.trim() || null,
       }),
       ...(data.status !== undefined && { status: data.status }),
-      ...(data.status === CampaignStatus.SCHEDULED &&
-        data.scheduledAt && {
-          scheduledAt: new Date(data.scheduledAt),
-        }),
+      // Se la campagna esce da SCHEDULED la data va azzerata: restava
+      // valorizzata, e una bozza continuava a dichiarare una programmazione
+      // che nessuno avrebbe piu' onorato.
+      ...(data.status !== undefined &&
+        (data.status === CampaignStatus.SCHEDULED
+          ? data.scheduledAt && { scheduledAt: new Date(data.scheduledAt) }
+          : { scheduledAt: null })),
     };
 
     // UPDATE
@@ -488,12 +538,28 @@ export async function sendTestEmail(
 //                                   INVIA CAMPAGNA
 // ====================================================================================================== //
 export async function sendCampaign(req: Request, res: Response): Promise<void> {
+  // Dichiarato fuori dal try perche' serve al rollback nel catch.
+  let previousStatus: CampaignStatus | undefined;
+
   try {
     const { id } = req.params;
 
-    // TROVA CAMPAGNA
+    // TROVA CAMPAGNA CON LE LISTE COLLEGATE.
+    // Prima erano due findUnique sullo stesso id, una per la campagna e una
+    // per le liste: una sola query dice tutto.
     const campaign = await prisma.emailCampaign.findUnique({
       where: { id },
+      include: {
+        targetLists: {
+          select: {
+            subscribers: {
+              select: {
+                subscriber: { select: { id: true, status: true } },
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!campaign) {
@@ -512,35 +578,20 @@ export async function sendCampaign(req: Request, res: Response): Promise<void> {
       return;
     }
 
+    // STATO DA RIPRISTINARE SE L'INVIO FALLISCE: prima il rollback riportava
+    // sempre a DRAFT, declassando anche le campagne schedulate.
+    previousStatus = campaign.status;
+
     // PRENDI TUTTI I SUBSCRIBER ACTIVE
     // RECUPERA SUBSCRIBERS
     let subscribers;
 
-    // CHECK LISTE TARGETIZZATE
-    const campaignWithLists = await prisma.emailCampaign.findUnique({
-      where: { id },
-      include: {
-        targetLists: {
-          include: {
-            subscribers: {
-              include: {
-                subscriber: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    if (
-      campaignWithLists?.targetLists &&
-      campaignWithLists.targetLists.length > 0
-    ) {
+    if (campaign.targetLists && campaign.targetLists.length > 0) {
       // CASO 1: CAMPAGNA CON LISTE
       // RACCOGLI TUTI GLI ISCRTTI A QUELLA LISTA
       const subscriberIds = new Set<string>();
 
-      campaignWithLists.targetLists.forEach((list) => {
+      campaign.targetLists.forEach((list) => {
         list.subscribers.forEach((sub) => {
           // SOLO ATTIVI
           if (sub.subscriber.status === SubscriberStatus.ACTIVE) {
@@ -556,7 +607,7 @@ export async function sendCampaign(req: Request, res: Response): Promise<void> {
       });
 
       console.log(
-        `Campaign targets ${campaignWithLists.targetLists.length} list(s), found ${subscribers.length} unique active subscribers`
+        `Campaign targets ${campaign.targetLists.length} list(s), found ${subscribers.length} unique active subscribers`
       );
     } else {
       // CASO 2: NESSUNA LISTA QUINDI INVIA A TUTTI GLI UTENTI ATTIVI
@@ -578,20 +629,26 @@ export async function sendCampaign(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    if (subscribers.length === 0) {
-      res.status(400).json({
-        error: "No active subscribers found",
+    // AGGIORNA STATUS A SENDING.
+    // La condizione sullo stato viaggia dentro la update e non prima: il
+    // controllo separato lasciava una finestra fra la lettura e la scrittura
+    // in cui un secondo click passava lo stesso controllo, e la campagna
+    // partiva due volte. updateMany non solleva se non aggiorna nulla, quindi
+    // il conteggio dice se siamo arrivati primi.
+    const claimed = await prisma.emailCampaign.updateMany({
+      where: {
+        id,
+        status: { in: [CampaignStatus.DRAFT, CampaignStatus.SCHEDULED] },
+      },
+      data: { status: CampaignStatus.SENDING },
+    });
+
+    if (claimed.count === 0) {
+      res.status(409).json({
+        error: "Invio già in corso o già completato",
       });
       return;
     }
-
-    // AGGIORNA STATUS A SENDING
-    await prisma.emailCampaign.update({
-      where: { id },
-      data: {
-        status: CampaignStatus.SENDING,
-      },
-    });
 
     // DETERMINA FROM_NAME
     const fromName =
@@ -673,12 +730,13 @@ export async function sendCampaign(req: Request, res: Response): Promise<void> {
   } catch (error) {
     console.error("Error sending campaign:", error);
 
-    // ROLLBACK STATUS SE ERRORE
+    // ROLLBACK STATUS SE ERRORE: si torna allo stato di partenza, non
+    // sempre a DRAFT.
     try {
-      await prisma.emailCampaign.update({
-        where: { id: req.params.id },
+      await prisma.emailCampaign.updateMany({
+        where: { id: req.params.id, status: CampaignStatus.SENDING },
         data: {
-          status: CampaignStatus.DRAFT,
+          status: previousStatus ?? CampaignStatus.DRAFT,
         },
       });
     } catch (rollbackError) {

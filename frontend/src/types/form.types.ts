@@ -1,4 +1,4 @@
-import type { PostStatus } from "../../../backend/src/types/post.types";
+import type { PostStatus } from "@/types/post.types";
 
 // FORM
 export interface PostFormData {

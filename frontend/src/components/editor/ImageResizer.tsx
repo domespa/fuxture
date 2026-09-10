@@ -16,10 +16,6 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
     const img = imageRef.current;
     if (!img || isInitialized.current) return;
 
-    console.log("🔍 ImageResizer mounted with:", {
-      savedWidth: node.attrs.width,
-      savedHeight: node.attrs.height,
-    });
 
     const handleLoad = () => {
       const naturalWidth = img.naturalWidth;
@@ -41,7 +37,6 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
         savedWidth !== null &&
         savedHeight !== null
       ) {
-        console.log("✅ Using saved dimensions:", { savedWidth, savedHeight });
         setDimensions({
           width: savedWidth,
           height: savedHeight,
@@ -167,7 +162,6 @@ export const ImageResizer = ({ node, updateAttributes }: NodeViewProps) => {
             cursor: hasLink ? "pointer" : "default",
           }}
           onLoad={() => {
-            console.log("✅ Image loaded successfully:", node.attrs.src);
             setImageLoaded(true);
           }}
           onError={() => {

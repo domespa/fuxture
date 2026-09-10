@@ -4,7 +4,7 @@ import { mergeAttributes } from "@tiptap/core";
 export interface ResizableImageOptions {
   inline?: boolean;
   allowBase64?: boolean;
-  HTMLAttributes?: Record<string, any>;
+  HTMLAttributes?: Record<string, unknown>;
 }
 
 export interface SetImageOptions {
@@ -56,12 +56,10 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
         parseHTML: (element) => {
           const width = element.getAttribute("width");
           const parsed = width ? parseInt(width, 10) : null;
-          console.log("🔍 PARSE width:", width, "→", parsed);
           return parsed;
         },
         renderHTML: (attributes) => {
           const width = attributes.width;
-          console.log("🔍 RENDER width:", width, typeof width);
 
           if (width && typeof width === "number" && width > 0) {
             return {
@@ -77,12 +75,10 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
         parseHTML: (element) => {
           const height = element.getAttribute("height");
           const parsed = height ? parseInt(height, 10) : null;
-          console.log("🔍 PARSE height:", height, "→", parsed);
           return parsed;
         },
         renderHTML: (attributes) => {
           const height = attributes.height;
-          console.log("🔍 RENDER height:", height, typeof height);
 
           if (height && typeof height === "number" && height > 0) {
             return {
@@ -97,12 +93,10 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
         default: "left",
         parseHTML: (element) => {
           const align = element.getAttribute("data-align") || "left";
-          console.log("🔍 PARSE align:", align);
           return align;
         },
         renderHTML: (attributes) => {
           const align = attributes.align || "left";
-          console.log("🔍 RENDER align:", align);
           return {
             "data-align": align,
           };
@@ -112,14 +106,12 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
         default: null,
         parseHTML: (element) => {
           const link = element.getAttribute("data-link");
-          console.log("🔍 PARSE link:", link);
           return link || null;
         },
         renderHTML: (attributes) => {
           const link = attributes.link;
           if (link && link.trim() !== "") {
             // ✅ Controlla che non sia vuoto
-            console.log("🔍 RENDER link:", link);
             return {
               "data-link": link,
             };
@@ -151,7 +143,6 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
             link: element.getAttribute("data-link") || null,
           };
 
-          console.log("🔍 PARSE getAttrs:", attrs);
           return attrs;
         },
       },
@@ -159,11 +150,10 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
   },
 
   renderHTML({ node }) {
-    console.log("🔍 ========== RENDER HTML ==========");
 
     const { src, alt, title, width, height, align, link } = node.attrs;
 
-    const imgAttrs: Record<string, any> = {
+    const imgAttrs: Record<string, unknown> = {
       src,
       class: "blog-image",
     };
@@ -174,7 +164,6 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
     if (width && typeof width === "number" && width > 0) {
       imgAttrs.width = String(width);
       imgAttrs.style = `width: ${width}px;`;
-      console.log("✅ Width:", width);
     }
 
     if (height && typeof height === "number" && height > 0) {
@@ -182,27 +171,22 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
       imgAttrs.style = imgAttrs.style
         ? `${imgAttrs.style} height: ${height}px;`
         : `height: ${height}px;`;
-      console.log("✅ Height:", height);
     }
 
     if (align) {
       imgAttrs["data-align"] = align;
-      console.log("✅ Align:", align);
     }
 
     if (link && link.trim() !== "") {
       imgAttrs["data-link"] = link;
-      console.log("✅ Link:", link);
     }
 
-    console.log("🔍 HTML finale:", imgAttrs);
-    console.log("🔍 ===================================");
 
     const htmlAttributes = this.options.HTMLAttributes || {};
     const mergedImgAttrs = mergeAttributes(htmlAttributes, imgAttrs);
 
     if (link && link.trim() !== "") {
-      const linkAttrs: Record<string, any> = {
+      const linkAttrs: Record<string, unknown> = {
         href: link,
         target: "_blank",
         rel: "noopener noreferrer",
@@ -226,7 +210,6 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
       setImage:
         (options: SetImageOptions) =>
         ({ commands }) => {
-          console.log("🔍 setImage:", options);
           const attrs = {
             src: options.src,
             alt: options.alt || null,
@@ -245,14 +228,11 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
       setImageAlign:
         (align) =>
         ({ commands, state }) => {
-          console.log("🔍 setImageAlign:", align);
           const { selection } = state;
           const { from } = selection;
           const node = state.doc.nodeAt(from);
 
           if (node && node.type.name === this.name) {
-            console.log("✅ Updating align to:", align);
-            console.log("✅ Current attrs:", node.attrs);
             return commands.updateAttributes(this.name, { align });
           }
 
@@ -262,14 +242,11 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
       removeImageLink:
         () =>
         ({ commands, state }) => {
-          console.log("🔍 removeImageLink");
           const { selection } = state;
           const { from } = selection;
           const node = state.doc.nodeAt(from);
 
           if (node && node.type.name === this.name) {
-            console.log("✅ Removing link");
-            console.log("✅ Current attrs:", node.attrs);
             return commands.updateAttributes(this.name, { link: null });
           }
 

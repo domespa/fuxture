@@ -1,3 +1,4 @@
+import { getApiErrorMessage } from "@/lib/apiError";
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -119,10 +120,11 @@ export default function CategoryDialog({
 
       onOpenChange(false);
       onSuccess();
-    } catch (error: any) {
-      const message =
-        error.response?.data?.error ||
-        `Errore ${isEditMode ? "aggiornamento" : "creazione"} categoria`;
+    } catch (error) {
+      const message = getApiErrorMessage(
+        error,
+        `Errore ${isEditMode ? "aggiornamento" : "creazione"} categoria`
+      );
       toast.error(message);
       console.error("Error saving category:", error);
     } finally {

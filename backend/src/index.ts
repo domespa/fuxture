@@ -1,4 +1,16 @@
-import express from "express";
+// ====================================================================================================== //
+//                                        VARIABILI D'AMBIENTE
+//
+// Deve restare il PRIMO import del file. Diversi moduli leggono process.env
+// al momento del caricamento - JWT_SECRET in utils/jwt, le credenziali SMTP
+// in config/config.email - e gli import vengono eseguiti tutti prima di
+// qualunque istruzione. Con dotenv.config() chiamato piu' in basso quei
+// moduli funzionavano solo perche' config/database, che a sua volta invoca
+// dotenv, capitava di essere caricato per primo lungo la catena degli import:
+// bastava riordinare una riga per ritrovarsi senza segreti e senza errori.
+import "dotenv/config";
+
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import authRoutes from "./routes/auth.routes";
 import uploadRoutes from "./routes/upload.routes";
@@ -18,11 +30,6 @@ import breakingNewsRoutes from "./routes/breaking-news.routes";
 import contactRoutes from "./routes/contact.routes";
 import gameRoutes from "./routes/game.routes";
 
-// ====================================================================================================== //
-//                                              VARIABILI D'AMBIENTE
-// ====================================================================================================== //
-import dotenv from "dotenv";
-dotenv.config();
 const API_PREFIX = process.env.API_PREFIX || "/api";
 // ====================================================================================================== //
 // ====================================================================================================== //
@@ -78,7 +85,7 @@ app.use(`${API_PREFIX}/upload`, uploadRoutes);
 app.use(`${API_PREFIX}/posts`, postRoutes);
 
 // CATEGORIE
-app.use("/api/categories", categoryRoutes);
+app.use(`${API_PREFIX}/categories`, categoryRoutes);
 
 // COMMENTS
 app.use(`${API_PREFIX}/comments`, commentRoutes);
@@ -118,6 +125,41 @@ app.get("/", (req, res) => {
   });
 });
 
+// ====================================================================================================== //
+// ====================================================================================================== //
+
+// ====================================================================================================== //
+//                                    ROTTA INESISTENTE E GESTIONE ERRORI
+//
+// Mancavano entrambi. Una rotta sbagliata riceveva la pagina HTML di Express,
+// e qualunque eccezione non catturata dentro un handler - per esempio quelle
+// sollevate da multer sui file rifiutati - finiva nel gestore predefinito,
+// che in sviluppo risponde con lo stack trace completo. Il client, che si
+// aspetta JSON, in entrambi i casi falliva il parsing della risposta.
+// ====================================================================================================== //
+
+// 404: SOLO DOPO TUTTE LE ROTTE
+app.use((req, res) => {
+  res.status(404).json({
+    error: "Not found",
+    path: req.originalUrl,
+  });
+});
+
+// GESTORE ERRORI: DEVE AVERE QUATTRO PARAMETRI, ALTRIMENTI EXPRESS LO TRATTA
+// COME UN MIDDLEWARE NORMALE E NON LO CHIAMA MAI
+app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
+  console.error(`❌ Errore non gestito su ${req.method} ${req.originalUrl}:`, err);
+
+  if (res.headersSent) return;
+
+  res.status(500).json({
+    error: "Internal server error",
+    // Il dettaglio esce solo in sviluppo: in produzione un messaggio di
+    // errore puo' rivelare percorsi, query e nomi di colonne.
+    ...(process.env.NODE_ENV === "development" && { detail: err.message }),
+  });
+});
 // ====================================================================================================== //
 // ====================================================================================================== //
 

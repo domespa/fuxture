@@ -48,3 +48,36 @@ export const NEWSLETTER_PRIVACY_LINK_TEXT =
 // TESTO ARCHIVIATO COME PROVA: tutto cio' che l'utente ha letto accanto alla
 // casella al momento dell'iscrizione, non la sola frase di consenso.
 export const NEWSLETTER_CONSENT_RECORD = `${NEWSLETTER_CONSENT_TEXT} ${NEWSLETTER_CONSENT_NOTICE} ${NEWSLETTER_PRIVACY_LINK_TEXT}.`;
+
+// ============================================================================
+// CONSENSO COOKIE
+//
+// La scelta espressa nel banner viene archiviata in localStorage ma non era
+// letta da nessuno: "Solo necessari" si limitava a nascondere il banner. Nel
+// frattempo i componenti Adsterra caricavano gli script pubblicitari appena
+// montati, senza chiedere niente a nessuno - e il banner dichiara
+// testualmente che il sito "non installa cookie di profilazione o di terze
+// parti".
+//
+// Oggi quei componenti non sono montati da nessuna parte, quindi la
+// dichiarazione e' vera. Questa funzione esiste perche' resti vera anche il
+// giorno in cui verranno riattivati: e' il gancio che i componenti di terze
+// parti devono interrogare prima di caricare qualunque cosa.
+// ============================================================================
+export const COOKIE_CONSENT_KEY = "cookieConsent";
+
+export type CookieConsent = "all" | "necessary" | null;
+
+export const readCookieConsent = (): CookieConsent => {
+  try {
+    const value = localStorage.getItem(COOKIE_CONSENT_KEY);
+    return value === "all" || value === "necessary" ? value : null;
+  } catch {
+    // Modalita' privata o storage bloccato: si assume il consenso non dato.
+    return null;
+  }
+};
+
+// Vale solo il consenso esplicito: chi non ha ancora scelto, o ha scelto i
+// soli cookie tecnici, non va profilato.
+export const hasMarketingConsent = (): boolean => readCookieConsent() === "all";

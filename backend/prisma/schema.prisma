@@ -9,85 +9,82 @@ datasource db {
 
 // UTENTI
 model User {
-  id                  String            @id @default(cuid())
-  email               String            @unique
-  firstName           String?
-  lastName            String?
-  passwordHashed      String
-  role                Role              @default(USER)
-  age                 Int
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
-  posts               Post[]
-  emailCampaigns      EmailCampaign[]
-  acceptedTerms       Boolean           @default(false)
-  acceptedTermsAt     DateTime?
-
-  
+  id              String          @id @default(cuid())
+  email           String          @unique
+  firstName       String?
+  lastName        String?
+  passwordHashed  String
+  role            Role            @default(USER)
+  age             Int
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  posts           Post[]
+  emailCampaigns  EmailCampaign[]
+  acceptedTerms   Boolean         @default(false)
+  acceptedTermsAt DateTime?
 }
 
 enum Role {
   ADMIN
   USER
-
-  
 }
 
 // ARTICOLI
 model Post {
-  id                  String      @id @default(cuid())
-  title               String
-  slug                String      @unique
-  content             String      @db.Text
-  excerpt             String?     @db.Text
-  featuredImage       String?
-  images              String[]
-  status              PostStatus  @default(DRAFT)
-  isFeatured          Boolean     @default(false)
-  featuredAt          DateTime?
-  publishedAt         DateTime?
-  scheduledAt         DateTime?
-  seoDescription      String?
-  seoTitle            String?
-  seoDescr            String?
-  tags                String[]
-  views               Int         @default(0)
-  createdAt           DateTime    @default(now())
-  updatedAt           DateTime    @updatedAt
-  authorId            String
-  author              User        @relation(fields: [authorId], references: [id])
-  comments            Comment[]
-  categoryId          String?   
-  category            Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  id             String     @id @default(cuid())
+  title          String
+  slug           String     @unique
+  content        String     @db.Text
+  excerpt        String?    @db.Text
+  featuredImage  String?
+  images         String[]
+  status         PostStatus @default(DRAFT)
+  isFeatured     Boolean    @default(false)
+  featuredAt     DateTime?
+  publishedAt    DateTime?
+  scheduledAt    DateTime?
+  seoDescription String?
+  seoTitle       String?
+  tags           String[]
+  views          Int        @default(0)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  authorId       String
+  author         User       @relation(fields: [authorId], references: [id])
+  comments       Comment[]
+  categoryId     String?
+  category       Category?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
-  
+  // Ogni elenco pubblico filtra per status e ordina per data: senza indice
+  // e' una scansione completa della tabella seguita da un sort.
+  @@index([status, publishedAt])
+  @@index([status, createdAt])
+  @@index([categoryId])
+  @@index([authorId])
+  @@index([isFeatured, featuredAt])
 }
 
 enum PostStatus {
   DRAFT
   PUBLISHED
   SCHEDULED
-
-  
 }
 
 // CATEGORIE
 model Category {
-  id          String    @id @default(cuid())
-  name        String    @unique
-  slug        String    @unique
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
   description String?
   color       String?
   icon        String?
-  order       Int       @default(0)
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  
-  posts       Post[]
-  games       Game[]
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  
+  posts Post[]
+  games Game[]
 }
 
 // COMMENTI
@@ -105,7 +102,9 @@ model Comment {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  
+  // La pagina articolo filtra per post e stato, la moderazione per solo stato.
+  @@index([postId, status])
+  @@index([status, createdAt])
 }
 
 enum CommentStatus {
@@ -113,43 +112,42 @@ enum CommentStatus {
   APPROVED
   SPAM
   REJECTED
-
-  
 }
 
 // ISCRITTI
 model Subscriber {
-  id                  String              @id @default(cuid())
-  email               String              @unique
-  name                String?
-  status              SubscriberStatus    @default(ACTIVE)
-  subscribedAt        DateTime            @default(now())
-  unsubscribedAt      DateTime?
-  source              String?
-  metadata            Json?
-  emailLogs           EmailLog[]      
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt    
-  lists               SubscriberList[]
+  id             String           @id @default(cuid())
+  email          String           @unique
+  name           String?
+  status         SubscriberStatus @default(ACTIVE)
+  subscribedAt   DateTime         @default(now())
+  unsubscribedAt DateTime?
+  source         String?
+  metadata       Json?
+  emailLogs      EmailLog[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  lists          SubscriberList[]
 
   // CONSENSO ALLA RICEZIONE - DEVE ESSERE DIMOSTRABILE (art. 7 par. 1 GDPR)
-  consentAt           DateTime?
-  consentSource       String?
-  consentText         String?             @db.Text
-  consentIp           String?
+  consentAt     DateTime?
+  consentSource String?
+  consentText   String?   @db.Text
+  consentIp     String?
 
   // CONSENSO AL TRACCIAMENTO - REVOCABILE SEPARATAMENTE DALLA DISISCRIZIONE
   // (Linee Guida Garante 17/04/2026, par. 6)
-  trackingConsent     Boolean             @default(true)
-  trackingConsentAt   DateTime?
+  trackingConsent   Boolean   @default(true)
+  trackingConsentAt DateTime?
 
   // IDENTIFICATIVO OPACO E NON SEQUENZIALE USATO NEI PIXEL AL POSTO DELL'EMAIL
   // (Linee Guida Garante 17/04/2026, par. 6 - privacy by design)
-  trackingId          String              @unique @default(cuid())
+  trackingId String @unique @default(cuid())
 
-  consentLogs         ConsentLog[]
+  consentLogs ConsentLog[]
 
-  
+  // Ogni invio di campagna seleziona gli iscritti per stato.
+  @@index([status])
 }
 
 // REGISTRO DELLE SCELTE DELL'INTERESSATO
@@ -157,16 +155,16 @@ model Subscriber {
 // registrate dal titolare, anche ai fini della dimostrazione cui questi
 // potrebbe essere chiamato" (Linee Guida 17/04/2026, par. 6)
 model ConsentLog {
-  id              String        @id @default(cuid())
-  subscriberId    String
-  subscriber      Subscriber    @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
-  type            ConsentType
-  granted         Boolean
-  text            String?       @db.Text
-  source          String?
-  ipAddress       String?
-  userAgent       String?
-  createdAt       DateTime      @default(now())
+  id           String      @id @default(cuid())
+  subscriberId String
+  subscriber   Subscriber  @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+  type         ConsentType
+  granted      Boolean
+  text         String?     @db.Text
+  source       String?
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime    @default(now())
 
   @@index([subscriberId, createdAt])
 }
@@ -174,61 +172,52 @@ model ConsentLog {
 enum ConsentType {
   NEWSLETTER
   TRACKING
-
-  
 }
 
 enum SubscriberStatus {
   ACTIVE
   UNSUBSCRIBED
   BOUNCED
-
-  
 }
 
 // LISTE ISCRITTI
 model EmailList {
-  id              String            @id @default(cuid())
-  name            String            @unique
-  description     String?
-  isPublic        Boolean           @default(true) 
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  subscribers     SubscriberList[]
-  campaigns       EmailCampaign[]
-
-  
+  id          String           @id @default(cuid())
+  name        String           @unique
+  description String?
+  isPublic    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  subscribers SubscriberList[]
+  campaigns   EmailCampaign[]
 }
 
 model SubscriberList {
-  id              String      @id @default(cuid())
-  subscriberId    String
-  subscriber      Subscriber  @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
-  listId          String
-  list            EmailList   @relation(fields: [listId], references: [id], onDelete: Cascade)
-  subscribedAt    DateTime    @default(now())
-  
+  id           String     @id @default(cuid())
+  subscriberId String
+  subscriber   Subscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+  listId       String
+  list         EmailList  @relation(fields: [listId], references: [id], onDelete: Cascade)
+  subscribedAt DateTime   @default(now())
+
   @@unique([subscriberId, listId])
-  
 }
 
 // DEM
 model EmailCampaign {
-  id            String              @id @default(cuid())
-  subject       String
-  content       String              @db.Text
-  fromName      String? 
-  status        CampaignStatus      @default(DRAFT)
-  scheduledAt   DateTime?
-  sentAt        DateTime?
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @updatedAt
-  createdById   String
-  createdBy     User                @relation(fields: [createdById], references: [id])
-  emailLogs     EmailLog[]
-  targetLists   EmailList[]
-
-  
+  id          String         @id @default(cuid())
+  subject     String
+  content     String         @db.Text
+  fromName    String?
+  status      CampaignStatus @default(DRAFT)
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  createdById String
+  createdBy   User           @relation(fields: [createdById], references: [id])
+  emailLogs   EmailLog[]
+  targetLists EmailList[]
 }
 
 enum CampaignStatus {
@@ -236,17 +225,15 @@ enum CampaignStatus {
   SCHEDULED
   SENDING
   SENT
-
-  
 }
 
 model EmailLog {
-  id            String          @id @default(cuid())
-  status        EmailStatus     @default(SENT)
-  sentAt        DateTime        @default(now())
-  openedAt      DateTime?
-  clickedAt     DateTime?
-  errorMessage  String?
+  id           String      @id @default(cuid())
+  status       EmailStatus @default(SENT)
+  sentAt       DateTime    @default(now())
+  openedAt     DateTime?
+  clickedAt    DateTime?
+  errorMessage String?
 
   // Destinatario e oggetto: senza questi il log dice solo che "qualcosa e'
   // partito", e le anteprime producevano righe prive di qualunque riferimento
@@ -256,15 +243,21 @@ model EmailLog {
   // Corpo del messaggio, salvato solo per gli invii manuali (anteprime ed
   // email di test): serve a poterli riprendere e rimandare. Per le campagne
   // resta vuoto, altrimenti si duplicherebbe l'HTML su ogni destinatario.
-  content        String?         @db.Text
-  
-  campaignId    String?
-  campaign      EmailCampaign?   @relation(fields: [campaignId], references: [id])
-  
-  subscriberId  String?
-  subscriber    Subscriber?      @relation(fields: [subscriberId], references: [id])
+  content String? @db.Text
 
-  
+  campaignId String?
+  campaign   EmailCampaign? @relation(fields: [campaignId], references: [id])
+
+  subscriberId String?
+  subscriber   Subscriber? @relation(fields: [subscriberId], references: [id])
+
+  // Le statistiche di campagna raggruppano per campaignId e status, la
+  // cronologia ordina per sentAt: senza indici entrambe leggono tutta la
+  // tabella, che e' quella che cresce piu' in fretta (una riga per ogni
+  // destinatario di ogni invio).
+  @@index([campaignId, status])
+  @@index([sentAt])
+  @@index([subscriberId])
 }
 
 enum EmailStatus {
@@ -287,43 +280,43 @@ enum EmailStatus {
 // dimostrabile. Tenere separate le due cose e' il motivo per cui esiste
 // questo modello invece di riusare Subscriber.
 model Contact {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  note          String?
-  timesUsed     Int       @default(1)
-  firstUsedAt   DateTime  @default(now())
-  lastUsedAt    DateTime  @default(now())
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String?
+  note        String?
+  timesUsed   Int      @default(1)
+  firstUsedAt DateTime @default(now())
+  lastUsedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([lastUsedAt])
 }
 
 // GIOCHI
 model Game {
-  id              String      @id @default(cuid())
-  title           String
-  slug            String      @unique
-  description     String?     @db.Text
-  instructions    String?     @db.Text
-  coverImage      String?
-  type            GameType    @default(INTERNAL)
-  entryPath       String?
-  status          GameStatus  @default(DRAFT)
-  isFeatured      Boolean     @default(false)
-  order           Int         @default(0)
-  plays           Int         @default(0)
-  tags            String[]
-  seoTitle        String?
-  seoDescription  String?
-  publishedAt     DateTime?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  categoryId      String?
-  category        Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  leaderboard     LeaderboardPeriod @default(NONE)
-  scores          GameScore[]
+  id             String            @id @default(cuid())
+  title          String
+  slug           String            @unique
+  description    String?           @db.Text
+  instructions   String?           @db.Text
+  coverImage     String?
+  type           GameType          @default(INTERNAL)
+  entryPath      String?
+  status         GameStatus        @default(DRAFT)
+  isFeatured     Boolean           @default(false)
+  order          Int               @default(0)
+  plays          Int               @default(0)
+  tags           String[]
+  seoTitle       String?
+  seoDescription String?
+  publishedAt    DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  categoryId     String?
+  category       Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  leaderboard    LeaderboardPeriod @default(NONE)
+  scores         GameScore[]
 }
 
 enum GameType {
@@ -345,15 +338,15 @@ enum LeaderboardPeriod {
 
 // PUNTEGGI
 model GameScore {
-  id          String    @id @default(cuid())
-  gameId      String
-  game        Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  playerName  String
-  score       Int
-  detail      String?
-  periodKey   String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id         String   @id @default(cuid())
+  gameId     String
+  game       Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  playerName String
+  score      Int
+  detail     String?
+  periodKey  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@unique([gameId, periodKey, playerName])
   @@index([gameId, periodKey, score])

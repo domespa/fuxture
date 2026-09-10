@@ -25,7 +25,11 @@ export async function generateUniqueSlug(
   excludePostId?: string
 ): Promise<string> {
   // GENERA DAL TITOLO
-  const baseSlug = generateSlug(title);
+  // generateSlug scarta tutto cio' che non e' [a-z0-9]: un titolo scritto in
+  // un alfabeto non latino, o fatto di sola punteggiatura, restituiva stringa
+  // vuota. Da li' "startsWith: ''" corrispondeva a ogni articolo esistente e
+  // usciva uno slug come "-2". Meglio un ripiego riconoscibile.
+  const baseSlug = generateSlug(title) || "articolo";
 
   // VEDIAMO SE PRIMA ESISTE
   const existSlug = await prisma.post.findMany({

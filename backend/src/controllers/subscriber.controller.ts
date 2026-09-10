@@ -17,6 +17,16 @@ import {
   sendUnsubscribeConfirmationEmail,
 } from "../services/email.service";
 
+// COLONNE SU CUI E' LECITO ORDINARE (il valore arriva dalla query string)
+const SORTABLE_SUBSCRIBER_FIELDS = [
+  "subscribedAt",
+  "createdAt",
+  "updatedAt",
+  "email",
+  "name",
+  "status",
+];
+
 const toSubscriberResponse = (subscriber: Subscriber): SubscriberResponse => ({
   id: subscriber.id,
   email: subscriber.email,
@@ -238,9 +248,21 @@ export const getSubscribers = async (
       sortOrder = "desc",
     }: SubscriberFilters = req.query;
 
-    const pageNum = parseInt(page as string, 10);
-    const limitNum = parseInt(limit as string, 10);
+    // Page e limit arrivano dalla query string: senza limiti "?page=0" dava
+    // uno skip negativo e "?limit=abc" un NaN, entrambi errori di Prisma.
+    const pageNum = Math.max(parseInt(page as string, 10) || 1, 1);
+    const limitNum = Math.min(
+      Math.max(parseInt(limit as string, 10) || 20, 1),
+      100
+    );
     const skip = (pageNum - 1) * limitNum;
+
+    // Elenco chiuso: il valore finisce dentro orderBy.
+    const orderField = SORTABLE_SUBSCRIBER_FIELDS.includes(sortBy as string)
+      ? (sortBy as string)
+      : "subscribedAt";
+    const orderDirection = sortOrder === "asc" ? "asc" : "desc";
+
     const where: Prisma.SubscriberWhereInput = {};
 
     if (status) {
@@ -264,7 +286,7 @@ export const getSubscribers = async (
         where,
         skip,
         take: limitNum,
-        orderBy: { [sortBy]: sortOrder },
+        orderBy: { [orderField]: orderDirection },
       }),
       prisma.subscriber.count({ where }),
     ]);
@@ -432,18 +454,25 @@ export const unsubscribe = async (
       where: { email: normalizedEmail },
     });
 
+    // La rotta e' pubblica e senza autenticazione: rispondere 404 su un
+    // indirizzo sconosciuto e 200 su uno iscritto la trasformava in un modo
+    // per verificare chi e' nella lista, un indirizzo alla volta. La risposta
+    // e' la stessa in entrambi i casi.
+    const genericConfirmation = {
+      success: true,
+      message:
+        "Se l'indirizzo è iscritto alla newsletter, la disiscrizione è stata registrata.",
+    };
+
     if (!subscriber) {
-      res.status(404).json({
-        error: "Email non trovata nella lista newsletter",
-      });
+      res.status(200).json(genericConfirmation);
       return;
     }
 
+    // Anche "sei gia' disiscritto" distinguerebbe un indirizzo presente in
+    // archivio da uno sconosciuto: stessa risposta.
     if (subscriber.status === "UNSUBSCRIBED") {
-      res.status(200).json({
-        success: true,
-        message: "Sei già disiscritto/a dalla newsletter",
-      });
+      res.status(200).json(genericConfirmation);
       return;
     }
 
@@ -481,11 +510,7 @@ export const unsubscribe = async (
       );
     }
 
-    res.status(200).json({
-      success: true,
-      message:
-        "Disiscrizione completata con successo. Ci dispiace vederti andare!",
-    });
+    res.status(200).json(genericConfirmation);
   } catch (error) {
     console.error("Errore unsubscribe:", error);
     res.status(500).json({ error: "Errore durante disiscrizione" });

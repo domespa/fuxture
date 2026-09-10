@@ -15,8 +15,17 @@ import {
   authenticateTokenOptional,
   requireRole,
 } from "../middleware/auth.middleware";
+import { rateLimit } from "../middleware/rate-limit.middleware";
 
 const router = Router();
+
+// I commenti anonimi finiscono comunque in moderazione, ma senza limite la
+// coda si riempie piu' in fretta di quanto si possa svuotarla.
+const commentRateLimit = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 5,
+  message: "Hai inviato troppi commenti, riprova tra qualche minuto",
+});
 
 // ====================================================================================================== //
 //                                         PUBLIC ROUTES
@@ -33,6 +42,7 @@ router.get("/:id", authenticateTokenOptional, getCommentById);
 // POST /comments
 router.post(
   "/",
+  commentRateLimit,
   authenticateTokenOptional,
   validateCreateComment,
   createComment

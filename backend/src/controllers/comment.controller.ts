@@ -8,6 +8,83 @@ import {
 } from "../types/comment.types";
 
 // ====================================================================================================== //
+//                              NUCLEO CONDIVISO DELLA CREAZIONE COMMENTO
+//
+// Le due rotte pubbliche - POST /comments e POST /posts/:id/comments -
+// facevano la stessa cosa con controlli diversi: solo la seconda verificava
+// che il post esistesse e fosse pubblicato, quindi dalla prima si potevano
+// commentare le bozze e un postId inesistente diventava un 500 sul vincolo
+// di chiave esterna. Il controllo vive qui una volta sola.
+// ====================================================================================================== //
+type CommentDraft = {
+  content: string;
+  authorName: string;
+  authorEmail: string;
+  postId: string;
+  parentId?: string | null;
+};
+
+type CommentCreationOutcome =
+  | { ok: true; comment: Awaited<ReturnType<typeof prisma.comment.create>> }
+  | { ok: false; status: number; message: string };
+
+const createCommentRecord = async (
+  draft: CommentDraft,
+  isAuthenticated: boolean
+): Promise<CommentCreationOutcome> => {
+  const post = await prisma.post.findUnique({
+    where: { id: draft.postId },
+    select: { id: true, status: true },
+  });
+
+  if (!post) {
+    return { ok: false, status: 404, message: "Post non trovato" };
+  }
+
+  if (post.status !== "PUBLISHED") {
+    return {
+      ok: false,
+      status: 400,
+      message: "Non è possibile commentare questo post",
+    };
+  }
+
+  // UNA RISPOSTA DEVE APPENDERSI A UN COMMENTO DELLO STESSO ARTICOLO
+  if (draft.parentId) {
+    const parent = await prisma.comment.findUnique({
+      where: { id: draft.parentId },
+      select: { postId: true },
+    });
+
+    if (!parent || parent.postId !== draft.postId) {
+      return {
+        ok: false,
+        status: 400,
+        message: "Il commento a cui stai rispondendo non esiste",
+      };
+    }
+  }
+
+  // AUTOAPPROVATO SE IL COMMENTO PROVIENE DA UTENTE LOGGATO
+  const status = isAuthenticated
+    ? CommentStatus.APPROVED
+    : CommentStatus.PENDING;
+
+  const comment = await prisma.comment.create({
+    data: {
+      content: draft.content.trim(),
+      authorName: draft.authorName.trim(),
+      authorEmail: draft.authorEmail.toLowerCase().trim(),
+      status,
+      postId: draft.postId,
+      parentId: draft.parentId || null,
+    },
+  });
+
+  return { ok: true, comment };
+};
+
+// ====================================================================================================== //
 //                                    CONTROLLER: CREATE COMMENTO
 // ====================================================================================================== //
 export const createComment = async (
@@ -17,26 +94,22 @@ export const createComment = async (
   try {
     const { content, authorName, authorEmail, postId, parentId } = req.body;
 
-    // AUTOAPPROVATO SE COMMENTO PROVIENE DA UTENTE LOGGATO
-    const status = req.user ? CommentStatus.APPROVED : CommentStatus.PENDING;
+    const outcome = await createCommentRecord(
+      { content, authorName, authorEmail, postId, parentId },
+      Boolean(req.user)
+    );
 
-    const comment = await prisma.comment.create({
-      data: {
-        content: content.trim(),
-        authorName: authorName.trim(),
-        authorEmail: authorEmail.toLowerCase().trim(),
-        status,
-        postId: postId,
-        parentId: parentId || null,
-      },
-    });
+    if (!outcome.ok) {
+      res.status(outcome.status).json({ error: outcome.message });
+      return;
+    }
 
     res.status(201).json({
       message:
-        status === CommentStatus.APPROVED
+        outcome.comment.status === CommentStatus.APPROVED
           ? "Comment published successfully"
           : "Comment submitted for moderation",
-      comment,
+      comment: outcome.comment,
     });
   } catch (error) {
     console.error("Error creating comment:", error);
@@ -66,41 +139,25 @@ export const createCommentOnPost = async (
       return;
     }
 
-    const post = await prisma.post.findUnique({
-      where: { id: postId },
-    });
+    // Questa rotta non passa da authenticateTokenOptional: resta sempre in
+    // moderazione, come prima.
+    const outcome = await createCommentRecord(
+      { content, authorName, authorEmail, postId },
+      false
+    );
 
-    if (!post) {
-      res.status(404).json({
+    if (!outcome.ok) {
+      res.status(outcome.status).json({
         success: false,
-        message: "Post non trovato",
+        message: outcome.message,
       });
       return;
     }
-
-    if (post.status !== "PUBLISHED") {
-      res.status(400).json({
-        success: false,
-        message: "Non è possibile commentare questo post",
-      });
-      return;
-    }
-
-    // STATO PENDING
-    const comment = await prisma.comment.create({
-      data: {
-        content: content.trim(),
-        authorName: authorName.trim(),
-        authorEmail: authorEmail.toLowerCase().trim(),
-        status: CommentStatus.PENDING,
-        postId,
-      },
-    });
 
     res.status(201).json({
       success: true,
       message: "Commento inviato! Sarà visibile dopo l'approvazione.",
-      data: comment,
+      data: outcome.comment,
     });
   } catch (error) {
     console.error("Errore nella creazione del commento:", error);
@@ -244,14 +301,22 @@ export const getCommentById = async (
       },
     });
 
-    const comment = rawComment as unknown as CommentResponse | null;
+    const isAdmin = req.user?.role === "ADMIN";
 
-    if (
-      req.user?.role !== "ADMIN" &&
-      comment?.status !== CommentStatus.APPROVED
-    ) {
+    if (!isAdmin && rawComment?.status !== CommentStatus.APPROVED) {
       res.status(404).json({ error: "Comment not found" });
       return;
+    }
+
+    // L'indirizzo di chi commenta e' un dato personale. getComments lo toglie
+    // gia' ai non amministratori; qui usciva comunque, su qualunque commento
+    // approvato.
+    let comment = rawComment as unknown as CommentResponse | null;
+
+    if (!isAdmin && rawComment) {
+      const { authorEmail, ...rest } = rawComment;
+      void authorEmail;
+      comment = rest as unknown as CommentResponse;
     }
 
     res.json(comment);

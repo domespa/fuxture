@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .env
+
+# Build info di TypeScript: artefatto rigenerato a ogni compilazione
+*.tsbuildinfo

@@ -28,17 +28,20 @@ export const authenticateToken = (
   }
 
   // VERIFICHIAMO IL TOKEN
-  const decoded = verifyToken(token);
+  // verifyToken solleva su token invalido o scaduto, non restituisce null:
+  // il vecchio "if (!decoded)" non veniva mai raggiunto e l'eccezione finiva
+  // nel gestore di default di Express, che rispondeva 500 in HTML. Il client
+  // non poteva distinguere una sessione scaduta da un server rotto.
+  try {
+    const decoded = verifyToken(token);
 
-  if (!decoded) {
-    res.status(401).json({ error: "Token expired" });
-    return;
+    // PRENDIAMO TUTTO E METTIAMO NEL REQ.USER
+    req.user = decoded as JwtPayload;
+
+    next();
+  } catch {
+    res.status(401).json({ error: "Token non valido o scaduto" });
   }
-
-  // PREDIAMO TUTTO E METTIAMO NEL REQUSER
-  req.user = decoded as JwtPayload;
-
-  next();
 };
 // ====================================================================================================== //
 // ====================================================================================================== //

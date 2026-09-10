@@ -1,3 +1,5 @@
+import { formatDateShort } from "@/lib/datetime";
+import { getApiErrorMessage } from "@/lib/apiError";
 import { useEffect, useState } from "react";
 import {
   Mail,
@@ -36,7 +38,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { subscribersAPI } from "@/services/api";
+import { subscribersAPI, type SubscriberFilters } from "@/services/api";
 import SelectListDialog from "@/components/subscribers/SelectListDialog";
 import AddSubscriberDialog from "@/components/subscribers/AddSubscriberDialog";
 import DeleteSubscriberDialog from "@/components/subscribers/DeleteSubscriberDialog";
@@ -58,7 +60,11 @@ export default function UsersPage() {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  // "all" vale come "nessun filtro": tipizzarlo esplicitamente evita di
+  // passare al server una stringa qualunque come stato.
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | NonNullable<SubscriberFilters["status"]>
+  >("all");
   const [selectedSubscribers, setSelectedSubscribers] = useState<string[]>([]);
 
   // DIALOG STATE
@@ -87,7 +93,7 @@ export default function UsersPage() {
   const fetchSubscribers = async () => {
     try {
       setLoading(true);
-      const filters: any = {
+      const filters: SubscriberFilters = {
         page: currentPage,
         limit: 20,
         sortBy: "subscribedAt",
@@ -108,9 +114,9 @@ export default function UsersPage() {
       setTotal(response.pagination.total);
       setTotalPages(response.pagination.totalPages);
       setStats(response.stats);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Errore fetch subscribers:", error);
-      toast.error(error.response?.data?.error || "Errore caricamento iscritti");
+      toast.error(getApiErrorMessage(error, "Errore caricamento iscritti"));
     } finally {
       setLoading(false);
     }
@@ -196,9 +202,9 @@ export default function UsersPage() {
       setDeleteDialogOpen(false);
       setSubscriberToDelete(null);
       fetchSubscribers();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Errore eliminazione:", error);
-      toast.error(error.response?.data?.error || "Errore durante eliminazione");
+      toast.error(getApiErrorMessage(error, "Errore durante eliminazione"));
     } finally {
       setIsDeleting(false);
     }
@@ -252,7 +258,7 @@ export default function UsersPage() {
       // Resetta selezione e ricarica
       setSelectedSubscribers([]);
       fetchSubscribers();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Errore eliminazione:", error);
       toast.error("Errore durante eliminazione", { id: toastId });
     }
@@ -288,13 +294,7 @@ export default function UsersPage() {
   };
 
   // FORMAT DATE
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("it-IT", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-  };
+  const formatDate = formatDateShort;
 
   return (
     <div className="space-y-6">
@@ -368,7 +368,12 @@ export default function UsersPage() {
           </div>
 
           {/* STATUS FILTER */}
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <Select
+            value={statusFilter}
+            onValueChange={(value) =>
+              setStatusFilter(value as typeof statusFilter)
+            }
+          >
             <SelectTrigger className="w-[180px]">
               <Filter className="mr-2 h-4 w-4" />
               <SelectValue placeholder="Filtra per status" />

@@ -1,1 +1,3 @@
 node_modules
+# Output di build del frontend
+frontend/dist/

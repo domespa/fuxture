@@ -1,4 +1,16 @@
 // ====================================================================================================== //
+// Copia dei tipi di backend/src/types/post.types.ts: i due file vanno tenuti
+// allineati a mano quando cambia il contratto dell'API.
+//
+// Diversi moduli importavano direttamente dai sorgenti del backend con
+// percorsi come "../../../backend/src/types/post.types", mentre questa copia
+// esisteva gia'. Oltre a duplicare le definizioni, quegli import trascinavano
+// dentro il bundle un file del backend - PostStatus e CommentStatus sono enum,
+// quindi valori a runtime, non solo tipi - e legavano la compilazione del
+// frontend alla presenza dell'intera cartella backend/.
+// ====================================================================================================== //
+
+// ====================================================================================================== //
 //                                              ENUM
 // ====================================================================================================== //
 export enum PostStatus {

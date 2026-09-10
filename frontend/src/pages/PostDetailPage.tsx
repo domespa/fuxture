@@ -1,3 +1,5 @@
+import { formatDateLong } from "@/lib/datetime";
+import { getApiErrorMessage } from "@/lib/apiError";
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { postsAPI, commentsAPI, api } from "@/services/api";
@@ -258,10 +260,10 @@ export default function PostDetailPage() {
       setTimeout(() => {
         setSubmitSuccess(false);
       }, 5000);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error submitting comment", error);
       setSubmitError(
-        error.response?.data?.message || "Errore nell'invio del commento",
+        getApiErrorMessage(error, "Errore nell'invio del commento"),
       );
     }
   };
@@ -272,14 +274,7 @@ export default function PostDetailPage() {
     return Math.ceil(wordCount / wordsPerMinute);
   };
 
-  const formatDate = (date: Date | null | string) => {
-    if (!date) return "";
-    return new Date(date).toLocaleDateString("it-IT", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-  };
+  const formatDate = formatDateLong;
 
   const formatCommentDate = (date: Date | string) => {
     const now = new Date();

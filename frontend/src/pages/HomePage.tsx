@@ -1,3 +1,4 @@
+import { formatDateShort } from "@/lib/datetime";
 import { useEffect, useState, useCallback } from "react";
 import "./HomePage.css";
 import { categoriesAPI, postsAPI, newsletterIssueAPI } from "@/services/api";
@@ -26,14 +27,7 @@ export default function HomePage() {
     sentAt: string;
   } | null>(null);
 
-  const formatDate = useCallback((date: Date | null) => {
-    if (!date) return "";
-    return new Date(date).toLocaleDateString("it-IT", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-  }, []);
+  const formatDate = formatDateShort;
 
   const calculateReadTime = useCallback((content: string) => {
     return Math.max(1, Math.ceil(content.split(/\s+/).length / 200));

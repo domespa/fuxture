@@ -1,3 +1,4 @@
+import { formatDayMonth } from "@/lib/datetime";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MessageSquare } from "lucide-react";
@@ -12,11 +13,7 @@ import type { CommentResponse } from "@/types/comment.types";
 
 const MAX_LENGTH = 140;
 
-const formatDate = (value: Date | string): string =>
-  new Date(value).toLocaleDateString("it-IT", {
-    day: "2-digit",
-    month: "short",
-  });
+const formatDate = formatDayMonth;
 
 export default function RecentComments() {
   const [comments, setComments] = useState<CommentResponse[]>([]);

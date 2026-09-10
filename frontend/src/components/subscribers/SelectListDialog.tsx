@@ -1,3 +1,4 @@
+import { getApiErrorMessage } from "@/lib/apiError";
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -75,11 +76,13 @@ export default function SelectListDialog({
 
       onOpenChange(false);
       onSuccess();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error adding to list:", error);
       toast.error(
-        error.response?.data?.error ||
+        getApiErrorMessage(
+          error,
           "Errore nell'aggiunta degli iscritti alla lista"
+        )
       );
     } finally {
       setAdding(false);

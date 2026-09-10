@@ -1,3 +1,4 @@
+import { getApiErrorMessage } from "@/lib/apiError";
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -101,10 +102,11 @@ export default function CreateEditListDialog({
 
       onOpenChange(false);
       onSuccess();
-    } catch (error: any) {
-      const message =
-        error.response?.data?.message ||
-        `Failed to ${isEditMode ? "update" : "create"} email list`;
+    } catch (error) {
+      const message = getApiErrorMessage(
+        error,
+        `Failed to ${isEditMode ? "update" : "create"} email list`
+      );
       toast.error(message);
       console.error("Error saving list:", error);
     } finally {

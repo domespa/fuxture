@@ -156,7 +156,11 @@ export const submitScore = async (
     const periodKey = getPeriodKey(game.leaderboard);
     const cleanDetail = sanitizeDetail(detail);
 
-    // UN SOLO RECORD PER GIOCATORE NEL PERIODO: TENIAMO IL MIGLIORE
+    // UN SOLO RECORD PER GIOCATORE NEL PERIODO: TENIAMO IL MIGLIORE.
+    // La lettura serve solo a sapere se e' un record personale, per la
+    // risposta. La scrittura passa da upsert: con findUnique seguito da
+    // create, due partite chiuse nello stesso istante finivano entrambe nel
+    // ramo "non esiste" e la seconda sbatteva sul vincolo di unicita'.
     const existing = await prisma.gameScore.findUnique({
       where: {
         gameId_periodKey_playerName: {
@@ -167,31 +171,33 @@ export const submitScore = async (
       },
     });
 
-    let best = existing;
+    const isPersonalBest = !existing || score > existing.score;
 
-    if (!existing) {
-      best = await prisma.gameScore.create({
-        data: {
+    const best = await prisma.gameScore.upsert({
+      where: {
+        gameId_periodKey_playerName: {
           gameId: game.id,
           periodKey,
           playerName: cleanName,
-          score,
-          detail: cleanDetail,
         },
-      });
-    } else if (score > existing.score) {
-      best = await prisma.gameScore.update({
-        where: { id: existing.id },
-        data: { score, detail: cleanDetail },
-      });
-    }
+      },
+      create: {
+        gameId: game.id,
+        periodKey,
+        playerName: cleanName,
+        score,
+        detail: cleanDetail,
+      },
+      // Il punteggio si aggiorna solo se migliora quello gia' in classifica.
+      update: isPersonalBest ? { score, detail: cleanDetail } : {},
+    });
 
     // POSIZIONE IN CLASSIFICA
     const better = await prisma.gameScore.count({
       where: {
         gameId: game.id,
         periodKey,
-        score: { gt: best!.score },
+        score: { gt: best.score },
       },
     });
 
@@ -207,7 +213,7 @@ export const submitScore = async (
         period: game.leaderboard,
         periodKey,
         rank: better + 1,
-        isPersonalBest: !existing || score > existing.score,
+        isPersonalBest,
         playerName: cleanName,
         scores: scores.map((entry, index) => toScoreResponse(entry, index + 1)),
       },

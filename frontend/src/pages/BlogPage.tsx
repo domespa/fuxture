@@ -1,3 +1,4 @@
+import { formatDateShort } from "@/lib/datetime";
 import {
   useCallback,
   useEffect,
@@ -232,14 +233,7 @@ export default function BlogPage() {
     return Math.ceil(wordCount / wordsPerMinute);
   }, []);
 
-  const formatDate = useCallback((date: Date | null) => {
-    if (!date) return "";
-    return new Date(date).toLocaleDateString("it-IT", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-  }, []);
+  const formatDate = formatDateShort;
 
   // Cleanup
   useEffect(() => {

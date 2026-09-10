@@ -6,18 +6,14 @@ import type {
   ManualSend,
 } from "@/types/mailing.types";
 import axios from "axios";
-import type {
-  LoginRequest,
-  RegisterRequest,
-  AuthResponse,
-} from "@/types/auth.types";
+import type { LoginRequest, AuthResponse } from "@/types/auth.types";
 import type {
   CommentListResponse,
   CommentStatus,
   CommentFilters,
   CommentResponse,
   UpdateCommentRequest,
-} from "../../../backend/src/types/comment.types";
+} from "@/types/comment.types";
 import {
   CreatePostRequest,
   PostFilters,
@@ -25,7 +21,7 @@ import {
   PostListResponse,
   PostResponse,
   UpdatePostRequest,
-} from "../../../backend/src/types/post.types";
+} from "@/types/post.types";
 import {
   Campaign,
   CampaignListResponse,
@@ -58,8 +54,13 @@ import type {
 } from "@/types/game.types";
 
 // URL
+// Il ripiego include /api: tutte le chiamate qui sotto sono relative alla
+// radice dell'API ("/auth/login", non "/api/auth/login"), quindi senza il
+// prefisso ogni richiesta finisce fuori strada. Con il vecchio ripiego senza
+// /api - lo stesso che stava in .env.example - un progetto appena clonato
+// rispondeva 404 su tutto.
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
 
 // CREAZIONE ISTANZA AXIOS
 export const api = axios.create({
@@ -90,11 +91,9 @@ export const authAPI = {
     return response.data;
   },
 
-  // REGISTRAZIONE
-  register: async (data: RegisterRequest): Promise<AuthResponse> => {
-    const response = await api.post<AuthResponse>("/auth/register", data);
-    return response.data;
-  },
+  // La registrazione pubblica e' disattivata: la rotta POST /auth/register
+  // non e' montata lato server e chiamarla dava 404. Il controller e la
+  // validazione esistono ancora nel backend, se un giorno andra' riaperta.
 };
 // ======================================================================================
 // ======================================================================================
@@ -173,7 +172,7 @@ export const postsAPI = {
     try {
       const response = await api.get(`/posts/check-slug/${slug}`);
       return response.data.available;
-    } catch (error) {
+    } catch {
       return false;
     }
   },
@@ -205,12 +204,11 @@ export const commentsAPI = {
   },
 
   // OTTIENI SINGOLO COMMENTO
+  // Il server risponde con il commento nudo, non incapsulato in { data }:
+  // la versione precedente leggeva response.data.data e restituiva undefined.
   getCommentById: async (id: string): Promise<CommentResponse> => {
-    const response = await api.get<{
-      success: boolean;
-      data: CommentResponse;
-    }>(`/comments/${id}`);
-    return response.data.data;
+    const response = await api.get<CommentResponse>(`/comments/${id}`);
+    return response.data;
   },
 
   // AGGIORNA STATUS COMMENTO (approve/reject/spam)
@@ -294,12 +292,26 @@ export const campaignsAPI = {
     await api.delete(`/campaigns/${id}`);
   },
 
-  // INVIA CAMPAGNA (cambio status da DRAFT/SCHEDULED a SENDING)
-  sendCampaign: async (id: string): Promise<Campaign> => {
+  // INVIA CAMPAGNA
+  // La risposta e' il resoconto dell'invio, non la campagna: era tipizzata
+  // come Campaign e chi la usava leggeva campi sempre undefined.
+  sendCampaign: async (
+    id: string
+  ): Promise<{
+    totalRecipients: number;
+    sent: number;
+    failed: number;
+    duration: number;
+  }> => {
     const response = await api.post<{
       success: boolean;
       message: string;
-      data: Campaign;
+      data: {
+        totalRecipients: number;
+        sent: number;
+        failed: number;
+        duration: number;
+      };
     }>(`/campaigns/${id}/send`);
     return response.data.data;
   },
@@ -309,30 +321,10 @@ export const campaignsAPI = {
     await api.post(`/campaigns/${id}/test`, { testEmail });
   },
 
-  // OTTIENI STATISTICHE CAMPAGNA (quante email inviate/aperte/cliccate)
-  getCampaignStats: async (
-    id: string
-  ): Promise<{
-    sent: number;
-    delivered: number;
-    opened: number;
-    clicked: number;
-    bounced: number;
-    failed: number;
-  }> => {
-    const response = await api.get<{
-      success: boolean;
-      data: {
-        sent: number;
-        delivered: number;
-        opened: number;
-        clicked: number;
-        bounced: number;
-        failed: number;
-      };
-    }>(`/campaigns/${id}/stats`);
-    return response.data.data;
-  },
+  // getCampaignStats e' stata rimossa: chiamava GET /campaigns/:id/stats, una
+  // rotta che non e' mai esistita lato server, e non era usata da nessuna
+  // pagina. Le statistiche di invio arrivano gia' dentro ogni Campaign, nel
+  // campo emailStats.
 
   // PREVIEW
   sendPreviewEmail: async (data: {
@@ -522,16 +514,23 @@ export const emailListsAPI = {
 // ======================================================================================
 //                                  SUBSCRIBERS API
 // ======================================================================================
+// Estratto e nominato perche' le pagine che lo costruiscono a pezzi possano
+// tipizzarlo: in UserPage l'oggetto dei filtri era dichiarato "any" solo
+// perche' questo tipo viveva inline e non era importabile.
+export type SubscriberFilters = {
+  status?: "ACTIVE" | "UNSUBSCRIBED" | "BOUNCED";
+  search?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: "subscribedAt" | "email" | "createdAt";
+  sortOrder?: "asc" | "desc";
+};
+
 export const subscribersAPI = {
   // OTTIENI TUTTI I SUBSCRIBERS CON FILTRI
-  getSubscribers: async (filters?: {
-    status?: "ACTIVE" | "UNSUBSCRIBED" | "BOUNCED";
-    search?: string;
-    page?: number;
-    limit?: number;
-    sortBy?: "subscribedAt" | "email" | "createdAt";
-    sortOrder?: "asc" | "desc";
-  }): Promise<{
+  getSubscribers: async (
+    filters?: SubscriberFilters
+  ): Promise<{
     subscribers: {
       id: string;
       email: string;

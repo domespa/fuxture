@@ -1,3 +1,4 @@
+import { getApiErrorMessage, getApiFieldErrors } from "@/lib/apiError";
 import { TiptapEditor } from "./TiptapEditor";
 import { postsAPI } from "@/services/api";
 import type { PostFormData, FormErrors } from "@/types/form.types";
@@ -5,7 +6,7 @@ import {
   PostStatus,
   type UpdatePostRequest,
   type PostResponse,
-} from "../../../../backend/src/types/post.types";
+} from "@/types/post.types";
 import {
   Dialog,
   DialogContent,
@@ -266,20 +267,19 @@ export const EditPost = () => {
 
       // REDIRECT
       navigate("/dashboard/posts");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Errore aggiornamento post:", error);
 
-      if (error.response?.data?.errors) {
-        const backendErrors: FormErrors = {};
-        error.response.data.errors.forEach((err: any) => {
-          backendErrors[err.field] = err.message;
-        });
-        setErrors(backendErrors);
+      const fieldErrors = getApiFieldErrors(error);
+
+      if (Object.keys(fieldErrors).length > 0) {
+        setErrors(fieldErrors as FormErrors);
       } else {
         setErrors({
-          general:
-            error.response?.data?.error ||
-            "Errore durante l'aggiornamento del post",
+          general: getApiErrorMessage(
+            error,
+            "Errore durante l'aggiornamento del post"
+          ),
         });
       }
     } finally {

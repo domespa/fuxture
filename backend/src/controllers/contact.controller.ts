@@ -36,9 +36,19 @@ const validateContactForm = (data: ContactForm): string[] => {
 };
 
 // SANITIZZAZIONE INPUT
-const sanitizeInput = (input: string): string => {
-  return input.trim().replace(/[<>]/g, "").slice(0, 1000);
-};
+// Rimuovere i soli < e > non basta: il valore finisce anche dentro attributi
+// HTML (href, subject), dove una virgoletta chiude l'attributo e permette di
+// aggiungerne altri. Qui si scappano tutti i caratteri che hanno significato
+// in HTML, cosi' il testo resta testo ovunque venga interpolato.
+const escapeHtml = (input: string): string =>
+  String(input ?? "")
+    .trim()
+    .slice(0, 1000)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 
 // CREAZIONE HTML
 const createHTML = (data: ContactForm): string => {
@@ -129,44 +139,46 @@ const createHTML = (data: ContactForm): string => {
     </div>
     <div class="email-body">
       <p style="font-size: 16px; color: #059669; font-weight: bold;">
-        🎉 Hai ricevuto un nuovo messaggio da <strong>${sanitizeInput(
+        🎉 Hai ricevuto un nuovo messaggio da <strong>${escapeHtml(
           data.name
         )}</strong>!
       </p>
 
       <div class="info-box">
         <strong>👤 Nome:</strong>
-        <p style="margin: 5px 0 0 0;">${sanitizeInput(data.name)}</p>
+        <p style="margin: 5px 0 0 0;">${escapeHtml(data.name)}</p>
       </div>
 
       <div class="info-box">
         <strong>📧 Email:</strong>
         <p style="margin: 5px 0 0 0;">
-          <a href="mailto:${
+          <a href="mailto:${encodeURIComponent(
             data.email
-          }" style="color: #3b82f6; text-decoration: none;">
-            ${data.email}
+          )}" style="color: #3b82f6; text-decoration: none;">
+            ${escapeHtml(data.email)}
           </a>
         </p>
       </div>
 
       <div class="info-box">
         <strong>📝 Oggetto:</strong>
-        <p style="margin: 5px 0 0 0;">${sanitizeInput(data.subject)}</p>
+        <p style="margin: 5px 0 0 0;">${escapeHtml(data.subject)}</p>
       </div>
 
       <div class="message-box">
         <h3>💬 Messaggio:</h3>
         <p style="white-space: pre-wrap; margin: 0;">
-          ${sanitizeInput(data.message)}
+          ${escapeHtml(data.message)}
         </p>
       </div>
 
       <div style="text-align: center;">
-        <a href="mailto:${data.email}?subject=Re: ${encodeURIComponent(
-    sanitizeInput(data.subject)
+        <a href="mailto:${encodeURIComponent(
+          data.email
+        )}?subject=${encodeURIComponent(
+    `Re: ${data.subject}`
   )}" class="reply-button">
-          📮 Rispondi a ${sanitizeInput(data.name)}
+          📮 Rispondi a ${escapeHtml(data.name)}
         </a>
       </div>
 
@@ -182,6 +194,99 @@ const createHTML = (data: ContactForm): string => {
     </div>
     <div class="email-footer">
       <p>Questa è una notifica automatica dal tuo sito <strong>Fuxture</strong></p>
+      <p>&copy; ${new Date().getFullYear()} Fuxture - Tutti i diritti riservati</p>
+    </div>
+  </div>
+</body>
+</html>
+    `;
+};
+
+// CONFERMA PER CHI HA SCRITTO.
+// Prima qui si riusava createHTML(), cioe' la notifica destinata al titolare:
+// il mittente si vedeva recapitare "Hai ricevuto un nuovo messaggio da
+// <se stesso>". Sono due messaggi con due destinatari e due scopi diversi.
+const createConfirmationHTML = (data: ContactForm): string => {
+  return `
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messaggio ricevuto</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .email-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+      padding: 30px;
+      text-align: center;
+    }
+    .email-header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .email-body {
+      padding: 30px;
+      color: #333333;
+      line-height: 1.6;
+    }
+    .recap-box {
+      background-color: #f3f4f6;
+      border-left: 4px solid #3b82f6;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .email-footer {
+      background-color: #f8f8f8;
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #666666;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="email-header">
+      <h1>✅ Abbiamo ricevuto il tuo messaggio</h1>
+    </div>
+    <div class="email-body">
+      <p>Ciao ${escapeHtml(data.name)},</p>
+      <p>
+        grazie per averci scritto. Abbiamo preso in carico il tuo messaggio e
+        ti risponderemo al più presto a questo indirizzo.
+      </p>
+
+      <div class="recap-box">
+        <strong>Oggetto:</strong>
+        <p style="margin: 5px 0 15px 0;">${escapeHtml(data.subject)}</p>
+        <strong>Il tuo messaggio:</strong>
+        <p style="white-space: pre-wrap; margin: 5px 0 0 0;">${escapeHtml(
+          data.message
+        )}</p>
+      </div>
+
+      <p style="margin-top: 30px; font-size: 12px; color: #666;">
+        Questa è una conferma automatica: non è necessario rispondere.
+      </p>
+    </div>
+    <div class="email-footer">
       <p>&copy; ${new Date().getFullYear()} Fuxture - Tutti i diritti riservati</p>
     </div>
   </div>
@@ -221,8 +326,8 @@ export const sendContactMessage = async (req: Request, res: Response) => {
 
     // INVIA EMAIL ALL'ADMIN
     const emailToAdmin = await sendEmail({
-      to: "info@fuxture.net",
-      subject: `[CONTATTO SITO] ${sanitizeInput(subject)}`,
+      to: process.env.CONTACT_TO_EMAIL || "info@fuxture.net",
+      subject: `[CONTATTO SITO] ${escapeHtml(subject)}`,
       html: createHTML(contactData),
     });
 
@@ -235,29 +340,32 @@ export const sendContactMessage = async (req: Request, res: Response) => {
     }
 
     // INVIO EMAIL DI CONFERMA ALL'UTENTE
-    const confirtmationEmail = await sendEmail({
+    const confirmationEmail = await sendEmail({
       to: email,
       subject: "✅ Messaggio ricevuto - Fuxture",
-      html: createHTML(contactData),
+      html: createConfirmationHTML(contactData),
     });
 
-    // SE LA CONFERMA NON VA A BUON FINE, ANDIAMO AVANTI LO STESSO
-    if (!confirtmationEmail.success) {
+    // SE LA CONFERMA NON VA A BUON FINE, ANDIAMO AVANTI LO STESSO: il
+    // messaggio al titolare e' gia' partito, ed e' quello che conta.
+    if (!confirmationEmail.success) {
       console.warn(
         "⚠️ Email di conferma non inviata all'utente:",
-        confirtmationEmail.error
+        confirmationEmail.error
       );
-
-      console.log(
-        `✅ Messaggio di contatto ricevuto da: ${email} - Oggetto: "${subject}"`
-      );
-
-      return res.status(200).json({
-        success: true,
-        message:
-          "Messaggio inviato con successo! Ti risponderemo al più presto.",
-      });
     }
+
+    console.log(
+      `✅ Messaggio di contatto ricevuto da: ${email} - Oggetto: "${subject}"`
+    );
+
+    // La risposta sta fuori dall'if: prima veniva inviata solo nel ramo di
+    // fallimento della conferma, quindi il caso di successo usciva dalla
+    // funzione senza rispondere e la richiesta restava appesa fino al timeout.
+    return res.status(200).json({
+      success: true,
+      message: "Messaggio inviato con successo! Ti risponderemo al più presto.",
+    });
   } catch (error) {
     console.error("❌ Errore nel controller contact:", error);
     return res.status(500).json({

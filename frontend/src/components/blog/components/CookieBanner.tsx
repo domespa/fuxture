@@ -1,31 +1,37 @@
 import { useState, useEffect } from "react";
 import { X, Cookie } from "lucide-react";
 import { Link } from "react-router-dom";
+import { COOKIE_CONSENT_KEY, readCookieConsent } from "@/lib/consent";
 
 export default function CookieBanner() {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    // Controlla se l'utente ha già accettato i cookie
-    const cookieConsent = localStorage.getItem("cookieConsent");
-    if (!cookieConsent) {
+    // Controlla se l'utente ha già espresso una scelta
+    if (!readCookieConsent()) {
       setShowBanner(true);
     }
   }, []);
 
-  const acceptAllCookies = () => {
-    localStorage.setItem("cookieConsent", "all");
+  // La scelta viene solo archiviata: chi deve rispettarla la legge con
+  // hasMarketingConsent() in lib/consent.ts. Non va tradotta qui in
+  // attivazioni di script, altrimenti ogni nuovo strumento andrebbe
+  // ricordato in questo file.
+  const saveConsent = (value: "all" | "necessary") => {
+    try {
+      localStorage.setItem(COOKIE_CONSENT_KEY, value);
+    } catch {
+      // Storage non disponibile: senza registrazione vale come "non
+      // acconsentito", che e' il ripiego prudente.
+    }
     setShowBanner(false);
-    // Qui attiveresti Google Analytics, Facebook Pixel, etc.
-    console.log("Tutti i cookie accettati");
   };
 
-  const acceptOnlyNecessary = () => {
-    localStorage.setItem("cookieConsent", "necessary");
-    setShowBanner(false);
-    console.log("Solo cookie necessari");
-  };
+  const acceptAllCookies = () => saveConsent("all");
+  const acceptOnlyNecessary = () => saveConsent("necessary");
 
+  // Chiudere senza scegliere non e' un consenso: la scelta non viene
+  // archiviata e il banner tornera' alla visita successiva.
   const closeBanner = () => {
     setShowBanner(false);
   };

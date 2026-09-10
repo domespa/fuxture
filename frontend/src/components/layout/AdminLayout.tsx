@@ -5,7 +5,7 @@ import Sidebar from "./Sidebar";
 import { NavbarUser } from "@/types/layout.types";
 import { commentsAPI } from "@/services/api";
 import { useEffect, useState } from "react";
-import { CommentStatus } from "../../../../backend/src/types/comment.types";
+import { CommentStatus } from "@/types/comment.types";
 
 // TIPO PAYPLOAD
 interface JWTPayload {
@@ -89,8 +89,11 @@ export default function AdminLayout() {
     if (user) {
       fetchPendingComments();
 
-      // POLLING PER AGGIIORNARE IL BADGE OGNI 3 MINUTI
-      const interval = setInterval(fetchPendingComments, 30000);
+      // POLLING PER AGGIORNARE IL BADGE OGNI 3 MINUTI.
+      // Il commento diceva 3 minuti, l'intervallo era di 30 secondi: sei
+      // volte le richieste dichiarate, per un badge che non ha bisogno di
+      // essere al secondo.
+      const interval = setInterval(fetchPendingComments, 3 * 60 * 1000);
       return () => clearInterval(interval);
     }
   }, [user]);

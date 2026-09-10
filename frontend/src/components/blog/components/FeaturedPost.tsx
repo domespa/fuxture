@@ -1,3 +1,4 @@
+import { formatDateLong } from "@/lib/datetime";
 import { useEffect, useState, useCallback } from "react";
 import { postsAPI } from "@/services/api";
 import type { PostResponse, PostStatus } from "@/types/post.types";
@@ -57,14 +58,7 @@ export default function FeaturedPost() {
     [posts.length],
   );
 
-  const formatDate = (d: Date | null) =>
-    d
-      ? new Date(d).toLocaleDateString("it-IT", {
-          day: "2-digit",
-          month: "long",
-          year: "numeric",
-        })
-      : "";
+  const formatDate = formatDateLong;
 
   const readTime = (content: string) =>
     Math.max(1, Math.ceil(content.split(/\s+/).length / 200));

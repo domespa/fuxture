@@ -1,3 +1,4 @@
+import { NodeSelection } from "@tiptap/pm/state";
 import { Editor } from "@tiptap/react";
 import {
   AlignLeft,
@@ -22,7 +23,10 @@ export const ImageToolbar = ({ editor, currentAlign }: ImageToolbarProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const { node } = editor.state.selection as any;
+    // NodeSelection espone "node"; le altre selezioni no. Il narrowing
+    // sostituisce il vecchio cast ad any, che spegneva ogni controllo.
+    const selection = editor.state.selection;
+    const node = selection instanceof NodeSelection ? selection.node : null;
     if (node?.attrs?.link) {
       setLinkUrl(node.attrs.link);
     } else {

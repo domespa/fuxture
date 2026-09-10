@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Login from "./pages/auth/Login";
-// import Register from "./pages/auth/Register";
 import Dashboard from "./pages/admin/dashboard/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import AdminLayout from "./components/layout/AdminLayout";
@@ -75,7 +74,8 @@ function App() {
           <Route path="/terms" element={<Terms />} />
         </Route>
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/register" element={<Register />} /> */}
+        {/* La registrazione pubblica e' chiusa: gli account amministrativi si
+            creano a mano, e la rotta POST /auth/register non e' montata. */}
         <Route path="/test-news" element={<TestNewsPage />} />
 
         {/* Route protette */}
@@ -110,8 +110,12 @@ function App() {
         <Route path="/unsubscribe/:id" element={<UnsubscribePage />} />
         {/* Area preferenze: revoca granulare ex Linee Guida Garante 17/04/2026 */}
         <Route path="/preferenze/:id" element={<PreferencesPage />} />
-        {/* 404 - Pagina non trovata */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        {/* 404 - Pagina non trovata.
+            Portava al login: un visitatore che sbagliava a digitare un
+            indirizzo, o che seguiva un link a un articolo cancellato, si
+            ritrovava davanti alla schermata di accesso di un'area che non lo
+            riguarda. Si torna in home. */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

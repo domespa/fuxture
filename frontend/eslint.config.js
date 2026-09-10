@@ -20,4 +20,16 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    // I componenti di shadcn/ui esportano di proposito anche le varianti CVA
+    // accanto al componente (buttonVariants, badgeVariants, useFormField):
+    // e' la forma in cui vengono generati e in cui arrivano gli aggiornamenti
+    // upstream. La regola di react-refresh segnalava ogni file come errore, e
+    // spezzarli in due significherebbe divergere dal generatore a ogni
+    // aggiunta di componente.
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ])

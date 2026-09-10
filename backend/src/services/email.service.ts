@@ -60,8 +60,6 @@ const writeEmailLog = async (
 export const sendEmail = async (
   options: SendEmailOptions
 ): Promise<EmailSendResult> => {
-  const startTime = Date.now();
-
   try {
     const mailOptions = {
       from: `"${options.fromName || emailConfig.email.from.name}" <${

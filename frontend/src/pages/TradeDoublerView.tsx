@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { NodeViewWrapper } from "@tiptap/react";
+import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
 
 const getWrapperStyle = (align: string): CSSProperties => {
   switch (align) {
@@ -16,11 +16,13 @@ const getWrapperStyle = (align: string): CSSProperties => {
   }
 };
 
-export const TradeDoublerBannerView = ({ node }: { node: any }) => {
+export const TradeDoublerBannerView = ({
+  node,
+}: NodeViewProps) => {
   const { width, height, bannerId, programId, align = "center" } = node.attrs;
 
   return (
-    <NodeViewWrapper style={getWrapperStyle(align) as any}>
+    <NodeViewWrapper style={getWrapperStyle(align)}>
       <div
         contentEditable={false}
         style={{

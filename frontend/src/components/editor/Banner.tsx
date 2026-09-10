@@ -1,3 +1,4 @@
+import type { CommandProps } from "@tiptap/core";
 import { Node, mergeAttributes } from "@tiptap/core";
 import { ReactNodeViewRenderer, NodeViewProps } from "@tiptap/react";
 import { NodeViewWrapper } from "@tiptap/react";
@@ -156,7 +157,7 @@ export const AwinBanner = Node.create({
     return {
       insertAwinBanner:
         (attrs: AwinBannerAttrs) =>
-        ({ commands }: any) => {
+        ({ commands }: CommandProps) => {
           return commands.insertContent({
             type: this.name,
             attrs: { ...attrs, align: attrs.align || "left" },
@@ -164,7 +165,7 @@ export const AwinBanner = Node.create({
         },
       setAwinBannerAlign:
         (align: string) =>
-        ({ commands, state }: any) => {
+        ({ commands, state }: CommandProps) => {
           const { selection } = state;
           const node = state.doc.nodeAt(selection.from);
           if (node && node.type.name === this.name) {

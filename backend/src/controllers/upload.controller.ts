@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import fs from "fs/promises";
 import { processImage } from "../utils/imageProcessing";
 
 interface UploadResponse {
@@ -26,7 +27,7 @@ export async function uploadSingleImage(
     if (!req.file) {
       res.status(400).json({
         success: false,
-        messagge: "File miss",
+        message: "Nessun file ricevuto",
       });
       return;
     }
@@ -37,8 +38,7 @@ export async function uploadSingleImage(
     const processedPath = await processImage(uploadedFile.path);
 
     // OTTENIAMO LE INFO
-    const fs = require("fs");
-    const stats = fs.statSync(processedPath);
+    const stats = await fs.stat(processedPath);
 
     // COSTRUIAMO L'URL PUBBLICO
     const publicUrl = `/${processedPath.replace(/\\/g, "/")}`;
@@ -88,13 +88,13 @@ export async function uploadMultiImages(
 
     const uploadedFiles = req.files;
     const processedImages = [];
+    const failed: string[] = [];
 
     // PROCESSIAMO OGNI FILE
     for (const file of uploadedFiles) {
       try {
         const processedPath = await processImage(file.path);
-        const fs = require("fs");
-        const stats = fs.statSync(processedPath);
+        const stats = await fs.stat(processedPath);
         const publicUrl = `/${processedPath.replace(/\\/g, "/")}`;
 
         processedImages.push({
@@ -107,13 +107,25 @@ export async function uploadMultiImages(
         });
       } catch (error) {
         console.error(`Errore processing ${file.originalname}:`, error);
+        failed.push(file.originalname);
+
+        // Il file di partenza resta a terra se processImage fallisce a meta':
+        // senza questa pulizia la cartella accumula scarti che nessuno
+        // referenzia e nessuno cancella.
+        await fs.unlink(file.path).catch(() => undefined);
       }
     }
 
+    // Prima la risposta era sempre "success: true" anche quando tutti i file
+    // fallivano: chi caricava vedeva "0 DONE!" senza sapere cosa fosse andato
+    // storto ne' quali immagini mancassero.
     res.status(201).json({
-      success: true,
-      message: `${processedImages.length} DONE!`,
+      success: failed.length === 0,
+      message: `${processedImages.length} immagini elaborate${
+        failed.length > 0 ? `, ${failed.length} non riuscite` : ""
+      }`,
       data: processedImages,
+      ...(failed.length > 0 && { failed }),
     });
   } catch (error) {
     console.error("Error:", error);

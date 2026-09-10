@@ -1,3 +1,4 @@
+import { getApiErrorMessage } from "@/lib/apiError";
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -85,11 +86,9 @@ export default function AddSubscriberDialog({
       toast.success("Iscritto aggiunto con successo");
       onOpenChange(false);
       onSuccess();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error creating subscriber:", error);
-      const message =
-        error.response?.data?.error || "Errore durante aggiunta iscritto";
-      toast.error(message);
+      toast.error(getApiErrorMessage(error, "Errore durante aggiunta iscritto"));
     } finally {
       setIsSubmitting(false);
     }

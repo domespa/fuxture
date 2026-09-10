@@ -10,6 +10,17 @@ import {
 } from "../types/post.types";
 import { generateUniqueSlug, isSlugValid } from "../utils/slug.utils";
 
+// COLONNE SU CUI E' LECITO ORDINARE.
+// L'elenco e' chiuso perche' il valore arriva dalla query string e finisce
+// direttamente in orderBy.
+const SORTABLE_POST_FIELDS = [
+  "createdAt",
+  "updatedAt",
+  "publishedAt",
+  "title",
+  "views",
+];
+
 // ====================================================================================================== //
 //                                   HELPER: GENERA EXCERPT
 // ====================================================================================================== //
@@ -99,6 +110,22 @@ export async function createPost(req: Request, res: Response): Promise<void> {
     });
   } catch (error) {
     console.error("Error creating post:", error);
+
+    // Fra il controllo di disponibilita' dello slug e la insert c'e' una
+    // finestra: due articoli con lo stesso titolo salvati insieme ottengono
+    // lo stesso slug e il secondo viola il vincolo di unicita'. E' un
+    // conflitto, non un guasto del server.
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      res.status(409).json({
+        error: "Slug already in use",
+        suggestion: "Riprova: verrà generato un indirizzo diverso",
+      });
+      return;
+    }
+
     res.status(500).json({ error: "Failed to create post" });
   }
 }
@@ -119,18 +146,25 @@ export async function getPosts(req: Request, res: Response): Promise<void> {
     const skip = (page - 1) * limit;
 
     // ORDINE
-    const sortBy = filters.sortBy || "createdAt";
-    const sortOrder = filters.sortOrder || "desc";
-    const where: any = {};
+    // sortBy finisce dentro orderBy: senza questo elenco chiuso un nome di
+    // colonna qualsiasi arrivava a Prisma, che rispondeva con un 500.
+    const sortBy = SORTABLE_POST_FIELDS.includes(filters.sortBy as string)
+      ? (filters.sortBy as string)
+      : "createdAt";
+    const sortOrder = filters.sortOrder === "asc" ? "asc" : "desc";
+    const where: Prisma.PostWhereInput = {};
 
     // FILTRO STATUS
-    if (filters.status) {
+    // Il filtro richiesto vale solo per gli amministratori: prima bastava
+    // passare ?status=DRAFT senza alcun token per far saltare il vincolo
+    // successivo e farsi restituire le bozze. Per tutti gli altri lo stato e'
+    // imposto, non negoziabile.
+    const isAdmin = req.user?.role === "ADMIN";
+
+    if (!isAdmin) {
+      where.status = PostStatus.PUBLISHED;
+    } else if (filters.status) {
       where.status = filters.status;
-    } else {
-      // OSPITE SOLO PUBLISHED
-      if (!req.user || req.user.role !== "ADMIN") {
-        where.status = PostStatus.PUBLISHED;
-      }
     }
 
     // FILTRO CATEGORIA
@@ -331,8 +365,12 @@ export async function updatePost(req: Request, res: Response): Promise<void> {
         updateData.publishedAt = new Date();
       }
 
+      // Uscendo da SCHEDULED la data va azzerata: restava valorizzata e il
+      // post continuava a dichiarare una programmazione ormai priva di effetto.
       if (data.status === PostStatus.SCHEDULED) {
         updateData.scheduledAt = data.scheduledAt;
+      } else {
+        updateData.scheduledAt = null;
       }
     }
 
@@ -494,11 +532,26 @@ export const getPostBySlug = async (req: Request, res: Response) => {
       });
     }
 
+    // NON PUBBLICATO: VISIBILE SOLO ALL'ADMIN.
+    // getPostById faceva gia' questo controllo, qui mancava del tutto: chi
+    // conosceva lo slug leggeva una bozza. Si risponde 404 e non 403 per non
+    // confermare l'esistenza dell'articolo a chi non deve vederlo.
+    if (post.status !== PostStatus.PUBLISHED && req.user?.role !== "ADMIN") {
+      return res.status(404).json({
+        success: false,
+        message: "Post non trovato",
+      });
+    }
+
     // INCREMENTIAMO VIEWS
-    await prisma.post.update({
-      where: { id: post.id },
-      data: { views: { increment: 1 } },
-    });
+    // Solo sui pubblicati e non per l'autore, come in getPostById: altrimenti
+    // il contatore misura anche le riletture di chi ha scritto l'articolo.
+    if (post.status === PostStatus.PUBLISHED && req.user?.userId !== post.authorId) {
+      await prisma.post.update({
+        where: { id: post.id },
+        data: { views: { increment: 1 } },
+      });
+    }
 
     res.json({
       success: true,

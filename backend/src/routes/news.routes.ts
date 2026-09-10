@@ -1,11 +1,6 @@
 import express, { Request, Response } from "express";
-import fetch from "node-fetch";
-import {
-  NewsSource,
-  NewsArticle,
-  NewsAPIResponse,
-  NewsCache,
-} from "../types/news.types";
+import { NewsAPIResponse, NewsCache } from "../types/news.types";
+import { authenticateToken, requireRole } from "../middleware/auth.middleware";
 
 const router = express.Router();
 
@@ -18,22 +13,6 @@ let newsCache: NewsCache = {
 
 const CACHE_DURATION = 15 * 60 * 1000;
 const NEWS_API_KEY = process.env.NEWS_API_KEY;
-
-// CATEGORIE DISPONIBILI
-const categories: string[] = [
-  "general",
-  "business",
-  "technology",
-  "sports",
-  "entertainment",
-  "health",
-  "science",
-];
-
-// FUNZIONE PER PRENDERLE RANDOM
-const getRandomCategory = (): string => {
-  return categories[Math.floor(Math.random() * categories.length)];
-};
 
 // NOMI IN ITALIANO
 const getCategoryLabel = (category: string): string => {
@@ -254,14 +233,22 @@ router.get("/news/status", (req: Request, res: Response) => {
 
 // REFRESH
 // POST /news/refresh
-router.post("/news/refresh", async (req, res) => {
-  console.log("🔄 Manual cache refresh requested");
-  newsCache = { data: null, timestamp: null, category: "general" };
-  res.json({
-    success: true,
-    message: "Cache cleared. Next request will fetch fresh news.",
-  });
-});
+// Riservata agli amministratori: era pubblica, e svuotare la cache in loop
+// costringeva il server a ricontattare NewsAPI a ogni richiesta successiva,
+// consumando la quota giornaliera del piano.
+router.post(
+  "/news/refresh",
+  authenticateToken,
+  requireRole("ADMIN"),
+  (_req: Request, res: Response) => {
+    console.log("🔄 Manual cache refresh requested");
+    newsCache = { data: null, timestamp: null, category: "general" };
+    res.json({
+      success: true,
+      message: "Cache cleared. Next request will fetch fresh news.",
+    });
+  }
+);
 
 export default router;
 // ====================================================================================================== //

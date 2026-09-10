@@ -86,7 +86,6 @@ const TiptapEditorComponent = ({
       const html = editor.getHTML();
       // MEMORIZZIAMO CIO CHE ABBIAMO EMESSO, PER RICONOSCERE L ECO IN ARRIVO
       lastEmittedRef.current = html;
-      console.log("🔍 HTML SALVATO:", html);
       onChange(html);
     },
     editorProps: {
@@ -279,7 +278,7 @@ const TiptapEditorComponent = ({
         editor.chain().focus().insertTradeDoublerBanner(data.attrs).run();
         return;
       }
-    } catch (e) {
+    } catch {
       const tdMatch = html.match(/imp\?type\([^)]+\)g\((\d+)\)a\((\d+)\)/);
       const clickMatch = html.match(/click\?p=(\d+)&a=(\d+)&g=(\d+)/);
       const sizeMatch = html.match(/width="(\d+)"\s+height="(\d+)"/);

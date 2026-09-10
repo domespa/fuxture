@@ -61,16 +61,13 @@ const HtmlPreview = ({ html }: { html: string }) => {
   const previewRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log("🔍 HtmlPreview - HTML ricevuto:", html);
 
     if (!previewRef.current || !html) return;
 
     const awinData = parseAwinCode(html);
-    console.log("🔍 Awin Data parsed:", awinData);
 
     if (awinData.isAwin && awinData.type === "link") {
       // Banner con link + immagine
-      console.log("✅ È un banner Awin link+img, mostro anteprima...");
 
       previewRef.current.innerHTML = "";
 
@@ -89,7 +86,6 @@ const HtmlPreview = ({ html }: { html: string }) => {
       previewRef.current.appendChild(link);
     } else if (awinData.isAwin && awinData.type === "script") {
       // Banner con iframe (vecchio metodo)
-      console.log("✅ È un banner Awin iframe, mostro iframe...");
 
       previewRef.current.innerHTML = "";
 
@@ -101,7 +97,6 @@ const HtmlPreview = ({ html }: { html: string }) => {
       iframe.style.maxWidth = "100%";
 
       previewRef.current.appendChild(iframe);
-      console.log("✅ Iframe aggiunto al DOM");
     } else {
       console.log("📄 HTML normale, uso innerHTML");
       previewRef.current.innerHTML = html;

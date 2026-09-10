@@ -38,7 +38,10 @@ export const validateCreatePost = (
   }
 
   if (content.trim().length < 10) {
+    // Senza return la validazione proseguiva dopo aver gia' risposto: il post
+    // veniva creato lo stesso e la seconda risposta faceva ERR_HTTP_HEADERS_SENT.
     res.status(400).json({ error: "Content have to be more of 10 char." });
+    return;
   }
 
   // STATUS OBBLIGATORIO
@@ -46,8 +49,10 @@ export const validateCreatePost = (
     res.status(400).json({ error: " Status is required" });
     return;
   }
+  // 400 e non 401: e' un dato sbagliato, non una sessione mancante. Con 401
+  // il frontend interpretava l'errore come token scaduto e sloggava l'utente.
   if (!Object.values(PostStatus).includes(status)) {
-    res.status(401).json({
+    res.status(400).json({
       error: "Invalid status",
       allowed: Object.values(PostStatus),
     });

@@ -1,3 +1,4 @@
+import { getApiErrorMessage, getApiFieldErrors } from "@/lib/apiError";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { TiptapEditor } from "./TiptapEditor";
@@ -6,7 +7,7 @@ import type { PostFormData, FormErrors } from "@/types/form.types";
 import {
   PostStatus,
   type CreatePostRequest,
-} from "../../../../backend/src/types/post.types";
+} from "@/types/post.types";
 import { localToUtc } from "@/lib/datetime";
 import { categoriesAPI } from "@/services/api";
 import type { Category } from "@/types/category.types";
@@ -236,21 +237,20 @@ export const CreatePost = () => {
 
       // Redirect alla lista post
       navigate("/dashboard/posts");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Errore creazione post:", error);
 
       // Gestisci errori dal backend
-      if (error.response?.data?.errors) {
-        const backendErrors: FormErrors = {};
-        error.response.data.errors.forEach((err: any) => {
-          backendErrors[err.field] = err.message;
-        });
-        setErrors(backendErrors);
+      const fieldErrors = getApiFieldErrors(error);
+
+      if (Object.keys(fieldErrors).length > 0) {
+        setErrors(fieldErrors as FormErrors);
       } else {
         setErrors({
-          general:
-            error.response?.data?.message ||
-            "Errore durante la creazione del post",
+          general: getApiErrorMessage(
+            error,
+            "Errore durante la creazione del post"
+          ),
         });
       }
     } finally {

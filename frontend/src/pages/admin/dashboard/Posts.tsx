@@ -1,3 +1,4 @@
+import { getApiErrorMessage } from "@/lib/apiError";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { postsAPI } from "@/services/api";
@@ -6,7 +7,7 @@ import {
   PostResponse,
   PostFilters,
   PostStatus,
-} from "../../../../../backend/src/types/post.types";
+} from "@/types/post.types";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -82,17 +83,12 @@ export default function Posts() {
     try {
       setLoading(true);
       setError(null);
-      console.log("🔍 Filters:", filters);
-      console.log("🔍 postsAPI:", postsAPI);
       const response = await postsAPI.getPosts(filters);
-      console.log("✅ Response ricevuta:", response);
       setPosts(response.posts);
       setPagination(response.pagination);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Errore fetch posts:", err);
-      setError(
-        err.response?.data?.message || "Errore nel caricamento dei post"
-      );
+      setError(getApiErrorMessage(err, "Errore nel caricamento dei post"));
       toast.error("Impossibile caricare i post");
     } finally {
       setLoading(false);
@@ -100,12 +96,22 @@ export default function Posts() {
   };
 
   // FUNZIONE PER CAMBIARE I FILTRI
-  const handleFilterChange = (key: keyof PostFilters, value: any) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: value,
-      page: key === "page" ? value : 1,
-    }));
+  // Il generico sostituisce il vecchio "value: any": ora il valore deve
+  // corrispondere al campo che si sta cambiando, e passare uno status che non
+  // e' un PostStatus non compila piu'.
+  const handleFilterChange = <K extends keyof PostFilters>(
+    key: K,
+    value: PostFilters[K]
+  ) => {
+    setFilters((prev) => {
+      const next: PostFilters = { ...prev, [key]: value };
+
+      // Cambiare un filtro riporta alla prima pagina: restare sulla pagina 5
+      // di un elenco che ora ne ha due mostra una tabella vuota.
+      if (key !== "page") next.page = 1;
+
+      return next;
+    });
   };
 
   // FUNZIONE SEARCH -> METTEREMO IL DEBOUNCE
@@ -132,7 +138,7 @@ export default function Posts() {
           ? "Post aggiunto ai featured"
           : "Post rimosso dai featured"
       );
-    } catch (err: any) {
+    } catch (err) {
       console.error("Errore toggle featured:", err);
       toast.error("Errore nell'aggiornamento del post");
     }
@@ -160,11 +166,9 @@ export default function Posts() {
 
       toast.success("Post eliminato con successo");
       setDeleteDialog({ open: false, postId: null, postTitle: "" });
-    } catch (err: any) {
+    } catch (err) {
       console.error("Errore eliminazione post:", err);
-      toast.error(
-        err?.response?.data?.error || "Errore nell'eliminazione del post"
-      );
+      toast.error(getApiErrorMessage(err, "Errore nell'eliminazione del post"));
     }
   };
 
@@ -205,7 +209,10 @@ export default function Posts() {
           <Select
             value={filters.status || "ALL"}
             onValueChange={(value) =>
-              handleFilterChange("status", value === "ALL" ? undefined : value)
+              handleFilterChange(
+                "status",
+                value === "ALL" ? undefined : (value as PostStatus)
+              )
             }
           >
             <SelectTrigger>

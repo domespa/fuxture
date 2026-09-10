@@ -1,3 +1,4 @@
+import { getApiErrorMessage } from "@/lib/apiError";
 import { useEffect, useState } from "react";
 import { categoriesAPI } from "@/services/api";
 import { Category } from "@/types/category.types";
@@ -40,11 +41,10 @@ export default function CategoriesPage() {
       await categoriesAPI.deleteCategory(id);
       toast.success("Categoria eliminata con successo");
       fetchCategories();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error deleting category:", error);
       toast.error(
-        error.response?.data?.error ||
-          "Errore nell'eliminazione della categoria"
+        getApiErrorMessage(error, "Errore nell'eliminazione della categoria")
       );
     } finally {
       setDeleting(null);

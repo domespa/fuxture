@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -51,17 +52,29 @@ export default function Login() {
       // CHIAMATA API
       const response = await authAPI.login(data as LoginRequest);
 
+      // Questa e' la porta della dashboard e non un'area utente: un account
+      // senza ruolo ADMIN otterrebbe un token valido, verrebbe respinto dalla
+      // rotta protetta e tornerebbe qui senza sapere perche'. Meglio dirlo.
+      if (response.user.role !== "ADMIN") {
+        setError("Questo account non ha accesso alla dashboard");
+        return;
+      }
+
       // SALVA TOKEN E USER NELLO STORAGE
       localStorage.setItem("token", response.token);
       localStorage.setItem("user", JSON.stringify(response.user));
 
-      console.log("Login riuscito", response);
-
       // REDIRECT
       navigate("/dashboard");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Login error:", error);
-      setError(error.response?.data?.message || "Errore durante il login");
+      setError(
+        isAxiosError(error)
+          ? error.response?.data?.error ||
+              error.response?.data?.message ||
+              "Errore durante il login"
+          : "Errore durante il login"
+      );
     } finally {
       setIsLoading(false);
     }

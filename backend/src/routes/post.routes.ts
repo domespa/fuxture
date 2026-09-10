@@ -20,8 +20,16 @@ import {
 } from "../middleware/auth.middleware";
 import { isSlugValid } from "../utils/slug.utils";
 import { createCommentOnPost } from "../controllers/comment.controller";
+import { rateLimit } from "../middleware/rate-limit.middleware";
 
 const router = Router();
+
+// Stesso tetto della rotta gemella su /comments: e' lo stesso gesto.
+const commentRateLimit = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 5,
+  message: "Hai inviato troppi commenti, riprova tra qualche minuto",
+});
 
 // ====================================================================================================== //
 //                                   PUBLIC ROUTES
@@ -48,7 +56,9 @@ router.get("/check-slug/:slug", async (req, res) => {
 // ARGOMENTI: prima di /:id, altrimenti "tags" verrebbe letto come un id
 router.get("/tags", getPostTags);
 
-router.get("/slug/:slug", getPostBySlug);
+// authenticateTokenOptional serve a far vedere le bozze all'admin: senza,
+// req.user resta vuoto e il controller risponde 404 anche a chi ha scritto.
+router.get("/slug/:slug", authenticateTokenOptional, getPostBySlug);
 
 // LISTA POST FILTRATI
 // POST /posts
@@ -60,7 +70,7 @@ router.get("/:id", authenticateTokenOptional, getPostById);
 
 // CREA COMMENTO SU POST
 // POST /posts/:id/comments
-router.post("/:id/comments", createCommentOnPost);
+router.post("/:id/comments", commentRateLimit, createCommentOnPost);
 
 // ====================================================================================================== //
 // ====================================================================================================== //

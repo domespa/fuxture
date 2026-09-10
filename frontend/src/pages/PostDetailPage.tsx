@@ -435,7 +435,20 @@ export default function PostDetailPage() {
         <div
           className="post-content prose prose-lg max-w-none mb-12"
           style={{ color: "#1F2937" }}
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(post.content, {
+              ADD_ATTR: [
+                "data-type",
+                "scripturl",
+                "iframeurl",
+                "linkurl",
+                "imageurl",
+                "width",
+                "height",
+                "align",
+              ],
+            }),
+          }}
         />
         {/* <AdsterraBanner /> */}
         {/* Tags */}

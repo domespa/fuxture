@@ -12,6 +12,9 @@ import "dotenv/config";
 
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
+import compression from "compression";
+import helmet from "helmet";
+import { env } from "./config/env";
 import authRoutes from "./routes/auth.routes";
 import uploadRoutes from "./routes/upload.routes";
 import path from "path";
@@ -30,7 +33,7 @@ import breakingNewsRoutes from "./routes/breaking-news.routes";
 import contactRoutes from "./routes/contact.routes";
 import gameRoutes from "./routes/game.routes";
 
-const API_PREFIX = process.env.API_PREFIX || "/api";
+const API_PREFIX = env.apiPrefix;
 // ====================================================================================================== //
 // ====================================================================================================== //
 
@@ -39,7 +42,10 @@ const API_PREFIX = process.env.API_PREFIX || "/api";
 // ====================================================================================================== //
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = env.port;
+app.disable("x-powered-by");
+app.use(helmet());
+app.use(compression());
 
 // SU RENDER SIAMO DIETRO UN PROXY: SERVE PER LEGGERE L IP REALE (RATE LIMIT CLASSIFICHE)
 app.set("trust proxy", 1);
@@ -53,7 +59,7 @@ app.use(
       "http://localhost:5174",
     ],
     credentials: true,
-  })
+  }),
 );
 // ====================================================================================================== //
 // ====================================================================================================== //
@@ -149,7 +155,10 @@ app.use((req, res) => {
 // GESTORE ERRORI: DEVE AVERE QUATTRO PARAMETRI, ALTRIMENTI EXPRESS LO TRATTA
 // COME UN MIDDLEWARE NORMALE E NON LO CHIAMA MAI
 app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
-  console.error(`❌ Errore non gestito su ${req.method} ${req.originalUrl}:`, err);
+  console.error(
+    `❌ Errore non gestito su ${req.method} ${req.originalUrl}:`,
+    err,
+  );
 
   if (res.headersSent) return;
 
@@ -179,7 +188,7 @@ app.listen(PORT, () => {
   // che non riceve nulla.
   if (!process.env.SMTP_HOST) {
     console.error(
-      "❌ SMTP_HOST non configurato: nessuna email verra' recapitata"
+      "❌ SMTP_HOST non configurato: nessuna email verra' recapitata",
     );
   }
   verifyEmailConnection();

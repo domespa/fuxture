@@ -1,5 +1,6 @@
 import { formatDateLong } from "@/lib/datetime";
 import { getApiErrorMessage } from "@/lib/apiError";
+import DOMPurify from "dompurify";
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { postsAPI, commentsAPI, api } from "@/services/api";
@@ -56,7 +57,8 @@ export default function PostDetailPage() {
         return;
       } catch (error) {
         // L utente ha chiuso il menu: non e un errore, non si fa niente
-        if (error instanceof DOMException && error.name === "AbortError") return;
+        if (error instanceof DOMException && error.name === "AbortError")
+          return;
         // Qualunque altro problema: si ripiega sulla copia del link
       }
     }
@@ -433,7 +435,7 @@ export default function PostDetailPage() {
         <div
           className="post-content prose prose-lg max-w-none mb-12"
           style={{ color: "#1F2937" }}
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
         />
         {/* <AdsterraBanner /> */}
         {/* Tags */}

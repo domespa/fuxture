@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { AlertCircle, ExternalLink, Newspaper, RefreshCw } from "lucide-react";
 
 interface NewsArticle {
@@ -27,7 +27,7 @@ export default function NewsWidget() {
 
   const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
-  const fetchNews = async () => {
+  const fetchNews = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -44,11 +44,11 @@ export default function NewsWidget() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_URL]);
 
   useEffect(() => {
-    fetchNews();
-  }, []);
+    void fetchNews();
+  }, [fetchNews]);
 
   const formatDate = (dateString: string) => {
     const now = new Date();

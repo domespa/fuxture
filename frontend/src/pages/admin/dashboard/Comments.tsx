@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { commentsAPI } from "@/services/api";
 import {
   CommentResponse,
@@ -36,7 +36,7 @@ export default function Comments() {
   });
 
   // FETCH COMMENTI
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     setLoading(true);
     try {
       const response = await commentsAPI.getComments(filters);
@@ -57,9 +57,9 @@ export default function Comments() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
-  const fetchStatusCounts = async () => {
+  const fetchStatusCounts = useCallback(async () => {
     try {
       // Totale generale
       const allResponse = await commentsAPI.getComments({ limit: 1 });
@@ -92,24 +92,24 @@ export default function Comments() {
     } catch (error) {
       console.error("Error fetching status counts:", error);
     }
-  };
+  }, []);
 
   // CARICA COMMENTI AL MOUNT E QUANDO CAMBIANO I FILTRI
   useEffect(() => {
-    fetchComments();
-    fetchStatusCounts();
-  }, [filters]);
+    void fetchComments();
+    void fetchStatusCounts();
+  }, [fetchComments, fetchStatusCounts]);
 
   // CAMBIA STATUS
   const handleStatusChange = async (
     commentId: string,
-    newStatus: CommentStatus
+    newStatus: CommentStatus,
   ) => {
     try {
       await commentsAPI.updateCommentStatus(commentId, { status: newStatus });
       toast.success(`Commento ${newStatus.toLowerCase()}`);
-      fetchComments();
-      fetchStatusCounts();
+      await fetchComments();
+      await fetchStatusCounts();
     } catch (error) {
       console.error("Error updating status:", error);
       toast.error("Errore nell'aggiornamento dello status");
@@ -257,7 +257,7 @@ export default function Comments() {
                     <td className="px-6 py-4">
                       <span
                         className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(
-                          comment.status
+                          comment.status,
                         )}`}
                       >
                         {comment.status}
@@ -280,7 +280,7 @@ export default function Comments() {
                             onClick={() =>
                               handleStatusChange(
                                 comment.id,
-                                CommentStatus.APPROVED
+                                CommentStatus.APPROVED,
                               )
                             }
                             title="Approva"
@@ -297,7 +297,7 @@ export default function Comments() {
                             onClick={() =>
                               handleStatusChange(
                                 comment.id,
-                                CommentStatus.REJECTED
+                                CommentStatus.REJECTED,
                               )
                             }
                             title="Rifiuta"

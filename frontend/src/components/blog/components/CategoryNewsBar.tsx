@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { newsService } from "@/services/newsService";
 
 interface NewsArticle {
@@ -32,7 +32,7 @@ export const CategoryNewsBar = ({
   const [isExiting, setIsExiting] = useState(false);
 
   // FETCH NEWS CONTESTUALI
-  const fetchCategoryNews = async () => {
+  const fetchCategoryNews = useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await newsService.fetchCategoryNews(category);
@@ -44,11 +44,11 @@ export const CategoryNewsBar = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [category]);
 
   useEffect(() => {
-    fetchCategoryNews();
-  }, [category]);
+    void fetchCategoryNews();
+  }, [fetchCategoryNews]);
 
   // AUTO-SLIDE
   useEffect(() => {

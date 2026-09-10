@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Circle } from "lucide-react";
 import type { NewsArticle } from "@/types/news.types";
 
@@ -11,7 +11,7 @@ export default function BreakingNewsBar() {
   const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
   // FETCH
-  const fetchBreakingNews = async () => {
+  const fetchBreakingNews = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/breaking-news`);
       if (!response.ok) throw new Error("Failed to fetch");
@@ -26,11 +26,11 @@ export default function BreakingNewsBar() {
       console.error("Error fetching breaking news:", error);
       setIsLoading(false);
     }
-  };
+  }, [API_URL]);
 
   useEffect(() => {
-    fetchBreakingNews();
-  }, []);
+    void fetchBreakingNews();
+  }, [fetchBreakingNews]);
 
   useEffect(() => {
     if (news.length === 0) return;

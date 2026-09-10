@@ -9,6 +9,7 @@ import {
   PostStatus,
 } from "../types/post.types";
 import { generateUniqueSlug, isSlugValid } from "../utils/slug.utils";
+import { sanitizePostHtml } from "../utils/htmlSanitizer";
 
 // COLONNE SU CUI E' LECITO ORDINARE.
 // L'elenco e' chiuso perche' il valore arriva dalla query string e finisce
@@ -63,7 +64,8 @@ export async function createPost(req: Request, res: Response): Promise<void> {
     }
 
     // GENERA EXCERPT SEO SE MANCANO
-    const excerpt = data.excerpt || generateExcerpt(data.content);
+    const content = sanitizePostHtml(data.content);
+    const excerpt = data.excerpt || generateExcerpt(content);
     const seoTitle = data.seoTitle || data.title;
     const seoDescription = data.seoDescription || excerpt;
 
@@ -78,7 +80,7 @@ export async function createPost(req: Request, res: Response): Promise<void> {
       data: {
         title: data.title,
         slug,
-        content: data.content,
+        content,
         excerpt,
         featuredImage: data.featuredImage || null,
         images: data.images || [],
@@ -141,7 +143,7 @@ export async function getPosts(req: Request, res: Response): Promise<void> {
     const page = Math.max(1, parseInt(filters.page as any) || 1);
     const limit = Math.min(
       50,
-      Math.max(1, parseInt(filters.limit as any) || 10)
+      Math.max(1, parseInt(filters.limit as any) || 10),
     );
     const skip = (page - 1) * limit;
 
@@ -329,7 +331,9 @@ export async function updatePost(req: Request, res: Response): Promise<void> {
     const updateData: any = {};
 
     if (data.title !== undefined) updateData.title = data.title;
-    if (data.content !== undefined) updateData.content = data.content;
+    if (data.content !== undefined) {
+      updateData.content = sanitizePostHtml(data.content);
+    }
     if (data.excerpt !== undefined) updateData.excerpt = data.excerpt;
     if (data.featuredImage !== undefined)
       updateData.featuredImage = data.featuredImage;
@@ -546,7 +550,10 @@ export const getPostBySlug = async (req: Request, res: Response) => {
     // INCREMENTIAMO VIEWS
     // Solo sui pubblicati e non per l'autore, come in getPostById: altrimenti
     // il contatore misura anche le riletture di chi ha scritto l'articolo.
-    if (post.status === PostStatus.PUBLISHED && req.user?.userId !== post.authorId) {
+    if (
+      post.status === PostStatus.PUBLISHED &&
+      req.user?.userId !== post.authorId
+    ) {
       await prisma.post.update({
         where: { id: post.id },
         data: { views: { increment: 1 } },
@@ -577,12 +584,12 @@ export const getPostBySlug = async (req: Request, res: Response) => {
 // ====================================================================================================== //
 export const getPostTags = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const limit = Math.min(
       Math.max(parseInt(String(req.query.limit ?? 20), 10) || 20, 1),
-      100
+      100,
     );
 
     const posts = await prisma.post.findMany({

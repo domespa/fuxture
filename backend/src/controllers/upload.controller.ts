@@ -20,7 +20,7 @@ interface UploadResponse {
 // ====================================================================================================== //
 export async function uploadSingleImage(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     // VERIFICHIAMO CHE MULTER ABBIA PRESO IL FILE
@@ -35,7 +35,13 @@ export async function uploadSingleImage(
     const uploadedFile = req.file;
 
     // PROCESSIAMO L'IMMAGINE
-    const processedPath = await processImage(uploadedFile.path);
+    let processedPath: string;
+    try {
+      processedPath = await processImage(uploadedFile.path);
+    } catch (error) {
+      await fs.unlink(uploadedFile.path).catch(() => undefined);
+      throw error;
+    }
 
     // OTTENIAMO LE INFO
     const stats = await fs.stat(processedPath);
@@ -75,7 +81,7 @@ export async function uploadSingleImage(
 // ====================================================================================================== //
 export async function uploadMultiImages(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {

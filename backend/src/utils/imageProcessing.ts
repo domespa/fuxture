@@ -15,7 +15,7 @@ interface ImageProcessingOptions {
 export async function processImage(
   inputPath: string,
   outputPath?: string,
-  options: ImageProcessingOptions = {}
+  options: ImageProcessingOptions = {},
 ): Promise<string> {
   // VALORI DI DEFAULT
   const { maxWidth = 1920, maxHeight = 1080, quality = 80, format } = options;
@@ -24,11 +24,16 @@ export async function processImage(
   const finalOutputPath = outputPath || inputPath;
 
   try {
-    // LEGGIAMO I METADATI
+    // Sharp decodifica il contenuto reale: il MIME dichiarato dal client non
+    // e' sufficiente per considerare valido un upload.
     const metadata = await sharp(inputPath).metadata();
 
+    if (!metadata.format || !metadata.width || !metadata.height) {
+      throw new Error("Invalid image file");
+    }
+
     // INIZIALIZZIAMO SHARP CON IL FILE
-    let pipeline = sharp(inputPath);
+    let pipeline = sharp(inputPath).rotate();
 
     // FACCIAMO UN RESIZE SE L'IMMAGINE SUPERA I LIMITI
     if (
@@ -101,7 +106,7 @@ export async function processImage(
 // ====================================================================================================== //
 export async function createThumbnail(
   inputPath: string,
-  size: number = 300
+  size: number = 300,
 ): Promise<string> {
   const ext = path.extname(inputPath);
   const basename = path.basename(inputPath, ext);

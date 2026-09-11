@@ -1,915 +1,1169 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:v="urn:schemas-microsoft-com:vml"
-    xmlns:o="urn:schemas-microsoft-com:office:office"
-    lang="it"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:v="urn:schemas-microsoft-com:vml"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:w="urn:schemas-microsoft-com:office:word"
+  lang="it"
 >
-    <head>
-        <!--[if gte mso 9]>
-            <xml>
-                <o:OfficeDocumentSettings>
-                    <o:AllowPNG /> <o:PixelsPerInch>96</o:PixelsPerInch>
-                </o:OfficeDocumentSettings>
-            </xml><!
-        [endif]-->
-        <title>Template Responsive</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0 " />
-        <meta name="format-detection" content="telephone=no" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-            rel="stylesheet"
-        />
-        <style type="text/css">
-            #outlook a {
-                padding: 0;
-            }
-            body {
-                margin: 0 !important;
-                padding: 0 !important;
-                -webkit-text-size-adjust: 100% !important;
-                -ms-text-size-adjust: 100% !important;
-                -webkit-font-smoothing: antialiased !important;
-            }
-            img {
-                border: 0 !important;
-                outline: none !important;
-                text-decoration: none;
-                -ms-interpolation-mode: bicubic;
-            }
-            .image_fix {
-                display: block;
-            }
-            p {
-                margin: 0px !important;
-                padding: 0px !important;
-            }
-            table {
-                border-collapse: collapse;
-                mso-table-lspace: 0pt;
-                mso-table-rspace: 0pt;
-            }
-            a {
-                color: #000000;
-            }
-            td,
-            a,
-            span {
-                border-collapse: collapse;
-                mso-line-height-rule: exactly;
-            }
-        </style>
-        <!-- Fix per sans-serif su outlook -->
-        <!--  Ogni porzione di testo va inserita in un elemento (tipo span o strong) separato a cui viene assegnata una classe -->
-        <!--  (.txt in questo template) che funziono solo se la mail viene aperta su microsoft outlook per window -->
-        <!--[if mso]>
-            <style>
-                body,
-                table tr,
-                table td,
-                a,
-                span,
-                table.MsoNormalTable {
-                    font-family: Arial, sans-serif !important;
-                }
-                .txt {
-                    font-family: Arial, sans-serif !important;
-                }
-            </style><!
-        [endif]-->
-    </head>
-    <body style="margin: 0; padding: 0">
-        <!-- TABELLA LAYOUT PRINCIPALE -->
-        <!-- **** RICORDARSI DI METTERE SEMPRE IL FOOTER AL FONDO DELLE DEM *** -->
-        <table
+  <head>
+    <!--[if gte mso 9
+      ]><xml
+        ><o:OfficeDocumentSettings
+          ><o:AllowPNG /><o:PixelsPerInch
+            >96</o:PixelsPerInch
+          ></o:OfficeDocumentSettings
+        ></xml
+      ><!
+    [endif]-->
+    <title>Finestra Infinity - Promo del mese</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="format-detection"
+      content="telephone=no, date=no, address=no, email=no"
+    />
+    <meta name="x-apple-disable-message-reformatting" />
+    <!--[if !mso]><!-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!--<![endif]-->
+    <style type="text/css">
+      #outlook a {
+        padding: 0;
+      }
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-text-size-adjust: 100% !important;
+        -ms-text-size-adjust: 100% !important;
+        -webkit-font-smoothing: antialiased !important;
+      }
+      img {
+        border: 0 !important;
+        outline: none !important;
+        text-decoration: none;
+        -ms-interpolation-mode: bicubic;
+      }
+      .image_fix {
+        display: block;
+      }
+      p {
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      table {
+        border-collapse: collapse;
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+      }
+      a {
+        color: #000000;
+      }
+      td,
+      a,
+      span {
+        border-collapse: collapse;
+        mso-line-height-rule: exactly;
+      }
+
+      @media only screen and (max-width: 480px) {
+        .hero {
+          height: 600px !important;
+        }
+        .list {
+          width: 100% !important;
+        }
+      }
+    </style>
+    <!-- Fix sans-serif su Outlook: ogni porzione di testo va in uno span con classe .txt -->
+    <!--[if mso]>
+      <style>
+        body,
+        table tr,
+        table td,
+        a,
+        span,
+        table.MsoNormalTable {
+          font-family: Arial, sans-serif !important;
+        }
+        .txt {
+          font-family: Arial, sans-serif !important;
+        }
+        .cta-bg {
+          background-color: transparent !important;
+        }
+      </style>
+    <![endif]-->
+  </head>
+  <body style="margin: 0; padding: 0; background-color: #f5f5f5">
+    <!-- PREHEADER -->
+    <div
+      style="
+        display: none;
+        font-size: 1px;
+        color: #f5f5f5;
+        line-height: 1px;
+        max-height: 0;
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        mso-hide: all;
+      "
+    >
+      Finestra Infinity: sconto immediato del 40% e detrazione fiscale fino al
+      50%.&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;
+    </div>
+
+    <!-- TABELLA LAYOUT PRINCIPALE -->
+    <table
+      width="100%"
+      bgcolor="#F5F5F5"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      role="presentation"
+      style="
+        min-width: 360px;
+        background-color: #f5f5f5;
+        border-collapse: collapse;
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+      "
+    >
+      <tr>
+        <td align="center">
+          <!-- CARD -->
+          <table
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
             width="100%"
-            bgcolor="#F5F5F5"
-            style="min-width: 360px; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt"
+            bgcolor="#ffffff"
             role="presentation"
-        >
+            style="
+              max-width: 650px;
+              background-color: #ffffff;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+              border-collapse: collapse;
+              mso-table-lspace: 0pt;
+              mso-table-rspace: 0pt;
+            "
+          >
             <tr>
-                <td align="center">
-                    <table
-                        cellpadding="0"
-                        cellspacing="0"
-                        width="100%"
-                        bgcolor="#ffffff"
+              <td style="font-size: 0">&nbsp;</td>
+              <td width="650" style="font-size: 0; max-width: 650px">
+                <table
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  align="center"
+                  role="presentation"
+                  style="
+                    width: 100%;
+                    border-collapse: collapse;
+                    mso-table-lspace: 0pt;
+                    mso-table-rspace: 0pt;
+                  "
+                >
+                  <!--SPAZIO-->
+                  <tr>
+                    <td
+                      height="5"
+                      style="font-size: 0; line-height: 0; padding: 0"
+                    >
+                      &nbsp;
+                    </td>
+                  </tr>
+
+                  <!--LOGO-->
+                  <tr>
+                    <td align="center" valign="middle" style="font-size: 0">
+                      <a
+                        href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
                         style="
-                            max-width: 650px;
-                            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+                          border: none;
+                          text-decoration: none;
+                          color: #000000;
+                        "
+                      >
+                        <img
+                          src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/logo_2x.jpg"
+                          alt="Più Finestre"
+                          width="171"
+                          border="0"
+                          class="image_fix"
+                          style="
+                            display: block;
+                            width: 171px;
+                            max-width: 171px;
+                            height: auto;
+                            outline: none;
+                            text-decoration: none;
+                            -ms-interpolation-mode: bicubic;
+                          "
+                        />
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!--SPAZIO-->
+                  <tr>
+                    <td
+                      height="5"
+                      style="font-size: 0; line-height: 0; padding: 0"
+                    >
+                      &nbsp;
+                    </td>
+                  </tr>
+
+                  <!--COVER-->
+                  <tr>
+                    <td
+                      class="hero"
+                      background="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/img_dem_2x_.jpg"
+                      bgcolor="#2d2d2d"
+                      align="center"
+                      valign="top"
+                      height="738"
+                      style="
+                        font-size: 0;
+                        height: 738px;
+                        background-color: #2d2d2d;
+                        background-image: url(&quot;https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/img_dem_2x_.jpg&quot;);
+                        background-size: cover;
+                        background-repeat: no-repeat;
+                        background-position: center;
+                      "
+                    >
+                      <!--[if gte mso 9]><v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:650px;height:738px;"><v:fill type="frame" aspect="atleast" origin="0.5,0.5" position="0.5,0.5" src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/img_dem_2x_.jpg" color="#2d2d2d" /><v:textbox inset="0,0,0,0"><![endif]-->
+                      <div>
+                        <table
+                          width="100%"
+                          cellpadding="0"
+                          cellspacing="0"
+                          border="0"
+                          align="center"
+                          role="presentation"
+                          style="
+                            width: 100%;
                             border-collapse: collapse;
                             mso-table-lspace: 0pt;
                             mso-table-rspace: 0pt;
-                            background-color: #ffffff;
-                            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
-                        "
-                        role="presentation"
-                    >
-                        <tr>
-                            <td style="font-size: 0"> </td>
-                            <td width="650" style="font-size: 0; max-width: 650px">
-                                <!-- Inserire sempre il contenuto di questa cella all'interno di una tabella (cioè quella qui sotto) -->
-                                <table
-                                    width="100%"
-                                    cellpadding="0"
-                                    cellspacing="0"
-                                    border="0"
+                          "
+                        >
+                          <!--SPAZIO-->
+                          <tr>
+                            <td
+                              height="30"
+                              style="font-size: 0; line-height: 0; padding: 0"
+                            >
+                              &nbsp;
+                            </td>
+                          </tr>
+
+                          <!--SUBTITLE-->
+                          <tr>
+                            <td
+                              align="center"
+                              valign="middle"
+                              style="font-size: 0; padding: 0 20px"
+                            >
+                              <a
+                                href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                                style="
+                                  border: none;
+                                  text-decoration: none;
+                                  color: #ffffff;
+                                "
+                              >
+                                <span
+                                  style="
+                                    font-family:
+                                      Montserrat, Arial, sans-serif !important;
+                                    font-size: 14px;
+                                    line-height: 20px;
+                                    font-weight: 700;
+                                    color: #ffffff;
+                                    mso-line-height-rule: exactly;
+                                  "
+                                  ><span class="txt">Promo del mese</span></span
+                                >
+                              </a>
+                            </td>
+                          </tr>
+
+                          <!--SPAZIO-->
+                          <tr>
+                            <td
+                              height="3"
+                              style="font-size: 0; line-height: 0; padding: 0"
+                            >
+                              &nbsp;
+                            </td>
+                          </tr>
+
+                          <!--TITLE-->
+                          <tr>
+                            <td
+                              align="center"
+                              valign="middle"
+                              style="font-size: 0; padding: 0 20px"
+                            >
+                              <a
+                                href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                                style="
+                                  border: none;
+                                  text-decoration: none;
+                                  color: #ffffff;
+                                "
+                              >
+                                <span
+                                  style="
+                                    font-family:
+                                      Montserrat, Arial, sans-serif !important;
+                                    font-size: 35px;
+                                    line-height: 38px;
+                                    font-weight: 300;
+                                    color: #ffffff;
+                                    mso-line-height-rule: exactly;
+                                  "
+                                  ><span class="txt"
+                                    >Finestra Infinity</span
+                                  ></span
+                                >
+                              </a>
+                            </td>
+                          </tr>
+
+                          <!--SPAZIO-->
+                          <tr>
+                            <td
+                              height="18"
+                              style="font-size: 0; line-height: 0; padding: 0"
+                            >
+                              &nbsp;
+                            </td>
+                          </tr>
+
+                          <!--TEXT-->
+                          <tr>
+                            <td
+                              align="center"
+                              valign="middle"
+                              style="font-size: 0; padding: 0 20px"
+                            >
+                              <a
+                                href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                                style="
+                                  border: none;
+                                  text-decoration: none;
+                                  color: #ffffff;
+                                "
+                              >
+                                <span
+                                  style="
+                                    font-family:
+                                      Montserrat, Arial, sans-serif !important;
+                                    font-size: 24px;
+                                    line-height: 34px;
+                                    color: #ffffff;
+                                    mso-line-height-rule: exactly;
+                                  "
+                                  ><span class="txt"
+                                    ><strong>Sconto</strong> immediato del
+                                    <strong>40%</strong><br /><strong
+                                      >detrazione</strong
+                                    >
+                                    fiscale fino al <strong>50%</strong></span
+                                  ></span
+                                >
+                              </a>
+                            </td>
+                          </tr>
+
+                          <!--SPAZIO-->
+                          <tr>
+                            <td
+                              height="49"
+                              style="font-size: 0; line-height: 0; padding: 0"
+                            >
+                              &nbsp;
+                            </td>
+                          </tr>
+
+                          <!--TEXT CTA-->
+                          <tr>
+                            <td
+                              align="center"
+                              valign="middle"
+                              style="font-size: 0; padding: 0 20px"
+                            >
+                              <a
+                                href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                                style="
+                                  border: none;
+                                  text-decoration: none;
+                                  color: #ffffff;
+                                "
+                              >
+                                <span
+                                  style="
+                                    font-family:
+                                      Montserrat, Arial, sans-serif !important;
+                                    font-size: 14px;
+                                    line-height: 18px;
+                                    font-weight: 700;
+                                    color: #ffffff;
+                                    mso-line-height-rule: exactly;
+                                  "
+                                  ><span class="txt"
+                                    >PROMO VALIDA SOLO PER QUESTO MESE</span
+                                  ></span
+                                >
+                              </a>
+                            </td>
+                          </tr>
+
+                          <!--SPAZIO-->
+                          <tr>
+                            <td
+                              height="15"
+                              style="font-size: 0; line-height: 0; padding: 0"
+                            >
+                              &nbsp;
+                            </td>
+                          </tr>
+
+                          <!--CTA-->
+                          <tr>
+                            <td
+                              align="center"
+                              valign="middle"
+                              style="font-size: 0"
+                            >
+                              <table
+                                width="266"
+                                cellpadding="0"
+                                cellspacing="0"
+                                border="0"
+                                align="center"
+                                role="presentation"
+                                style="
+                                  width: 266px;
+                                  border-collapse: collapse;
+                                  mso-table-lspace: 0pt;
+                                  mso-table-rspace: 0pt;
+                                "
+                              >
+                                <tr>
+                                  <td
+                                    class="cta-bg"
                                     align="center"
                                     style="
-                                        border-collapse: collapse;
-                                        mso-table-lspace: 0pt;
-                                        mso-table-rspace: 0pt;
-                                        width: 100%;
+                                      background-color: #ffa700;
+                                      border-radius: 28px;
                                     "
-                                    role="presentation"
-                                >
-                                    <!--SPAZIO-->
-                                    <tr>
-                                        <td align="center" colspan="3" height="5" style="font-size: 0; padding: 0"></td>
-                                    </tr>
-                                    <!--LOGO-->
-                                    <tr>
-                                        <td align="center" valign="middle" style="font-size: 0">
-                                            <a
-                                                href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                style="border: none; text-decoration: none; color: #000000"
-                                            >
-                                                <img
-                                                    border="0"
-                                                    src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/logo_2x.jpg"
-                                                    alt=""
-                                                    class="image_fix"
-                                                    width="171"
-                                                    height=""
-                                                    style="
-                                                        outline: none;
-                                                        text-decoration: none;
-                                                        -ms-interpolation-mode: bicubic;
-                                                    "
-                                                />
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <!--SPAZIO-->
-                                    <tr>
-                                        <td align="center" colspan="3" height="5" style="font-size: 0; padding: 0"></td>
-                                    </tr>
-                                    <!--COVER-->
-                                    <tr>
-                                        <td align="center" valign="middle" style="font-size: 0">
-                                            <!--[if gte mso 9]>                    <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;height:705px;">                      <v:fill type="tile" src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/img_dem.jpg" color="#ffffff" />                      <v:textbox inset="0,0,0,0"><![endif]-->
-                                            <table
-                                                width="100%"
-                                                cellpadding="0"
-                                                cellspacing="0"
-                                                border="0"
-                                                role="presentation"
-                                            >
-                                                <tr>
-                                                    <td
-                                                        background="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/img_dem_2x_.jpg"
-                                                        align="center"
-                                                        valign="top"
-                                                        width="600"
-                                                        height="738"
-                                                        style="
-                                                            font-size: 0;
-                                                            width: 600px;
-                                                            height: 738px;
-                                                            background-size: cover;
-                                                            background-repeat: no-repeat;
-                                                            background-position: center;
-                                                            background-image: url(&quot;https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/img_dem_2x_.jpg&quot;);
-                                                        "
-                                                    >
-                                                        <table
-                                                            width="100%"
-                                                            cellpadding="0"
-                                                            cellspacing="0"
-                                                            border="0"
-                                                            align="center"
-                                                            style="
-                                                                border-collapse: collapse;
-                                                                mso-table-lspace: 0pt;
-                                                                mso-table-rspace: 0pt;
-                                                                width: 100%;
-                                                            "
-                                                            role="presentation"
-                                                        >
-                                                            <!--SPAZIO-->
-                                                            <tr>
-                                                                <td
-                                                                    align="center"
-                                                                    colspan="3"
-                                                                    height="30"
-                                                                    style="font-size: 0; padding: 0"
-                                                                ></td>
-                                                            </tr>
-                                                            <!--SUBTITLE-->
-                                                            <tr>
-                                                                <td align="center" valign="middle" style="font-size: 0">
-                                                                    <a
-                                                                        href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                                        style="
-                                                                            border: none;
-                                                                            text-decoration: none;
-                                                                            color: #000000;
-                                                                        "
-                                                                    >
-                                                                        <span
-                                                                            style="
-                                                                                font-family: Montserrat, Arial,
-                                                                                    sans-serif !important;
-                                                                                font-size: 14px;
-                                                                                line-height: 20px;
-                                                                                font-weight: 700;
-                                                                                color: #ffffff;
-                                                                                mso-line-height-rule: exactly;
-                                                                            "
-                                                                        >
-                                                                            <span class="txt">Promo del mese</span>
-                                                                        </span>
-                                                                    </a>
-                                                                </td>
-                                                            </tr>
-                                                            <!--SPAZIO-->
-                                                            <tr>
-                                                                <td
-                                                                    align="center"
-                                                                    colspan="3"
-                                                                    height="3"
-                                                                    style="font-size: 0; padding: 0"
-                                                                ></td>
-                                                            </tr>
-                                                            <!--TITLE-->
-                                                            <tr>
-                                                                <td align="center" valign="middle" style="font-size: 0">
-                                                                    <a
-                                                                        href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                                        style="
-                                                                            border: none;
-                                                                            text-decoration: none;
-                                                                            color: #000000;
-                                                                        "
-                                                                    >
-                                                                        <span
-                                                                            style="
-                                                                                font-family: Montserrat, Arial,
-                                                                                    sans-serif !important;
-                                                                                font-size: 35px;
-                                                                                line-height: 35px;
-                                                                                color: #ffffff;
-                                                                                font-weight: 300;
-                                                                                mso-line-height-rule: exactly;
-                                                                            "
-                                                                        >
-                                                                            <span class="txt">Finestra Infinity</span>
-                                                                        </span>
-                                                                    </a>
-                                                                </td>
-                                                            </tr>
-                                                            <!--SPAZIO-->
-                                                            <tr>
-                                                                <td
-                                                                    align="center"
-                                                                    colspan="3"
-                                                                    height="18"
-                                                                    style="font-size: 0; padding: 0"
-                                                                ></td>
-                                                            </tr>
-                                                            <!--TEXT-->
-                                                            <tr>
-                                                                <td align="center" valign="middle" style="font-size: 0">
-                                                                    <a
-                                                                        href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                                        style="
-                                                                            border: none;
-                                                                            text-decoration: none;
-                                                                            color: #000000;
-                                                                        "
-                                                                    >
-                                                                        <span
-                                                                            style="
-                                                                                font-family: Montserrat, Arial,
-                                                                                    sans-serif !important;
-                                                                                font-size: 24px;
-                                                                                line-height: 34px;
-                                                                                color: #ffffff;
-                                                                                mso-line-height-rule: exactly;
-                                                                            "
-                                                                        >
-                                                                            <span class="txt"
-                                                                                ><strong>Sconto</strong> immediato del
-                                                                                <strong>40%</strong> <br />
-                                                                                <strong>detrazione</strong> fiscale fino
-                                                                                al <strong>50%</strong></span
-                                                                            >
-                                                                        </span>
-                                                                    </a>
-                                                                </td>
-                                                            </tr>
-                                                            <!--SPAZIO-->
-                                                            <tr>
-                                                                <td
-                                                                    align="center"
-                                                                    colspan="3"
-                                                                    height="49"
-                                                                    style="font-size: 0; padding: 0"
-                                                                ></td>
-                                                            </tr>
-                                                            <!--TEXT CTA-->
-                                                            <tr>
-                                                                <td align="center" valign="middle" style="font-size: 0">
-                                                                    <a
-                                                                        href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                                        style="
-                                                                            border: none;
-                                                                            text-decoration: none;
-                                                                            color: #000000;
-                                                                        "
-                                                                    >
-                                                                        <span
-                                                                            style="
-                                                                                font-family: Montserrat, Arial,
-                                                                                    sans-serif !important;
-                                                                                font-size: 14px;
-                                                                                line-height: 18px;
-                                                                                color: #ffffff;
-                                                                                font-weight: 700;
-                                                                                mso-line-height-rule: exactly;
-                                                                            "
-                                                                        >
-                                                                            <span class="txt"
-                                                                                >PROMO VALIDA SOLO PER QUESTO MESE</span
-                                                                            >
-                                                                        </span>
-                                                                    </a>
-                                                                </td>
-                                                            </tr>
-                                                            <!--SPAZIO-->
-                                                            <tr>
-                                                                <td
-                                                                    align="center"
-                                                                    colspan="3"
-                                                                    height="15"
-                                                                    style="font-size: 0; padding: 0"
-                                                                ></td>
-                                                            </tr>
-                                                            <!--CTA-->
-                                                            <tr>
-                                                                <td align="center" valign="middle" style="font-size: 0">
-                                                                    <table
-                                                                        width="266"
-                                                                        border="0"
-                                                                        cellspacing="0"
-                                                                        cellpadding="0"
-                                                                        style="
-                                                                            width: 266px;
-                                                                            border-collapse: collapse;
-                                                                            mso-table-lspace: 0pt;
-                                                                            mso-table-rspace: 0pt;
-                                                                        "
-                                                                    >
-                                                                        <tr>
-                                                                            <td
-                                                                                align="center"
-                                                                                bgcolor="#FFA700"
-                                                                                width="266"
-                                                                                height="40"
-                                                                                style="
-                                                                                    height: 40px;
-                                                                                    font-size: 0;
-                                                                                    width: 266px;
-                                                                                    background-color: #ffa700;
-                                                                                    border-radius: 28px;
-                                                                                "
-                                                                            >
-                                                                                <a
-                                                                                    href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                                                    style="
-                                                                                        width: 100%;
-                                                                                        text-transform: uppercase;
-                                                                                        font-size: 16px;
-                                                                                        line-height: 19px;
-                                                                                        mso-line-height-rule: exactly;
-                                                                                        font-family: Montserrat, Arial,
-                                                                                            sans-serif;
-                                                                                        font-weight: bold;
-                                                                                        color: #ffffff;
-                                                                                        text-decoration: none;
-                                                                                        display: block;
-                                                                                        padding-top: 11px;
-                                                                                        padding-bottom: 11px;
-                                                                                        border-radius: 28px;
-                                                                                    "
-                                                                                >
-                                                                                    <!--[if mso]> <!
-                                                                                    [endif]-->OTTIENI LA
-                                                                                    PROMO<!--[if mso]> <![endif]-->
-                                                                                </a>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </table>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                            <!--[if mso]></v:textbox>                  </v:rect><![endif]-->
-                                        </td>
-                                    </tr>
-                                    <!--SPAZIO-->
-                                    <tr>
-                                        <td
-                                            align="center"
-                                            colspan="3"
-                                            height="28"
-                                            style="font-size: 0; padding: 0"
-                                        ></td>
-                                    </tr>
-                                    <!--TITLE-->
-                                    <tr>
-                                        <td align="center" valign="middle" style="font-size: 0">
-                                            <a
-                                                href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                style="border: none; text-decoration: none; color: #000000"
-                                            >
-                                                <span
-                                                    style="
-                                                        font-family: Montserrat, Arial, sans-serif !important;
-                                                        font-size: 24px;
-                                                        line-height: 34px;
-                                                        color: #000000;
-                                                        mso-line-height-rule: exactly;
-                                                    "
-                                                >
-                                                    <span class="txt"
-                                                        >INFINITY <br />
-                                                        La finestra con Rinforzo Termico <br />
-                                                        <span class="txt" style="color: #3d9b72; font-weight: 700"
-                                                            >che ti fa risparmiare fino al</span
-                                                        ></span
-                                                    >
-                                                </span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <!--SPAZIO-->
-                                    <tr>
-                                        <td align="center" colspan="3" height="7" style="font-size: 0; padding: 0"></td>
-                                    </tr>
-                                    <!--TITLE-->
-                                    <tr>
-                                        <td align="center" valign="middle" style="font-size: 0">
-                                            <a
-                                                href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                style="border: none; text-decoration: none; color: #000000"
-                                            >
-                                                <span
-                                                    style="
-                                                        font-family: Montserrat, Arial, sans-serif !important;
-                                                        font-size: 38px;
-                                                        line-height: 40px;
-                                                        font-weight: 700;
-                                                        color: #3d9b72;
-                                                        mso-line-height-rule: exactly;
-                                                    "
-                                                >
-                                                    <span class="txt">40% in bolletta</span>
-                                                </span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <!--SPAZIO-->
-                                    <tr>
-                                        <td
-                                            align="center"
-                                            colspan="3"
-                                            height="28"
-                                            style="font-size: 0; padding: 0"
-                                        ></td>
-                                    </tr>
-                                    <!--LIST-->
-                                    <tr>
-                                        <td align="center" valign="middle" style="font-size: 0">
-                                            <table
-                                                width="361"
-                                                cellpadding="0"
-                                                cellspacing="0"
-                                                border="0"
-                                                align="center"
-                                                style="
-                                                    border-collapse: collapse;
-                                                    mso-table-lspace: 0pt;
-                                                    mso-table-rspace: 0pt;
-                                                    width: 361px;
-                                                "
-                                                role="presentation"
-                                            >
-                                                <!--ITEM-->
-                                                <tr>
-                                                    <td align="left" valign="middle" style="font-size: 0">
-                                                        <a
-                                                            href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                            style="border: none; text-decoration: none; color: #000000"
-                                                        >
-                                                            <img
-                                                                border="0"
-                                                                src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/pallino_2x.jpg"
-                                                                alt=""
-                                                                class="image_fix"
-                                                                width="10"
-                                                                height=""
-                                                                style="
-                                                                    outline: none;
-                                                                    text-decoration: none;
-                                                                    -ms-interpolation-mode: bicubic;
-                                                                "
-                                                            />
-                                                        </a>
-                                                    </td>
-                                                    <td width="20" style="font-size: 0"> </td>
-                                                    <td align="left" valign="middle" style="font-size: 0">
-                                                        <a
-                                                            href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                            style="border: none; text-decoration: none; color: #000000"
-                                                        >
-                                                            <span
-                                                                style="
-                                                                    font-family: Montserrat, Arial, sans-serif !important;
-                                                                    font-size: 18px;
-                                                                    line-height: 22px;
-                                                                    font-weight: 700;
-                                                                    color: #000000;
-                                                                    mso-line-height-rule: exactly;
-                                                                "
-                                                            >
-                                                                <span class="txt"
-                                                                    >Risparmio fino al 40% sulla bolletta</span
-                                                                >
-                                                            </span>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                                <!--SPAZIO-->
-                                                <tr>
-                                                    <td
-                                                        align="left"
-                                                        colspan="3"
-                                                        height="22"
-                                                        style="font-size: 0; padding: 0"
-                                                    ></td>
-                                                </tr>
-                                                <!--ITEM-->
-                                                <tr>
-                                                    <td align="left" valign="middle" style="font-size: 0">
-                                                        <a
-                                                            href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                            style="border: none; text-decoration: none; color: #000000"
-                                                        >
-                                                            <img
-                                                                border="0"
-                                                                src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/pallino_2x.jpg"
-                                                                alt=""
-                                                                class="image_fix"
-                                                                width="10"
-                                                                height=""
-                                                                style="
-                                                                    outline: none;
-                                                                    text-decoration: none;
-                                                                    -ms-interpolation-mode: bicubic;
-                                                                "
-                                                            />
-                                                        </a>
-                                                    </td>
-                                                    <td width="20" style="font-size: 0"> </td>
-                                                    <td align="left" valign="middle" style="font-size: 0">
-                                                        <a
-                                                            href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                            style="border: none; text-decoration: none; color: #000000"
-                                                        >
-                                                            <span
-                                                                style="
-                                                                    font-family: Montserrat, Arial, sans-serif !important;
-                                                                    font-size: 18px;
-                                                                    line-height: 22px;
-                                                                    font-weight: 700;
-                                                                    color: #000000;
-                                                                    mso-line-height-rule: exactly;
-                                                                "
-                                                            >
-                                                                <span class="txt">Resistenza superiore del 150%</span>
-                                                            </span>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                                <!--SPAZIO-->
-                                                <tr>
-                                                    <td
-                                                        align="left"
-                                                        colspan="3"
-                                                        height="22"
-                                                        style="font-size: 0; padding: 0"
-                                                    ></td>
-                                                </tr>
-                                                <!--ITEM-->
-                                                <tr>
-                                                    <td align="left" valign="middle" style="font-size: 0">
-                                                        <a
-                                                            href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                            style="border: none; text-decoration: none; color: #000000"
-                                                        >
-                                                            <img
-                                                                border="0"
-                                                                src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/pallino_2x.jpg"
-                                                                alt=""
-                                                                class="image_fix"
-                                                                width="10"
-                                                                height=""
-                                                                style="
-                                                                    outline: none;
-                                                                    text-decoration: none;
-                                                                    -ms-interpolation-mode: bicubic;
-                                                                "
-                                                            />
-                                                        </a>
-                                                    </td>
-                                                    <td width="20" style="font-size: 0"> </td>
-                                                    <td align="left" valign="middle" style="font-size: 0">
-                                                        <a
-                                                            href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                            style="border: none; text-decoration: none; color: #000000"
-                                                        >
-                                                            <span
-                                                                style="
-                                                                    font-family: Montserrat, Arial, sans-serif !important;
-                                                                    font-size: 18px;
-                                                                    line-height: 22px;
-                                                                    font-weight: 700;
-                                                                    color: #000000;
-                                                                    mso-line-height-rule: exactly;
-                                                                "
-                                                            >
-                                                                <span class="txt"
-                                                                    >Fino al 30% di luce naturale in più</span
-                                                                >
-                                                            </span>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                                <!--SPAZIO-->
-                                                <tr>
-                                                    <td
-                                                        align="left"
-                                                        colspan="3"
-                                                        height="22"
-                                                        style="font-size: 0; padding: 0"
-                                                    ></td>
-                                                </tr>
-                                                <!--ITEM-->
-                                                <tr>
-                                                    <td align="left" valign="middle" style="font-size: 0">
-                                                        <a
-                                                            href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                            style="border: none; text-decoration: none; color: #000000"
-                                                        >
-                                                            <img
-                                                                border="0"
-                                                                src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/pallino_2x.jpg"
-                                                                alt=""
-                                                                class="image_fix"
-                                                                width="10"
-                                                                height=""
-                                                                style="
-                                                                    outline: none;
-                                                                    text-decoration: none;
-                                                                    -ms-interpolation-mode: bicubic;
-                                                                "
-                                                            />
-                                                        </a>
-                                                    </td>
-                                                    <td width="20" style="font-size: 0"> </td>
-                                                    <td align="left" valign="middle" style="font-size: 0">
-                                                        <a
-                                                            href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                            style="border: none; text-decoration: none; color: #000000"
-                                                        >
-                                                            <span
-                                                                style="
-                                                                    font-family: Montserrat, Arial, sans-serif !important;
-                                                                    font-size: 18px;
-                                                                    line-height: 22px;
-                                                                    font-weight: 700;
-                                                                    color: #000000;
-                                                                    mso-line-height-rule: exactly;
-                                                                "
-                                                            >
-                                                                <span class="txt">30 anni di garanzia gratuita</span>
-                                                            </span>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                                <!--SPAZIO-->
-                                                <tr>
-                                                    <td
-                                                        align="left"
-                                                        colspan="3"
-                                                        height="22"
-                                                        style="font-size: 0; padding: 0"
-                                                    ></td>
-                                                </tr>
-                                                <!--ITEM-->
-                                                <tr>
-                                                    <td align="left" valign="middle" style="font-size: 0">
-                                                        <a
-                                                            href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                            style="border: none; text-decoration: none; color: #000000"
-                                                        >
-                                                            <img
-                                                                border="0"
-                                                                src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/pallino_2x.jpg"
-                                                                alt=""
-                                                                class="image_fix"
-                                                                width="10"
-                                                                height=""
-                                                                style="
-                                                                    outline: none;
-                                                                    text-decoration: none;
-                                                                    -ms-interpolation-mode: bicubic;
-                                                                "
-                                                            />
-                                                        </a>
-                                                    </td>
-                                                    <td width="20" style="font-size: 0"> </td>
-                                                    <td align="left" valign="middle" style="font-size: 0">
-                                                        <a
-                                                            href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                            style="border: none; text-decoration: none; color: #000000"
-                                                        >
-                                                            <span
-                                                                style="
-                                                                    font-family: Montserrat, Arial, sans-serif !important;
-                                                                    font-size: 18px;
-                                                                    line-height: 22px;
-                                                                    font-weight: 700;
-                                                                    color: #000000;
-                                                                    mso-line-height-rule: exactly;
-                                                                "
-                                                            >
-                                                                <span class="txt">100% made in Italy</span>
-                                                            </span>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <!--SPAZIO-->
-                                    <tr>
-                                        <td
-                                            align="center"
-                                            colspan="3"
-                                            height="30"
-                                            style="font-size: 0; padding: 0"
-                                        ></td>
-                                    </tr>
-                                    <!--CTA-->
-                                    <tr>
-                                        <td align="center" valign="middle" style="font-size: 0">
-                                            <table
-                                                width="266"
-                                                border="0"
-                                                cellspacing="0"
-                                                cellpadding="0"
-                                                style="
-                                                    width: 266px;
-                                                    border-collapse: collapse;
-                                                    mso-table-lspace: 0pt;
-                                                    mso-table-rspace: 0pt;
-                                                "
-                                            >
-                                                <tr>
-                                                    <td
-                                                        align="center"
-                                                        bgcolor="#FFA700"
-                                                        width="266"
-                                                        height="40"
-                                                        style="
-                                                            height: 40px;
-                                                            font-size: 0;
-                                                            width: 266px;
-                                                            background-color: #ffa700;
-                                                            border-radius: 28px;
-                                                        "
-                                                    >
-                                                        <a
-                                                            href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                            style="
-                                                                width: 100%;
-                                                                text-transform: uppercase;
-                                                                font-size: 16px;
-                                                                line-height: 19px;
-                                                                mso-line-height-rule: exactly;
-                                                                font-family: Montserrat, Arial, sans-serif;
-                                                                font-weight: bold;
-                                                                color: #ffffff;
-                                                                text-decoration: none;
-                                                                display: block;
-                                                                padding-top: 11px;
-                                                                padding-bottom: 11px;
-                                                                border-radius: 28px;
-                                                            "
-                                                        >
-                                                            <!--[if mso]> <!
-                                                            [endif]-->OTTIENI LA PROMO<!--[if mso]> <![endif]-->
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <!--SPAZIO-->
-                                    <tr>
-                                        <td
-                                            align="center"
-                                            colspan="3"
-                                            height="40"
-                                            style="font-size: 0; padding: 0"
-                                        ></td>
-                                    </tr>
-                                    <!--FOOTER-->
-                                    <tr>
-                                        <td align="center" valign="middle" style="font-size: 0">
-                                            <a
-                                                href="https://tracking.performagency.it/aff_c?offer_id=2127&aff_id=1089&file_id=8328&url_id=10825"
-                                                style="border: none; text-decoration: none; color: #000000"
-                                            >
-                                                <img
-                                                    border="0"
-                                                    src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/trustpilot_2x.jpg"
-                                                    alt="Trustpilot"
-                                                    class="image_fix"
-                                                    width="141"
-                                                    height=""
-                                                    style="
-                                                        outline: none;
-                                                        text-decoration: none;
-                                                        -ms-interpolation-mode: bicubic;
-                                                    "
-                                                />
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <!--SPAZIO-->
-                                    <tr>
-                                        <td
-                                            align="center"
-                                            colspan="3"
-                                            height="60"
-                                            style="font-size: 0; padding: 0"
-                                        ></td>
-                                    </tr>
-                                </table>
+                                  >
+                                    <!--[if mso
+                                      ]><v:roundrect
+                                        xmlns:v="urn:schemas-microsoft-com:vml"
+                                        xmlns:w="urn:schemas-microsoft-com:office:word"
+                                        href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                                        style="
+                                          height: 41px;
+                                          v-text-anchor: middle;
+                                          width: 266px;
+                                        "
+                                        arcsize="50%"
+                                        stroke="f"
+                                        fillcolor="#FFA700"
+                                        ><w:anchorlock />
+                                        <center
+                                          style="
+                                            color: #ffffff;
+                                            font-family: Arial, sans-serif;
+                                            font-size: 16px;
+                                            font-weight: bold;
+                                          "
+                                        >
+                                          OTTIENI LA PROMO
+                                        </center></v:roundrect
+                                      ><!
+                                    [endif]-->
+                                    <!--[if !mso
+                                    ]><!--><a
+                                      href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                                      style="
+                                        display: block;
+                                        padding: 11px 0;
+                                        font-family:
+                                          Montserrat, Arial, sans-serif;
+                                        font-size: 16px;
+                                        line-height: 19px;
+                                        font-weight: bold;
+                                        color: #ffffff;
+                                        text-decoration: none;
+                                        text-transform: uppercase;
+                                        border-radius: 28px;
+                                        mso-line-height-rule: exactly;
+                                      "
+                                      >OTTIENI LA PROMO</a
+                                    ><!--<![endif]-->
+                                  </td>
+                                </tr>
+                              </table>
                             </td>
-                            <td style="font-size: 0"> </td>
+                          </tr>
+                        </table>
+                      </div>
+                      <!--[if gte mso 9]></v:textbox></v:rect><![endif]-->
+                    </td>
+                  </tr>
+
+                  <!--SPAZIO-->
+                  <tr>
+                    <td
+                      height="28"
+                      style="font-size: 0; line-height: 0; padding: 0"
+                    >
+                      &nbsp;
+                    </td>
+                  </tr>
+
+                  <!--TITLE-->
+                  <tr>
+                    <td
+                      align="center"
+                      valign="middle"
+                      style="font-size: 0; padding: 0 20px"
+                    >
+                      <a
+                        href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                        style="
+                          border: none;
+                          text-decoration: none;
+                          color: #000000;
+                        "
+                      >
+                        <span
+                          style="
+                            font-family:
+                              Montserrat, Arial, sans-serif !important;
+                            font-size: 24px;
+                            line-height: 34px;
+                            color: #000000;
+                            mso-line-height-rule: exactly;
+                          "
+                          ><span class="txt"
+                            >INFINITY<br />La finestra con Rinforzo Termico<br /><span
+                              class="txt"
+                              style="color: #3d9b72; font-weight: 700"
+                              >che ti fa risparmiare fino al</span
+                            ></span
+                          ></span
+                        >
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!--SPAZIO-->
+                  <tr>
+                    <td
+                      height="7"
+                      style="font-size: 0; line-height: 0; padding: 0"
+                    >
+                      &nbsp;
+                    </td>
+                  </tr>
+
+                  <!--TITLE-->
+                  <tr>
+                    <td
+                      align="center"
+                      valign="middle"
+                      style="font-size: 0; padding: 0 20px"
+                    >
+                      <a
+                        href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                        style="
+                          border: none;
+                          text-decoration: none;
+                          color: #3d9b72;
+                        "
+                      >
+                        <span
+                          style="
+                            font-family:
+                              Montserrat, Arial, sans-serif !important;
+                            font-size: 38px;
+                            line-height: 40px;
+                            font-weight: 700;
+                            color: #3d9b72;
+                            mso-line-height-rule: exactly;
+                          "
+                          ><span class="txt">40% in bolletta</span></span
+                        >
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!--SPAZIO-->
+                  <tr>
+                    <td
+                      height="28"
+                      style="font-size: 0; line-height: 0; padding: 0"
+                    >
+                      &nbsp;
+                    </td>
+                  </tr>
+
+                  <!--LIST-->
+                  <tr>
+                    <td
+                      align="center"
+                      valign="middle"
+                      style="font-size: 0; padding: 0 20px"
+                    >
+                      <table
+                        class="list"
+                        width="361"
+                        cellpadding="0"
+                        cellspacing="0"
+                        border="0"
+                        align="center"
+                        role="presentation"
+                        style="
+                          width: 361px;
+                          border-collapse: collapse;
+                          mso-table-lspace: 0pt;
+                          mso-table-rspace: 0pt;
+                        "
+                      >
+                        <!--ITEM-->
+                        <tr>
+                          <td
+                            width="10"
+                            align="left"
+                            valign="middle"
+                            style="font-size: 0"
+                          >
+                            <img
+                              src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/pallino_2x.jpg"
+                              alt=""
+                              width="10"
+                              border="0"
+                              class="image_fix"
+                              style="
+                                display: block;
+                                width: 10px;
+                                height: auto;
+                                outline: none;
+                                text-decoration: none;
+                                -ms-interpolation-mode: bicubic;
+                              "
+                            />
+                          </td>
+                          <td width="20" style="font-size: 0">&nbsp;</td>
+                          <td align="left" valign="middle" style="font-size: 0">
+                            <a
+                              href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                              style="
+                                border: none;
+                                text-decoration: none;
+                                color: #000000;
+                              "
+                            >
+                              <span
+                                style="
+                                  font-family:
+                                    Montserrat, Arial, sans-serif !important;
+                                  font-size: 18px;
+                                  line-height: 22px;
+                                  font-weight: 700;
+                                  color: #000000;
+                                  mso-line-height-rule: exactly;
+                                "
+                                ><span class="txt"
+                                  >Risparmio fino al 40% sulla bolletta</span
+                                ></span
+                              >
+                            </a>
+                          </td>
                         </tr>
                         <tr>
-                            <td style="font-size: 0"> </td>
-                            <td style="max-width: 650px">
-                                <!-- RIGA DI MIN WIDTH -->
-                                <!-- L'immagine contenuta in questa riga forza il layout a una larghezza minima di 360 px -->
-                                <table
-                                    width="100%"
-                                    cellpadding="0"
-                                    cellspacing="0"
-                                    border="0"
-                                    align="center"
-                                    style="
-                                        border-collapse: collapse;
-                                        mso-table-lspace: 0pt;
-                                        mso-table-rspace: 0pt;
-                                        width: 100%;
-                                    "
-                                    role="presentation"
+                          <td
+                            colspan="3"
+                            height="22"
+                            style="font-size: 0; line-height: 0; padding: 0"
+                          >
+                            &nbsp;
+                          </td>
+                        </tr>
+
+                        <!--ITEM-->
+                        <tr>
+                          <td
+                            width="10"
+                            align="left"
+                            valign="middle"
+                            style="font-size: 0"
+                          >
+                            <img
+                              src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/pallino_2x.jpg"
+                              alt=""
+                              width="10"
+                              border="0"
+                              class="image_fix"
+                              style="
+                                display: block;
+                                width: 10px;
+                                height: auto;
+                                outline: none;
+                                text-decoration: none;
+                                -ms-interpolation-mode: bicubic;
+                              "
+                            />
+                          </td>
+                          <td width="20" style="font-size: 0">&nbsp;</td>
+                          <td align="left" valign="middle" style="font-size: 0">
+                            <a
+                              href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                              style="
+                                border: none;
+                                text-decoration: none;
+                                color: #000000;
+                              "
+                            >
+                              <span
+                                style="
+                                  font-family:
+                                    Montserrat, Arial, sans-serif !important;
+                                  font-size: 18px;
+                                  line-height: 22px;
+                                  font-weight: 700;
+                                  color: #000000;
+                                  mso-line-height-rule: exactly;
+                                "
+                                ><span class="txt"
+                                  >Resistenza superiore del 150%</span
+                                ></span
+                              >
+                            </a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            colspan="3"
+                            height="22"
+                            style="font-size: 0; line-height: 0; padding: 0"
+                          >
+                            &nbsp;
+                          </td>
+                        </tr>
+
+                        <!--ITEM-->
+                        <tr>
+                          <td
+                            width="10"
+                            align="left"
+                            valign="middle"
+                            style="font-size: 0"
+                          >
+                            <img
+                              src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/pallino_2x.jpg"
+                              alt=""
+                              width="10"
+                              border="0"
+                              class="image_fix"
+                              style="
+                                display: block;
+                                width: 10px;
+                                height: auto;
+                                outline: none;
+                                text-decoration: none;
+                                -ms-interpolation-mode: bicubic;
+                              "
+                            />
+                          </td>
+                          <td width="20" style="font-size: 0">&nbsp;</td>
+                          <td align="left" valign="middle" style="font-size: 0">
+                            <a
+                              href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                              style="
+                                border: none;
+                                text-decoration: none;
+                                color: #000000;
+                              "
+                            >
+                              <span
+                                style="
+                                  font-family:
+                                    Montserrat, Arial, sans-serif !important;
+                                  font-size: 18px;
+                                  line-height: 22px;
+                                  font-weight: 700;
+                                  color: #000000;
+                                  mso-line-height-rule: exactly;
+                                "
+                                ><span class="txt"
+                                  >Fino al 30% di luce naturale in più</span
+                                ></span
+                              >
+                            </a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            colspan="3"
+                            height="22"
+                            style="font-size: 0; line-height: 0; padding: 0"
+                          >
+                            &nbsp;
+                          </td>
+                        </tr>
+
+                        <!--ITEM-->
+                        <tr>
+                          <td
+                            width="10"
+                            align="left"
+                            valign="middle"
+                            style="font-size: 0"
+                          >
+                            <img
+                              src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/pallino_2x.jpg"
+                              alt=""
+                              width="10"
+                              border="0"
+                              class="image_fix"
+                              style="
+                                display: block;
+                                width: 10px;
+                                height: auto;
+                                outline: none;
+                                text-decoration: none;
+                                -ms-interpolation-mode: bicubic;
+                              "
+                            />
+                          </td>
+                          <td width="20" style="font-size: 0">&nbsp;</td>
+                          <td align="left" valign="middle" style="font-size: 0">
+                            <a
+                              href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                              style="
+                                border: none;
+                                text-decoration: none;
+                                color: #000000;
+                              "
+                            >
+                              <span
+                                style="
+                                  font-family:
+                                    Montserrat, Arial, sans-serif !important;
+                                  font-size: 18px;
+                                  line-height: 22px;
+                                  font-weight: 700;
+                                  color: #000000;
+                                  mso-line-height-rule: exactly;
+                                "
+                                ><span class="txt"
+                                  >30 anni di garanzia gratuita</span
+                                ></span
+                              >
+                            </a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            colspan="3"
+                            height="22"
+                            style="font-size: 0; line-height: 0; padding: 0"
+                          >
+                            &nbsp;
+                          </td>
+                        </tr>
+
+                        <!--ITEM-->
+                        <tr>
+                          <td
+                            width="10"
+                            align="left"
+                            valign="middle"
+                            style="font-size: 0"
+                          >
+                            <img
+                              src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/pallino_2x.jpg"
+                              alt=""
+                              width="10"
+                              border="0"
+                              class="image_fix"
+                              style="
+                                display: block;
+                                width: 10px;
+                                height: auto;
+                                outline: none;
+                                text-decoration: none;
+                                -ms-interpolation-mode: bicubic;
+                              "
+                            />
+                          </td>
+                          <td width="20" style="font-size: 0">&nbsp;</td>
+                          <td align="left" valign="middle" style="font-size: 0">
+                            <a
+                              href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                              style="
+                                border: none;
+                                text-decoration: none;
+                                color: #000000;
+                              "
+                            >
+                              <span
+                                style="
+                                  font-family:
+                                    Montserrat, Arial, sans-serif !important;
+                                  font-size: 18px;
+                                  line-height: 22px;
+                                  font-weight: 700;
+                                  color: #000000;
+                                  mso-line-height-rule: exactly;
+                                "
+                                ><span class="txt"
+                                  >100% made in Italy</span
+                                ></span
+                              >
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!--SPAZIO-->
+                  <tr>
+                    <td
+                      height="30"
+                      style="font-size: 0; line-height: 0; padding: 0"
+                    >
+                      &nbsp;
+                    </td>
+                  </tr>
+
+                  <!--CTA-->
+                  <tr>
+                    <td align="center" valign="middle" style="font-size: 0">
+                      <table
+                        width="266"
+                        cellpadding="0"
+                        cellspacing="0"
+                        border="0"
+                        align="center"
+                        role="presentation"
+                        style="
+                          width: 266px;
+                          border-collapse: collapse;
+                          mso-table-lspace: 0pt;
+                          mso-table-rspace: 0pt;
+                        "
+                      >
+                        <tr>
+                          <td
+                            class="cta-bg"
+                            align="center"
+                            style="
+                              background-color: #ffa700;
+                              border-radius: 28px;
+                            "
+                          >
+                            <!--[if mso
+                              ]><v:roundrect
+                                xmlns:v="urn:schemas-microsoft-com:vml"
+                                xmlns:w="urn:schemas-microsoft-com:office:word"
+                                href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                                style="
+                                  height: 41px;
+                                  v-text-anchor: middle;
+                                  width: 266px;
+                                "
+                                arcsize="50%"
+                                stroke="f"
+                                fillcolor="#FFA700"
+                                ><w:anchorlock />
+                                <center
+                                  style="
+                                    color: #ffffff;
+                                    font-family: Arial, sans-serif;
+                                    font-size: 16px;
+                                    font-weight: bold;
+                                  "
                                 >
-                                    <tr>
-                                        <td align="center" valign="middle" style="font-size: 0">
-                                            <img
-                                                src="https://specialdealbox.com/img-ed/DESIGN/placeholders/100x100.png"
-                                                alt="placeholder"
-                                                width="360"
-                                                height="1"
-                                                style="
-                                                    outline: none;
-                                                    text-decoration: none;
-                                                    -ms-interpolation-mode: bicubic;
-                                                    display: blo<img src="https://tracking.performagency.it/aff_i?offer_id=2127&file_id=8328&aff_id=1089" width="0" height="0" style="position:absolute;visibility:hidden;" border="0" />
+                                  OTTIENI LA PROMO
+                                </center></v:roundrect
+                              ><!
+                            [endif]-->
+                            <!--[if !mso
+                            ]><!--><a
+                              href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                              style="
+                                display: block;
+                                padding: 11px 0;
+                                font-family: Montserrat, Arial, sans-serif;
+                                font-size: 16px;
+                                line-height: 19px;
+                                font-weight: bold;
+                                color: #ffffff;
+                                text-decoration: none;
+                                text-transform: uppercase;
+                                border-radius: 28px;
+                                mso-line-height-rule: exactly;
+                              "
+                              >OTTIENI LA PROMO</a
+                            ><!--<![endif]-->
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
 
+                  <!--SPAZIO-->
+                  <tr>
+                    <td
+                      height="40"
+                      style="font-size: 0; line-height: 0; padding: 0"
+                    >
+                      &nbsp;
+                    </td>
+                  </tr>
 
+                  <!--TRUSTPILOT-->
+                  <tr>
+                    <td align="center" valign="middle" style="font-size: 0">
+                      <a
+                        href="https://tracking.performagency.it/aff_c?offer_id=2127&amp;aff_id=1089&amp;file_id=8328&amp;url_id=10825"
+                        style="
+                          border: none;
+                          text-decoration: none;
+                          color: #000000;
+                        "
+                      >
+                        <img
+                          src="https://specialdealbox.com/img-ed/PIU-FINESTRE/2026/marzo/promo-del-mese/trustpilot_2x.jpg"
+                          alt="Trustpilot"
+                          width="141"
+                          border="0"
+                          class="image_fix"
+                          style="
+                            display: block;
+                            width: 141px;
+                            max-width: 141px;
+                            height: auto;
+                            outline: none;
+                            text-decoration: none;
+                            -ms-interpolation-mode: bicubic;
+                          "
+                        />
+                      </a>
+                    </td>
+                  </tr>
 
-<p style="text-align: center;">Questa email ti &egrave; stata inviata dal titolare del trattamento Spampinato Domenico, Carlentini 96013 P.IVA IT01937400891 <a href="mailto:info@fuxture.net" rel="noreferrer">info@fuxture.net</a> perch&egrave; hai partecipato ad una delle nostre iniziative o perch&eacute; sei iscritto a Fuxture.<br />Il messaggio &egrave; stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679/06. Per cancellarti, clicca sul seguente <a href="https://www.fuxture.net/unsubscribe" target="_blank" rel="noopener noreferrer">link</a>. Puoi prendere visione dell'informativa privacy cliccando <a href="https://fuxture.net/privacy-policy/" target="_blank" rel="noopener noreferrer">qui</a>.<br /></p>
+                  <!--SPAZIO-->
+                  <tr>
+                    <td
+                      height="60"
+                      style="font-size: 0; line-height: 0; padding: 0"
+                    >
+                      &nbsp;
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td style="font-size: 0">&nbsp;</td>
+            </tr>
+
+            <!-- RIGA DI MIN WIDTH: forza il layout a una larghezza minima di 360px -->
+            <tr>
+              <td style="font-size: 0">&nbsp;</td>
+              <td style="font-size: 0; line-height: 0; max-width: 650px">
+                <img
+                  src="https://specialdealbox.com/img-ed/DESIGN/placeholders/100x100.png"
+                  alt=""
+                  width="360"
+                  height="1"
+                  border="0"
+                  style="
+                    display: block;
+                    width: 360px;
+                    height: 1px;
+                    outline: none;
+                    text-decoration: none;
+                    -ms-interpolation-mode: bicubic;
+                  "
+                />
+              </td>
+              <td style="font-size: 0">&nbsp;</td>
+            </tr>
+          </table>
+          <!-- /CARD -->
+
+          <!-- FOOTER LEGALE: sostituire i segnaposto [..] con dati reali / merge tag dell'ESP -->
+          <table
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            role="presentation"
+            style="
+              max-width: 650px;
+              border-collapse: collapse;
+              mso-table-lspace: 0pt;
+              mso-table-rspace: 0pt;
+            "
+          >
+            <tr>
+              <td
+                align="center"
+                style="
+                  padding: 24px 20px 30px 20px;
+                  font-family: Arial, sans-serif;
+                  font-size: 11px;
+                  line-height: 16px;
+                  color: #888888;
+                  mso-line-height-rule: exactly;
+                "
+              >
+                <span class="txt"
+                  >Messaggio pubblicitario inviato da [NOME MITTENTE] per conto
+                  di [INSERZIONISTA].<br />
+                  Hai ricevuto questa email perché sei iscritto a [NOME
+                  LISTA/SITO].<br />
+                  [RAGIONE SOCIALE] - [INDIRIZZO] - P.IVA [P.IVA]<br /><br />
+                  <a
+                    href="[UNSUBSCRIBE_URL]"
+                    style="color: #888888; text-decoration: underline"
+                    >Annulla l'iscrizione</a
+                  ></span
+                >
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <!-- PIXEL IMPRESSION -->
+    <img
+      src="https://tracking.performagency.it/aff_i?offer_id=2127&amp;file_id=8328&amp;aff_id=1089"
+      width="1"
+      height="1"
+      alt=""
+      border="0"
+      style="display: block; width: 1px; height: 1px; border: 0"
+    />
+  </body>
+</html>

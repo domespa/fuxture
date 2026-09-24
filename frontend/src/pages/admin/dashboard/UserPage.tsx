@@ -84,6 +84,7 @@ export default function UsersPage() {
 
   // PAGINATION
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
 
@@ -100,7 +101,7 @@ export default function UsersPage() {
       setLoading(true);
       const filters: SubscriberFilters = {
         page: currentPage,
-        limit: 20,
+        limit: pageSize,
         sortBy: "subscribedAt",
         sortOrder: "desc",
       };
@@ -129,7 +130,7 @@ export default function UsersPage() {
 
   useEffect(() => {
     fetchSubscribers();
-  }, [currentPage, statusFilter]);
+  }, [currentPage, pageSize, statusFilter]);
 
   // SEARCH CON DEBOUNCE
   useEffect(() => {
@@ -143,6 +144,11 @@ export default function UsersPage() {
 
     return () => clearTimeout(timer);
   }, [searchQuery]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    setSelectedSubscribers([]);
+  }, [pageSize, statusFilter]);
 
   // SELECT/DESELECT ALL
   const handleSelectAll = () => {
@@ -498,29 +504,56 @@ export default function UsersPage() {
       </div>
 
       {/* PAGINATION */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
           <p className="text-sm text-gray-600">
-            Pagina {currentPage} di {totalPages} ({total} totali)
+            Pagina {currentPage} di {totalPages || 1} ({total} totali)
           </p>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((p) => p - 1)}
-            >
-              Precedente
-            </Button>
-            <Button
-              variant="outline"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((p) => p + 1)}
-            >
-              Successivo
-            </Button>
-          </div>
+          <Select
+            value={String(pageSize)}
+            onValueChange={(value) => setPageSize(Number(value))}
+          >
+            <SelectTrigger className="w-[130px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="10">10 per pagina</SelectItem>
+              <SelectItem value="20">20 per pagina</SelectItem>
+              <SelectItem value="50">50 per pagina</SelectItem>
+              <SelectItem value="100">100 per pagina</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-      )}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            disabled={currentPage === 1 || loading}
+            onClick={() => setCurrentPage((p) => p - 1)}
+          >
+            Precedente
+          </Button>
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+            (page) => (
+              <Button
+                key={page}
+                variant={page === currentPage ? "default" : "outline"}
+                disabled={loading}
+                onClick={() => setCurrentPage(page)}
+                aria-label={`Vai alla pagina ${page}`}
+              >
+                {page}
+              </Button>
+            ),
+          )}
+          <Button
+            variant="outline"
+            disabled={currentPage === totalPages || totalPages === 0 || loading}
+            onClick={() => setCurrentPage((p) => p + 1)}
+          >
+            Successivo
+          </Button>
+        </div>
+      </div>
 
       {/* DIALOGS */}
       <SelectListDialog

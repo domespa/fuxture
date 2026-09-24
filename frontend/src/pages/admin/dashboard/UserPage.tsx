@@ -504,16 +504,16 @@ export default function UsersPage() {
       </div>
 
       {/* PAGINATION */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <p className="text-sm text-gray-600">
+      <div className="flex flex-col gap-2 border-t pt-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2">
+          <p className="text-xs text-gray-600">
             Pagina {currentPage} di {totalPages || 1} ({total} totali)
           </p>
           <Select
             value={String(pageSize)}
             onValueChange={(value) => setPageSize(Number(value))}
           >
-            <SelectTrigger className="w-[130px]">
+            <SelectTrigger className="h-8 w-[124px] text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -524,19 +524,22 @@ export default function UsersPage() {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-1">
           <Button
             variant="outline"
+            size="sm"
             disabled={currentPage === 1 || loading}
             onClick={() => setCurrentPage((p) => p - 1)}
           >
-            Precedente
+            Indietro
           </Button>
           {Array.from({ length: totalPages }, (_, index) => index + 1).map(
             (page) => (
               <Button
                 key={page}
                 variant={page === currentPage ? "default" : "outline"}
+                size="sm"
+                className="min-w-8 px-2"
                 disabled={loading}
                 onClick={() => setCurrentPage(page)}
                 aria-label={`Vai alla pagina ${page}`}
@@ -547,10 +550,11 @@ export default function UsersPage() {
           )}
           <Button
             variant="outline"
+            size="sm"
             disabled={currentPage === totalPages || totalPages === 0 || loading}
             onClick={() => setCurrentPage((p) => p + 1)}
           >
-            Successivo
+            Avanti
           </Button>
         </div>
       </div>

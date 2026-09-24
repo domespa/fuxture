@@ -11,6 +11,7 @@ import type {
   SubscriberListResponse,
   SubscriberActionResponse,
   SubscriberFilters,
+  ConsentEvidenceResponse,
 } from "../types/subscriber.types";
 import {
   sendWelcomeEmail,
@@ -31,6 +32,9 @@ const toSubscriberResponse = (subscriber: Subscriber): SubscriberResponse => ({
   id: subscriber.id,
   email: subscriber.email,
   name: subscriber.name,
+  firstName: subscriber.firstName,
+  lastName: subscriber.lastName,
+  address: subscriber.address,
   status: subscriber.status,
   subscribedAt: subscriber.subscribedAt,
   unsubscribedAt: subscriber.unsubscribedAt,
@@ -91,6 +95,9 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
     const {
       email,
       name,
+      firstName,
+      lastName,
+      address,
       source,
       consentText,
     }: CreateSubscriberRequest = req.body;
@@ -117,6 +124,9 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
           subscribedAt: new Date(),
           unsubscribedAt: null,
           name: name?.trim() || existingSubscriber.name,
+          firstName: firstName?.trim() || existingSubscriber.firstName,
+          lastName: lastName?.trim() || existingSubscriber.lastName,
+          address: address?.trim() || existingSubscriber.address,
           source: source || existingSubscriber.source,
           // NUOVA MANIFESTAZIONE DI VOLONTA': sostituisce la precedente
           consentAt: new Date(),
@@ -172,6 +182,9 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
       data: {
         email: normalizedEmail,
         name: name?.trim() || null,
+        firstName: firstName?.trim() || null,
+        lastName: lastName?.trim() || null,
+        address: address?.trim() || null,
         source: source || null,
         status: "ACTIVE",
         subscribedAt: new Date(),
@@ -253,7 +266,7 @@ export const getSubscribers = async (
     const pageNum = Math.max(parseInt(page as string, 10) || 1, 1);
     const limitNum = Math.min(
       Math.max(parseInt(limit as string, 10) || 20, 1),
-      100
+      100,
     );
     const skip = (pageNum - 1) * limitNum;
 
@@ -351,6 +364,34 @@ export const getSubscriberById = async (
   }
 };
 
+// Scheda probatoria completa per audit e manleve.
+// GET /subscribers/:id/consent-evidence
+export const getConsentEvidence = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const subscriber = await prisma.subscriber.findUnique({
+      where: { id: req.params.id },
+      include: { consentLogs: { orderBy: { createdAt: "asc" } } },
+    });
+
+    if (!subscriber) {
+      res.status(404).json({ error: "Subscriber non trovato" });
+      return;
+    }
+
+    const response: ConsentEvidenceResponse = {
+      subscriber: toSubscriberResponse(subscriber),
+      consents: subscriber.consentLogs,
+    };
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Errore recupero scheda consenso:", error);
+    res.status(500).json({ error: "Errore durante recupero scheda consenso" });
+  }
+};
+
 // AGGIORNA - ADMIN
 // PUT /subscribers/:id
 export const updateSubscriber = async (
@@ -359,7 +400,14 @@ export const updateSubscriber = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const { name, status, metadata }: UpdateSubscriberRequest = req.body;
+    const {
+      name,
+      firstName,
+      lastName,
+      address,
+      status,
+      metadata,
+    }: UpdateSubscriberRequest = req.body;
     const existing = await prisma.subscriber.findUnique({
       where: { id },
     });
@@ -374,6 +422,9 @@ export const updateSubscriber = async (
     if (name !== undefined) {
       updateData.name = name.trim();
     }
+    if (firstName !== undefined) updateData.firstName = firstName.trim();
+    if (lastName !== undefined) updateData.lastName = lastName.trim();
+    if (address !== undefined) updateData.address = address.trim();
 
     if (status !== undefined) {
       updateData.status = status;

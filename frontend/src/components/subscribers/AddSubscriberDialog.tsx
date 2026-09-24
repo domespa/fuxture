@@ -26,6 +26,10 @@ export default function AddSubscriberDialog({
 }: AddSubscriberDialogProps) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [address, setAddress] = useState("");
+  const [consentText, setConsentText] = useState("");
   const [source, setSource] = useState("admin");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{
@@ -38,6 +42,10 @@ export default function AddSubscriberDialog({
     if (open) {
       setEmail("");
       setName("");
+      setFirstName("");
+      setLastName("");
+      setAddress("");
+      setConsentText("");
       setSource("admin");
       setErrors({});
     }
@@ -72,14 +80,26 @@ export default function AddSubscriberDialog({
     setIsSubmitting(true);
 
     try {
-      const payload: { email: string; name?: string; source: string } = {
+      const payload: {
+        email: string;
+        name?: string;
+        firstName?: string;
+        lastName?: string;
+        address?: string;
+        source: string;
+        consentText: string;
+      } = {
         email: email.trim(),
         source: source,
+        consentText: consentText.trim(),
       };
 
       if (name.trim()) {
         payload.name = name.trim();
       }
+      if (firstName.trim()) payload.firstName = firstName.trim();
+      if (lastName.trim()) payload.lastName = lastName.trim();
+      if (address.trim()) payload.address = address.trim();
 
       await subscribersAPI.createSubscriber(payload);
 
@@ -88,7 +108,9 @@ export default function AddSubscriberDialog({
       onSuccess();
     } catch (error) {
       console.error("Error creating subscriber:", error);
-      toast.error(getApiErrorMessage(error, "Errore durante aggiunta iscritto"));
+      toast.error(
+        getApiErrorMessage(error, "Errore durante aggiunta iscritto"),
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -137,6 +159,45 @@ export default function AddSubscriberDialog({
             {errors.name && (
               <p className="text-sm text-red-500">{errors.name}</p>
             )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              placeholder="Nome"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              disabled={isSubmitting}
+            />
+            <Input
+              placeholder="Cognome"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="address">Indirizzo</Label>
+            <Input
+              id="address"
+              placeholder="Via, numero, città"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="consentText">Prova del consenso *</Label>
+            <textarea
+              id="consentText"
+              required
+              value={consentText}
+              onChange={(e) => setConsentText(e.target.value)}
+              disabled={isSubmitting}
+              className="min-h-20 w-full rounded-md border px-3 py-2 text-sm"
+              placeholder="Testo esatto del consenso prestato dall'interessato"
+            />
           </div>
 
           {/* SOURCE (hidden, auto-set to "admin") */}

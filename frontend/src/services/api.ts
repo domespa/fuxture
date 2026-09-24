@@ -145,7 +145,7 @@ export const postsAPI = {
   // UPDATE POST
   updatePost: async (
     id: string,
-    data: UpdatePostRequest
+    data: UpdatePostRequest,
   ): Promise<PostResponse> => {
     const response = await api.put<{
       success: boolean;
@@ -195,7 +195,7 @@ export const postsAPI = {
 export const commentsAPI = {
   // OTTIENI TUTTI I COMMENTI CON FILTRI
   getComments: async (
-    filters?: CommentFilters
+    filters?: CommentFilters,
   ): Promise<CommentListResponse> => {
     const response = await api.get<CommentListResponse>("/comments", {
       params: filters,
@@ -214,11 +214,11 @@ export const commentsAPI = {
   // AGGIORNA STATUS COMMENTO (approve/reject/spam)
   updateCommentStatus: async (
     id: string,
-    data: UpdateCommentRequest
+    data: UpdateCommentRequest,
   ): Promise<CommentResponse> => {
     const response = await api.patch<CommentResponse>(
       `/comments/${id}/status`,
-      data
+      data,
     );
     return response.data;
   },
@@ -243,7 +243,7 @@ export const commentsAPI = {
 export const campaignsAPI = {
   // OTTIENI TUTTE LE CAMPAGNE CON FILTRI
   getCampaigns: async (
-    filters?: CampaignFilters
+    filters?: CampaignFilters,
   ): Promise<CampaignListResponse> => {
     const response = await api.get<{
       success: boolean;
@@ -277,7 +277,7 @@ export const campaignsAPI = {
   // UPDATE CAMPAGNA
   updateCampaign: async (
     id: string,
-    data: UpdateCampaignRequest
+    data: UpdateCampaignRequest,
   ): Promise<Campaign> => {
     const response = await api.patch<{
       success: boolean;
@@ -296,7 +296,7 @@ export const campaignsAPI = {
   // La risposta e' il resoconto dell'invio, non la campagna: era tipizzata
   // come Campaign e chi la usava leggeva campi sempre undefined.
   sendCampaign: async (
-    id: string
+    id: string,
   ): Promise<{
     totalRecipients: number;
     sent: number;
@@ -360,7 +360,7 @@ export const addressBookAPI = {
 
   updateContact: async (
     id: string,
-    data: { name?: string; note?: string }
+    data: { name?: string; note?: string },
   ): Promise<Contact> => {
     const response = await api.patch<{
       success: boolean;
@@ -387,7 +387,7 @@ export const emailLogsAPI = {
   }): Promise<EmailLogPage> => {
     const response = await api.get<{ success: boolean; data: EmailLogPage }>(
       "/email-logs",
-      { params }
+      { params },
     );
     return response.data.data;
   },
@@ -452,7 +452,7 @@ export const emailListsAPI = {
   // AGGIORNA LISTA
   updateEmailList: async (
     id: string,
-    data: UpdateEmailListRequest
+    data: UpdateEmailListRequest,
   ): Promise<EmailList> => {
     const response = await api.put<EmailList>(`/email-lists/${id}`, data);
     return response.data;
@@ -466,18 +466,18 @@ export const emailListsAPI = {
   // AGGIUNGI SUBSCRIBERS A LISTA
   addSubscribersToList: async (
     listId: string,
-    data: AddSubscribersToListRequest
+    data: AddSubscribersToListRequest,
   ): Promise<{ message: string; addedCount: number }> => {
     const response = await api.post<{ message: string; addedCount: number }>(
       `/email-lists/${listId}/subscribers`,
-      data
+      data,
     );
     return response.data;
   },
 
   // OTTIENI SUBSCRIBERS DI UNA LISTA
   getListSubscribers: async (
-    listId: string
+    listId: string,
   ): Promise<
     {
       id: string;
@@ -502,7 +502,7 @@ export const emailListsAPI = {
   // RIMUOVI SUBSCRIBER DA LISTA
   removeSubscriberFromList: async (
     listId: string,
-    subscriberId: string
+    subscriberId: string,
   ): Promise<void> => {
     await api.delete(`/email-lists/${listId}/subscribers/${subscriberId}`);
   },
@@ -529,12 +529,15 @@ export type SubscriberFilters = {
 export const subscribersAPI = {
   // OTTIENI TUTTI I SUBSCRIBERS CON FILTRI
   getSubscribers: async (
-    filters?: SubscriberFilters
+    filters?: SubscriberFilters,
   ): Promise<{
     subscribers: {
       id: string;
       email: string;
       name: string | null;
+      firstName: string | null;
+      lastName: string | null;
+      address: string | null;
       status: "ACTIVE" | "UNSUBSCRIBED" | "BOUNCED";
       subscribedAt: string;
       source: string | null;
@@ -565,6 +568,9 @@ export const subscribersAPI = {
   createSubscriber: async (data: {
     email: string;
     name?: string;
+    firstName?: string;
+    lastName?: string;
+    address?: string;
     source?: string;
     // Formulazione esatta del consenso accettato, registrata come prova
     // (art. 7 par. 1 GDPR)
@@ -576,6 +582,9 @@ export const subscribersAPI = {
       id: string;
       email: string;
       name: string | null;
+      firstName: string | null;
+      lastName: string | null;
+      address: string | null;
       status: "ACTIVE" | "UNSUBSCRIBED" | "BOUNCED";
       subscribedAt: string;
       source: string | null;
@@ -587,6 +596,35 @@ export const subscribersAPI = {
     return response.data;
   },
 
+  getConsentEvidence: async (id: string) => {
+    const response = await api.get(`/subscribers/${id}/consent-evidence`);
+    return response.data as {
+      subscriber: {
+        id: string;
+        email: string;
+        name: string | null;
+        firstName: string | null;
+        lastName: string | null;
+        address: string | null;
+        status: string;
+        subscribedAt: string;
+        unsubscribedAt: string | null;
+        source: string | null;
+        consentAt?: string | null;
+      };
+      consents: Array<{
+        id: string;
+        type: "NEWSLETTER" | "TRACKING";
+        granted: boolean;
+        text: string | null;
+        source: string | null;
+        ipAddress: string | null;
+        userAgent: string | null;
+        createdAt: string;
+      }>;
+    };
+  },
+
   // ELIMINA SUB
   deleteSubscriber: async (id: string): Promise<void> => {
     await api.delete(`/subscribers/${id}`);
@@ -594,7 +632,7 @@ export const subscribersAPI = {
 
   // CENTRO PREFERENZE - LETTURA
   getPreferences: async (
-    id: string
+    id: string,
   ): Promise<{
     email: string;
     name: string | null;
@@ -609,7 +647,7 @@ export const subscribersAPI = {
   // CENTRO PREFERENZE - REVOCA, ANCHE GRANULARE
   updatePreferences: async (
     id: string,
-    data: { trackingConsent?: boolean; subscribed?: boolean }
+    data: { trackingConsent?: boolean; subscribed?: boolean },
   ): Promise<{
     success: boolean;
     message: string;
@@ -658,7 +696,7 @@ export const categoriesAPI = {
   // AGGIORNA CATEGORIA
   updateCategory: async (
     id: string,
-    data: UpdateCategoryRequest
+    data: UpdateCategoryRequest,
   ): Promise<Category> => {
     const response = await api.put<{
       success: boolean;
@@ -690,7 +728,7 @@ export const gamesAPI = {
   // OTTIENI GIOCO PER SLUG
   getGameBySlug: async (slug: string): Promise<Game> => {
     const response = await api.get<{ success: boolean; data: Game }>(
-      `/games/slug/${slug}`
+      `/games/slug/${slug}`,
     );
     return response.data.data;
   },
@@ -698,7 +736,7 @@ export const gamesAPI = {
   // OTTIENI SINGOLO GIOCO (ADMIN)
   getGameById: async (id: string): Promise<Game> => {
     const response = await api.get<{ success: boolean; data: Game }>(
-      `/games/${id}`
+      `/games/${id}`,
     );
     return response.data.data;
   },
@@ -745,10 +783,7 @@ export const gamesAPI = {
 // ======================================================================================
 export const leaderboardAPI = {
   // TOP N DEL PERIODO CORRENTE
-  getScores: async (
-    slug: string,
-    limit = 10
-  ): Promise<LeaderboardResponse> => {
+  getScores: async (slug: string, limit = 10): Promise<LeaderboardResponse> => {
     const response = await api.get<{
       success: boolean;
       data: LeaderboardResponse;
@@ -759,7 +794,7 @@ export const leaderboardAPI = {
   // INVIA IL PUNTEGGIO DI FINE PARTITA
   submitScore: async (
     slug: string,
-    data: SubmitScoreRequest
+    data: SubmitScoreRequest,
   ): Promise<SubmitScoreResponse> => {
     const response = await api.post<{
       success: boolean;
@@ -784,7 +819,7 @@ export const leaderboardAPI = {
   // MODERAZIONE: rinomina conservando il punteggio
   renameScore: async (
     id: string,
-    playerName: string
+    playerName: string,
   ): Promise<{ id: string; playerName: string; score: number }> => {
     const response = await api.patch<{
       success: boolean;

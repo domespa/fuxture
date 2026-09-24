@@ -12,6 +12,7 @@ import {
   XCircle,
   AlertCircle,
   MoreVertical,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,6 +44,7 @@ import SelectListDialog from "@/components/subscribers/SelectListDialog";
 import AddSubscriberDialog from "@/components/subscribers/AddSubscriberDialog";
 import DeleteSubscriberDialog from "@/components/subscribers/DeleteSubscriberDialog";
 import toast from "react-hot-toast";
+import ConsentEvidenceDialog from "@/components/subscribers/ConsentEvidenceDialog";
 
 interface Subscriber {
   id: string;
@@ -76,6 +78,9 @@ export default function UsersPage() {
     email: string;
   } | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [evidenceSubscriberId, setEvidenceSubscriberId] = useState<
+    string | null
+  >(null);
 
   // PAGINATION
   const [currentPage, setCurrentPage] = useState(1);
@@ -151,7 +156,7 @@ export default function UsersPage() {
   // TOGGLE SINGLE
   const handleToggleSubscriber = (id: string) => {
     setSelectedSubscribers((prev) =>
-      prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id],
     );
   };
 
@@ -219,14 +224,14 @@ export default function UsersPage() {
 
     if (
       !confirm(
-        `Sei sicuro di voler eliminare ${selectedSubscribers.length} iscritti? Questa azione è irreversibile.`
+        `Sei sicuro di voler eliminare ${selectedSubscribers.length} iscritti? Questa azione è irreversibile.`,
       )
     ) {
       return;
     }
 
     const toastId = toast.loading(
-      `Eliminazione di ${selectedSubscribers.length} iscritti...`
+      `Eliminazione di ${selectedSubscribers.length} iscritti...`,
     );
 
     try {
@@ -251,7 +256,7 @@ export default function UsersPage() {
       } else {
         toast.error(
           `${deleted} eliminati, ${failed} falliti. Riprova per quelli falliti.`,
-          { id: toastId }
+          { id: toastId },
         );
       }
 
@@ -470,6 +475,12 @@ export default function UsersPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem
+                          onClick={() => setEvidenceSubscriberId(subscriber.id)}
+                        >
+                          <FileText className="mr-2 h-4 w-4" />
+                          Scheda consenso
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
                           className="text-red-600"
                           onClick={() => handleOpenDeleteDialog(subscriber)}
                         >
@@ -531,6 +542,11 @@ export default function UsersPage() {
         subscriberEmail={subscriberToDelete?.email || ""}
         onConfirm={handleDeleteSingle}
         isDeleting={isDeleting}
+      />
+
+      <ConsentEvidenceDialog
+        subscriberId={evidenceSubscriberId}
+        onClose={() => setEvidenceSubscriberId(null)}
       />
     </div>
   );

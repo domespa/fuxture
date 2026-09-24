@@ -9,10 +9,11 @@ import { isValidEmail } from "./validation.middleware";
 export const validateCreateSub = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   const errors: Array<{ field: string; message: string }> = [];
-  const { email, name, source } = req.body;
+  const { email, name, firstName, lastName, address, source, consentText } =
+    req.body;
 
   // EMAIL OBBLIGATORIA
   if (!email) {
@@ -29,6 +30,29 @@ export const validateCreateSub = (
         message: "Nome deve essere almeno 2 caratteri",
       });
     }
+  }
+
+  for (const [field, value] of [
+    ["firstName", firstName],
+    ["lastName", lastName],
+    ["address", address],
+  ] as const) {
+    if (
+      value !== undefined &&
+      (typeof value !== "string" || value.trim().length < 2)
+    ) {
+      errors.push({
+        field,
+        message: `${field} deve contenere almeno 2 caratteri`,
+      });
+    }
+  }
+
+  if (typeof consentText !== "string" || !consentText.trim()) {
+    errors.push({
+      field: "consentText",
+      message: "Il testo del consenso è obbligatorio",
+    });
   }
 
   // SOURCE
@@ -57,16 +81,16 @@ export const validateCreateSub = (
 export const validateUpdateSubscriber = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   const errors: Array<{ field: string; message: string }> = [];
-  const { name, status, metadata } = req.body;
+  const { name, firstName, lastName, address, status, metadata } = req.body;
 
   // ALMENO UN CAMPO PRESENTE
-  if (!name && !status && !metadata) {
+  if (!name && !firstName && !lastName && !address && !status && !metadata) {
     errors.push({
       field: "general",
-      message: "Almeno un campo deve essere presente (name, status, metadata)",
+      message: "Almeno un campo deve essere presente",
     });
   }
 
@@ -76,6 +100,22 @@ export const validateUpdateSubscriber = (
       errors.push({
         field: "name",
         message: "Nome deve essere almeno 2 caratteri",
+      });
+    }
+  }
+
+  for (const [field, value] of [
+    ["firstName", firstName],
+    ["lastName", lastName],
+    ["address", address],
+  ] as const) {
+    if (
+      value !== undefined &&
+      (typeof value !== "string" || value.trim().length < 2)
+    ) {
+      errors.push({
+        field,
+        message: `${field} deve contenere almeno 2 caratteri`,
       });
     }
   }
@@ -118,7 +158,7 @@ export const validateUpdateSubscriber = (
 export const validateUnsubscribe = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   const errors: Array<{ field: string; message: string }> = [];
   const { email } = req.body;
@@ -143,7 +183,7 @@ export const validateUnsubscribe = (
 export const validateUpdatePreferences = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   const errors: Array<{ field: string; message: string }> = [];
   const { trackingConsent, subscribed } = req.body;

@@ -20,7 +20,9 @@ export default function NewsletterForm({
   source = "newsletter-footer",
 }: NewsletterFormProps) {
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [address, setAddress] = useState("");
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
@@ -40,6 +42,12 @@ export default function NewsletterForm({
       return;
     }
 
+    if (!firstName.trim() || !lastName.trim()) {
+      setStatus("error");
+      setErrorMessage("Inserisci nome e cognome");
+      return;
+    }
+
     if (!acceptedPrivacy) {
       setStatus("error");
       setErrorMessage("Devi accettare la Privacy Policy per iscriverti");
@@ -51,7 +59,10 @@ export default function NewsletterForm({
     try {
       await subscribersAPI.createSubscriber({
         email: email.trim(),
-        name: name.trim() || undefined,
+        name: `${firstName.trim()} ${lastName.trim()}`,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        address: address.trim(),
         source,
         consentText: NEWSLETTER_CONSENT_RECORD,
       });
@@ -59,7 +70,9 @@ export default function NewsletterForm({
       // Successo!
       setStatus("success");
       setEmail("");
-      setName("");
+      setFirstName("");
+      setLastName("");
+      setAddress("");
       setAcceptedPrivacy(false);
 
       // Reset messaggio successo dopo 5 secondi
@@ -73,13 +86,13 @@ export default function NewsletterForm({
       if (isAxiosError(error) && error.response?.status === 409) {
         setErrorMessage(
           error.response.data?.error ||
-            "Questa email è già iscritta alla newsletter"
+            "Questa email è già iscritta alla newsletter",
         );
       } else if (isAxiosError(error) && error.response?.data?.error) {
         setErrorMessage(error.response.data.error);
       } else if (isAxiosError(error) && !error.response) {
         setErrorMessage(
-          "Server non raggiungibile. Controlla la connessione e riprova."
+          "Server non raggiungibile. Controlla la connessione e riprova.",
         );
       } else {
         setErrorMessage("Si è verificato un errore. Riprova più tardi.");
@@ -120,16 +133,38 @@ export default function NewsletterForm({
             aria-label="Email per newsletter"
           />
 
-          {/* Nome Input  */}
+          {/* Dati anagrafici */}
           <input
             type="text"
-            placeholder="Nome (facoltativo)"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            placeholder="Nome *"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             className="flex-1 px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
             disabled={isLoading}
             maxLength={100}
-            aria-label="Nome (facoltativo)"
+            required
+            aria-label="Nome"
+          />
+          <input
+            type="text"
+            placeholder="Cognome *"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            className="flex-1 px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            disabled={isLoading}
+            maxLength={100}
+            required
+            aria-label="Cognome"
+          />
+          <input
+            type="text"
+            placeholder="Indirizzo (facoltativo)"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            className="flex-1 px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            disabled={isLoading}
+            maxLength={200}
+            aria-label="Indirizzo"
           />
         </div>
 

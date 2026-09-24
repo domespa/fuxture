@@ -3,6 +3,7 @@ import {
   subscribe,
   getSubscribers,
   getSubscriberById,
+  getConsentEvidence,
   updateSubscriber,
   deleteSubscriber,
   unsubscribe,
@@ -57,6 +58,13 @@ router.get("/", authenticateToken, requireRole("ADMIN"), getSubscribers);
 // OTTIENI SINGOLO
 // GET/subscribers/:id
 router.get("/:id", authenticateToken, requireRole("ADMIN"), getSubscriberById);
+
+router.get(
+  "/:id/consent-evidence",
+  authenticateToken,
+  requireRole("ADMIN"),
+  getConsentEvidence,
+);
 
 // AGGIORNA
 // PUT /subscribers/:id

@@ -119,6 +119,9 @@ model Subscriber {
   id             String           @id @default(cuid())
   email          String           @unique
   name           String?
+  firstName      String?
+  lastName       String?
+  address        String?
   status         SubscriberStatus @default(ACTIVE)
   subscribedAt   DateTime         @default(now())
   unsubscribedAt DateTime?

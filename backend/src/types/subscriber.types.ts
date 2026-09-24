@@ -6,6 +6,9 @@ export type SubscriberStatus = $Enums.SubscriberStatus;
 export interface CreateSubscriberRequest {
   email: string;
   name?: string;
+  firstName?: string;
+  lastName?: string;
+  address?: string;
   source?: string;
   // TESTO ESATTO DEL CONSENSO ACCETTATO: serve a dimostrare a quale
   // formulazione l'interessato abbia prestato il consenso (art. 7 par. 1 GDPR)
@@ -29,6 +32,9 @@ export interface PreferencesResponse {
 
 export interface UpdateSubscriberRequest {
   name?: string;
+  firstName?: string;
+  lastName?: string;
+  address?: string;
   status?: SubscriberStatus;
   metadata?: Record<string, unknown>;
 }
@@ -37,6 +43,9 @@ export interface SubscriberResponse {
   id: string;
   email: string;
   name: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  address: string | null;
   status: SubscriberStatus;
   subscribedAt: Date;
   unsubscribedAt: Date | null;
@@ -82,4 +91,18 @@ export interface SubscriberActionResponse {
   success: boolean;
   message: string;
   subscriber?: SubscriberResponse;
+}
+
+export interface ConsentEvidenceResponse {
+  subscriber: SubscriberResponse;
+  consents: Array<{
+    id: string;
+    type: $Enums.ConsentType;
+    granted: boolean;
+    text: string | null;
+    source: string | null;
+    ipAddress: string | null;
+    userAgent: string | null;
+    createdAt: Date;
+  }>;
 }

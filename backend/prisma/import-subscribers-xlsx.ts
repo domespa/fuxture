@@ -4,7 +4,8 @@ import * as XLSX from "xlsx";
 const prisma = new PrismaClient();
 const source = "form newsletter";
 const importedFrom = "utenti_sintetici_1000.xlsx";
-const consentText = "Consenso raccolto tramite form newsletter.";
+const consentText =
+  "Acconsento a ricevere la newsletter di Fuxture, che include comunicazioni promozionali di inserzionisti terzi, e alla misurazione delle aperture tramite pixel di tracciamento nostri e di tali inserzionisti, disattivabile in qualsiasi momento dall'area preferenze. Le comunicazioni promozionali possono riguardare i settori credito e finanza, energia, assicurazioni, automotive, casa e ristrutturazioni, largo consumo, formazione e viaggi. Il consenso è revocabile in ogni momento. Informativa completa nella Privacy Policy.";
 
 type Row = {
   Nome?: unknown;

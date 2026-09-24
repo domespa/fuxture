@@ -32,6 +32,14 @@ describe("sanitizePostHtml", () => {
     expect(result).not.toContain("data-link");
   });
 
+  it("preserves image alignment", () => {
+    const result = sanitizePostHtml(
+      '<img src="https://example.com/image.jpg" data-align="center">',
+    );
+
+    expect(result).toContain('data-align="center"');
+  });
+
   it("preserves Awin banner placeholders", () => {
     const result = sanitizePostHtml(
       '<span data-type="awin-banner" iframeurl="https://www.awin1.com/banner" width="300" height="600" align="center"></span>' +

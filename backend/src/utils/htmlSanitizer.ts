@@ -16,7 +16,7 @@ export const sanitizePostHtml = (html: string): string =>
     allowedAttributes: {
       ...sanitizeHtml.defaults.allowedAttributes,
       a: ["href", "name", "target", "rel"],
-      img: ["src", "alt", "title", "width", "height", "loading"],
+      img: ["src", "alt", "title", "width", "height", "loading", "data-align"],
       iframe: [
         "src",
         "title",

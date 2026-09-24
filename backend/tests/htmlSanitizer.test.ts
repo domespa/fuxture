@@ -22,6 +22,16 @@ describe("sanitizePostHtml", () => {
     expect(result).toContain('rel="noopener noreferrer"');
   });
 
+  it("preserves links wrapped around images", () => {
+    const result = sanitizePostHtml(
+      '<a href="https://example.com" target="_blank"><img src="https://example.com/image.jpg" data-link="https://example.com"></a>',
+    );
+
+    expect(result).toContain('<a href="https://example.com"');
+    expect(result).toContain('src="https://example.com/image.jpg"');
+    expect(result).not.toContain("data-link");
+  });
+
   it("preserves Awin banner placeholders", () => {
     const result = sanitizePostHtml(
       '<span data-type="awin-banner" iframeurl="https://www.awin1.com/banner" width="300" height="600" align="center"></span>' +

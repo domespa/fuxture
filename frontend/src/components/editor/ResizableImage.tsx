@@ -22,7 +22,7 @@ declare module "@tiptap/core" {
     resizableImage: {
       setImage: (options: SetImageOptions) => ReturnType;
       setImageAlign: (
-        align: "left" | "center" | "right" | "float-left" | "float-right"
+        align: "left" | "center" | "right" | "float-left" | "float-right",
       ) => ReturnType;
       removeImageLink: () => ReturnType;
     };
@@ -125,6 +125,28 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
   parseHTML() {
     return [
       {
+        tag: "a[href] > img[src]",
+        getAttrs: (element) => {
+          if (typeof element === "string") return false;
+
+          const link = element.parentElement?.getAttribute("href") || null;
+
+          return {
+            src: element.getAttribute("src"),
+            alt: element.getAttribute("alt"),
+            title: element.getAttribute("title"),
+            width: element.getAttribute("width")
+              ? parseInt(element.getAttribute("width")!, 10)
+              : null,
+            height: element.getAttribute("height")
+              ? parseInt(element.getAttribute("height")!, 10)
+              : null,
+            align: element.getAttribute("data-align") || "left",
+            link,
+          };
+        },
+      },
+      {
         tag: "img[src]",
         getAttrs: (element) => {
           if (typeof element === "string") return false;
@@ -150,7 +172,6 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
   },
 
   renderHTML({ node }) {
-
     const { src, alt, title, width, height, align, link } = node.attrs;
 
     const imgAttrs: Record<string, unknown> = {
@@ -180,7 +201,6 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
     if (link && link.trim() !== "") {
       imgAttrs["data-link"] = link;
     }
-
 
     const htmlAttributes = this.options.HTMLAttributes || {};
     const mergedImgAttrs = mergeAttributes(htmlAttributes, imgAttrs);

@@ -4,8 +4,7 @@ import * as XLSX from "xlsx";
 const prisma = new PrismaClient();
 const source = "form newsletter";
 const importedFrom = "utenti_sintetici_1000.xlsx";
-const consentText =
-  "Consenso raccolto tramite form newsletter e importato per finalita di test.";
+const consentText = "Consenso raccolto tramite form newsletter.";
 
 type Row = {
   Nome?: unknown;

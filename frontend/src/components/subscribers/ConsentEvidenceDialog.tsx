@@ -94,7 +94,7 @@ export default function ConsentEvidenceDialog({
     >
       <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Scheda prova consenso</DialogTitle>
+          <DialogTitle>Scheda consenso</DialogTitle>
           <DialogDescription>
             Dati anagrafici, fonte e storico delle scelte registrate.
           </DialogDescription>

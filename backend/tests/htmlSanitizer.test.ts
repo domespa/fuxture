@@ -53,4 +53,15 @@ describe("sanitizePostHtml", () => {
       'imageurl="https://www.awinhosting.com/banner.jpg"',
     );
   });
+
+  it("preserves Tradedoubler banner placeholders", () => {
+    const result = sanitizePostHtml(
+      '<span programId="312418" affiliateId="3196893" bannerId="26137142" width="728" height="90" align="center" data-type="td-banner"></span>',
+    );
+
+    expect(result).toContain('data-type="td-banner"');
+    expect(result).toContain('programid="312418"');
+    expect(result).toContain('affiliateid="3196893"');
+    expect(result).toContain('bannerid="26137142"');
+  });
 });

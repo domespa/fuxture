@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type KeyboardEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import {
   History,
   Loader2,
   RotateCcw,
+  X,
 } from "lucide-react";
 import {
   campaignsAPI,
@@ -97,10 +98,82 @@ export const SendPreview = () => {
     }
   };
 
+  // Destinatari confermati (i chip) e quello che si sta ancora scrivendo.
+  const [recipients, setRecipients] = useState<string[]>([]);
+  const [recipientDraft, setRecipientDraft] = useState("");
+
+  // Separatori accettati: virgola, punto e virgola, spazi e a capo, cosi'
+  // si puo' incollare una lista copiata da un'email o da un foglio.
+  const RECIPIENT_SEPARATOR = /[,;\s]+/;
+  const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const MAX_RECIPIENTS = 20;
+
+  const addRecipients = (raw: string) => {
+    const nuovi = raw
+      .split(RECIPIENT_SEPARATOR)
+      .map((value) => value.trim().toLowerCase())
+      .filter(Boolean);
+
+    if (nuovi.length === 0) return;
+
+    const validi = nuovi.filter((email) => EMAIL_PATTERN.test(email));
+    const scartati = nuovi.filter((email) => !EMAIL_PATTERN.test(email));
+
+    if (scartati.length > 0) {
+      toast.error(`Indirizzo non valido: ${scartati.join(", ")}`);
+    }
+
+    setRecipients((prev) => {
+      const uniti = Array.from(new Set([...prev, ...validi]));
+      if (uniti.length > MAX_RECIPIENTS) {
+        toast.error(`Massimo ${MAX_RECIPIENTS} destinatari per invio`);
+        return uniti.slice(0, MAX_RECIPIENTS);
+      }
+      return uniti;
+    });
+
+    // Gli scartati restano nel campo, da correggere invece che da riscrivere.
+    setRecipientDraft(scartati.join(" "));
+  };
+
+  const removeRecipient = (email: string) =>
+    setRecipients((prev) => prev.filter((r) => r !== email));
+
+  const toggleRecipient = (email: string) => {
+    const clean = email.toLowerCase();
+    if (recipients.includes(clean)) {
+      removeRecipient(clean);
+    } else {
+      addRecipients(clean);
+    }
+  };
+
+  const handleRecipientKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === "," || e.key === ";" || e.key === " ") {
+      e.preventDefault();
+      addRecipients(recipientDraft);
+    } else if (
+      e.key === "Backspace" &&
+      recipientDraft === "" &&
+      recipients.length > 0
+    ) {
+      removeRecipient(recipients[recipients.length - 1]);
+    }
+  };
+
+  const handleRecipientChange = (value: string) => {
+    // Incollando una lista, o scegliendo dal datalist dopo un separatore,
+    // il testo contiene gia' piu' indirizzi: li confermiamo subito.
+    if (RECIPIENT_SEPARATOR.test(value)) {
+      addRecipients(value);
+    } else {
+      setRecipientDraft(value);
+    }
+  };
+
   const [formData, setFormData] = useState({
     fromName: "Fuxture",
     subject: "",
-    toEmail: "",
     content: `<p style="text-align: center;">Se non visualizzi correttamente questo messaggio <a href="{{web_version_url}}" target="_blank">guarda la versione web</a></p>
 
 <hr>
@@ -272,14 +345,24 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
     }
   };
 
-  const validateForm = (): boolean => {
+  const validateForm = (toEmails: string[]): boolean => {
     if (!formData.subject || formData.subject.trim().length < 3) {
       toast.error("L'oggetto deve contenere almeno 3 caratteri");
       return false;
     }
 
-    if (!formData.toEmail || !formData.toEmail.includes("@")) {
-      toast.error("Inserisci un indirizzo email valido per il destinatario");
+    if (recipientDraft.trim() && !EMAIL_PATTERN.test(recipientDraft.trim())) {
+      toast.error(`Indirizzo non valido: ${recipientDraft.trim()}`);
+      return false;
+    }
+
+    if (toEmails.length === 0) {
+      toast.error("Inserisci almeno un destinatario");
+      return false;
+    }
+
+    if (toEmails.length > MAX_RECIPIENTS) {
+      toast.error(`Massimo ${MAX_RECIPIENTS} destinatari per invio`);
       return false;
     }
 
@@ -292,19 +375,43 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
   };
 
   const handleSubmit = async () => {
-    if (!validateForm()) return;
+    // Un indirizzo scritto ma non ancora confermato con Invio conta lo
+    // stesso: chi preme "Invia" si aspetta che parta anche quello.
+    const draft = recipientDraft.trim().toLowerCase();
+    const toEmails = Array.from(
+      new Set(draft ? [...recipients, draft] : recipients),
+    );
+
+    if (!validateForm(toEmails)) return;
 
     setIsSubmitting(true);
 
     try {
-      await campaignsAPI.sendPreviewEmail({
-        toEmail: formData.toEmail,
+      const { sent, failed } = await campaignsAPI.sendPreviewEmail({
+        toEmails,
         subject: formData.subject,
         content: formData.content,
         fromName: formData.fromName,
       });
 
-      toast.success(`Email inviata con successo a ${formData.toEmail}!`);
+      if (failed.length > 0) {
+        // Restano in pagina solo quelli da riprovare.
+        setRecipients(failed.map((f) => f.email));
+        setRecipientDraft("");
+        toast.error(
+          `Inviata a ${sent.length}, non riuscita per: ${failed
+            .map((f) => f.email)
+            .join(", ")}`,
+          { duration: 8000 },
+        );
+        return;
+      }
+
+      toast.success(
+        sent.length === 1
+          ? `Email inviata con successo a ${sent[0]}!`
+          : `Email inviata con successo a ${sent.length} destinatari!`,
+      );
       navigate("/dashboard/campaigns");
     } catch (error) {
       console.error("Errore invio preview:", error);
@@ -416,20 +523,42 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
         {/* Destinatario */}
         <div className="space-y-2">
           <Label htmlFor="toEmail">
-            Destinatario (Email Affiliazione){" "}
+            Destinatari (Email Affiliazione){" "}
             <span className="text-red-500">*</span>
           </Label>
-          <Input
-            id="toEmail"
-            type="email"
-            list="address-book"
-            placeholder="affiliazione@example.com"
-            value={formData.toEmail}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, toEmail: e.target.value }))
-            }
-            disabled={isSubmitting}
-          />
+          <div className="flex min-h-10 flex-wrap items-center gap-2 rounded-md border border-input bg-background px-3 py-2 focus-within:ring-2 focus-within:ring-ring">
+            {recipients.map((email) => (
+              <span
+                key={email}
+                className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-xs text-indigo-800"
+              >
+                {email}
+                <button
+                  type="button"
+                  onClick={() => removeRecipient(email)}
+                  disabled={isSubmitting}
+                  aria-label={`Rimuovi ${email}`}
+                  className="text-indigo-400 hover:text-indigo-700"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))}
+            <input
+              id="toEmail"
+              type="text"
+              list="address-book"
+              placeholder={
+                recipients.length === 0 ? "affiliazione@example.com" : ""
+              }
+              value={recipientDraft}
+              onChange={(e) => handleRecipientChange(e.target.value)}
+              onKeyDown={handleRecipientKeyDown}
+              onBlur={() => addRecipients(recipientDraft)}
+              disabled={isSubmitting}
+              className="min-w-[12rem] flex-1 bg-transparent text-sm focus:outline-none disabled:opacity-50"
+            />
+          </div>
           <datalist id="address-book">
             {contacts.map((contact) => (
               <option key={contact.id} value={contact.email}>
@@ -442,28 +571,34 @@ Il messaggio è stato inviato alla tua email in ottemperanza al GDPR Reg. UE 679
           {contacts.length > 0 && (
             <div className="flex flex-wrap items-center gap-2 pt-1">
               <span className="text-xs text-muted-foreground">Recenti:</span>
-              {contacts.slice(0, 6).map((contact) => (
-                <button
-                  key={contact.id}
-                  type="button"
-                  title={contact.email}
-                  onClick={() =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      toEmail: contact.email,
-                    }))
-                  }
-                  className="rounded-full border border-gray-200 px-3 py-1 text-xs text-gray-700 transition-colors hover:border-indigo-400 hover:text-indigo-700"
-                >
-                  {contact.name ?? contact.email}
-                </button>
-              ))}
+              {contacts.slice(0, 6).map((contact) => {
+                const selected = recipients.includes(
+                  contact.email.toLowerCase(),
+                );
+                return (
+                  <button
+                    key={contact.id}
+                    type="button"
+                    title={contact.email}
+                    onClick={() => toggleRecipient(contact.email)}
+                    disabled={isSubmitting}
+                    className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+                      selected
+                        ? "border-indigo-400 bg-indigo-50 text-indigo-700"
+                        : "border-gray-200 text-gray-700 hover:border-indigo-400 hover:text-indigo-700"
+                    }`}
+                  >
+                    {contact.name ?? contact.email}
+                  </button>
+                );
+              })}
             </div>
           )}
 
           <p className="text-sm text-muted-foreground">
-            L'email sarà inviata a questo indirizzo per l'approvazione della
-            campagna
+            Premi Invio o virgola per aggiungere un indirizzo, oppure incolla una
+            lista. Ognuno riceve un'email separata e non vede gli altri
+            destinatari (max {MAX_RECIPIENTS}).
           </p>
         </div>
 

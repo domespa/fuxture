@@ -752,16 +752,53 @@ export async function sendCampaign(req: Request, res: Response): Promise<void> {
 // ====================================================================================================== //
 //                                      INVIA PW
 // ====================================================================================================== //
+// Tetto ai destinatari di un singolo invio manuale: la schermata serve a
+// mandare l'anteprima a qualche affiliazione, non a fare una campagna fuori
+// dal circuito degli iscritti.
+const MAX_PREVIEW_RECIPIENTS = 20;
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Accetta sia `toEmails` (array) sia il vecchio `toEmail` (stringa singola):
+// minuscolo e senza duplicati, cosi' due grafie dello stesso indirizzo non
+// fanno arrivare l'email due volte.
+const collectRecipients = (toEmails: unknown, toEmail: unknown): string[] => {
+  const raw = Array.isArray(toEmails) ? toEmails : [toEmail];
+
+  return Array.from(
+    new Set(
+      raw
+        .filter((value): value is string => typeof value === "string")
+        .map((value) => value.trim().toLowerCase())
+        .filter(Boolean)
+    )
+  );
+};
+
 export async function sendPreviewEmail(
   req: Request,
   res: Response
 ): Promise<void> {
   try {
-    const { toEmail, subject, content, fromName } = req.body;
+    const { toEmails, toEmail, subject, content, fromName } = req.body;
+    const recipients = collectRecipients(toEmails, toEmail);
 
     // VALIDAZIONI
-    if (!toEmail || !subject || !content) {
+    if (recipients.length === 0 || !subject || !content) {
       res.status(400).json({ error: "Campi obbligatori mancanti" });
+      return;
+    }
+
+    if (recipients.length > MAX_PREVIEW_RECIPIENTS) {
+      res.status(400).json({
+        error: `Massimo ${MAX_PREVIEW_RECIPIENTS} destinatari per invio`,
+      });
+      return;
+    }
+
+    const invalid = recipients.filter((email) => !EMAIL_PATTERN.test(email));
+    if (invalid.length > 0) {
+      res.status(400).json({ error: "Indirizzi non validi", invalid });
       return;
     }
 
@@ -788,26 +825,43 @@ export async function sendPreviewEmail(
     // Solo gli invii manuali alimentano la rubrica: le campagne pescano da
     // Subscriber, dove il consenso e' registrato, e non devono aggiungere
     // nulla qui.
-    await rememberContact(toEmail);
+    //
+    // Un messaggio separato per ciascuno: nessuno vede gli indirizzi degli
+    // altri, ogni invio ha il suo log, e un indirizzo che fallisce non blocca
+    // i successivi. In sequenza, perche' sono pochi e l'SMTP ringrazia.
+    const sent: string[] = [];
+    const failed: { email: string; error?: string }[] = [];
 
-    const result = await sendEmail({
-      to: toEmail,
-      subject: subject,
-      html: personalizedContent,
-      fromName: senderName,
-    });
+    for (const recipient of recipients) {
+      await rememberContact(recipient);
 
-    if (!result.success) {
+      const result = await sendEmail({
+        to: recipient,
+        subject: subject,
+        html: personalizedContent,
+        fromName: senderName,
+      });
+
+      if (result.success) {
+        sent.push(recipient);
+      } else {
+        failed.push({ email: recipient, error: result.error });
+      }
+    }
+
+    if (sent.length === 0) {
       res.status(502).json({
         error: "Invio non riuscito",
-        detail: result.error,
+        detail: failed[0]?.error,
+        failed,
       });
       return;
     }
 
     res.status(200).json({
       success: true,
-      message: `Email preview inviata a ${toEmail}`,
+      message: `Email preview inviata a ${sent.length} destinatari`,
+      data: { sent, failed },
     });
   } catch (error) {
     console.error("Errore invio email preview:", error);

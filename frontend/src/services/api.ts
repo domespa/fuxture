@@ -328,13 +328,16 @@ export const campaignsAPI = {
 
   // PREVIEW
   sendPreviewEmail: async (data: {
-    toEmail: string;
+    toEmails: string[];
     subject: string;
     content: string;
     fromName?: string;
-  }) => {
+  }): Promise<{
+    sent: string[];
+    failed: { email: string; error?: string }[];
+  }> => {
     const response = await api.post("/campaigns/send-preview", data);
-    return response.data;
+    return response.data.data;
   },
 };
 // ======================================================================================

@@ -188,25 +188,7 @@ export default function HomePage() {
           )}
         </section>
 
-        {/* ARGOMENTI */}
-        <section className="hp-section">
-          <div className="hp-section__head">
-            <span className="hp-tag">Argomenti</span>
-            <h2 className="hp-section__title">Cerca per tag</h2>
-          </div>
-          <TagCloud />
-        </section>
-
-        {/* COMMENTI RECENTI */}
-        <section className="hp-section">
-          <div className="hp-section__head">
-            <span className="hp-tag">In corso</span>
-            <h2 className="hp-section__title">Se ne sta parlando</h2>
-          </div>
-          <RecentComments />
-        </section>
-
-        {/* NEWSLETTER */}
+        {/* NEWSLETTER: a meta pagina, lontana dal box del footer */}
         <section className="hp-newsletter">
           <div className="hp-newsletter__content">
             <span className="hp-tag">Newsletter</span>
@@ -234,6 +216,24 @@ export default function HomePage() {
               <NewsletterForm source="home-banda" />
             </div>
           </div>
+        </section>
+
+        {/* ARGOMENTI */}
+        <section className="hp-section">
+          <div className="hp-section__head">
+            <span className="hp-tag">Argomenti</span>
+            <h2 className="hp-section__title">Cerca per tag</h2>
+          </div>
+          <TagCloud />
+        </section>
+
+        {/* COMMENTI RECENTI */}
+        <section className="hp-section">
+          <div className="hp-section__head">
+            <span className="hp-tag">In corso</span>
+            <h2 className="hp-section__title">Se ne sta parlando</h2>
+          </div>
+          <RecentComments />
         </section>
 
       </div>

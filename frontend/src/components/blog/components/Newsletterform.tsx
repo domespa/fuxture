@@ -121,25 +121,26 @@ export default function NewsletterForm({
     <div>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Email Input */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <input
-            type="email"
-            placeholder="La tua email *"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="flex-1 px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-            required
-            disabled={isLoading}
-            aria-label="Email per newsletter"
-          />
+        <input
+          type="email"
+          placeholder="La tua email *"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          required
+          disabled={isLoading}
+          aria-label="Email per newsletter"
+        />
 
-          {/* Dati anagrafici */}
+        {/* Dati anagrafici: min-w-0 perche un input non si stringe sotto la
+            sua larghezza naturale e la riga sborderebbe dal contenitore */}
+        <div className="flex flex-col sm:flex-row gap-3">
           <input
             type="text"
             placeholder="Nome *"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="flex-1 px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            className="flex-1 min-w-0 px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
             disabled={isLoading}
             maxLength={100}
             required
@@ -150,7 +151,7 @@ export default function NewsletterForm({
             placeholder="Cognome *"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            className="flex-1 px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            className="flex-1 min-w-0 px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
             disabled={isLoading}
             maxLength={100}
             required
@@ -161,7 +162,7 @@ export default function NewsletterForm({
             placeholder="Indirizzo (facoltativo)"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="flex-1 px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            className="flex-1 min-w-0 px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
             disabled={isLoading}
             maxLength={200}
             aria-label="Indirizzo"

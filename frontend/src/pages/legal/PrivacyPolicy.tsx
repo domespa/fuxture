@@ -26,7 +26,14 @@ export default function PrivacyPolicy() {
             Privacy Policy
           </h1>
           <p className="text-gray-600">
-            Ultimo aggiornamento: <strong>07/09/2026</strong>
+            Ultimo aggiornamento: <strong>14/10/2026</strong>
+          </p>
+          <p className="text-sm text-gray-600 mt-2">
+            Stiamo inviando a tutti gli iscritti alla newsletter un'email che
+            riassume le novità di questa revisione.{" "}
+            <a href="#modifiche" className="text-blue-600 underline">
+              Vedi le modifiche
+            </a>
           </p>
           <p className="text-sm text-gray-500 mt-2">
             Conforme al Regolamento UE 2016/679 (GDPR)
@@ -199,6 +206,18 @@ export default function PrivacyPolicy() {
                     (inviata, non consegnata/bounce, errore) e relativa data
                   </li>
                   <li>
+                    <strong>Registro dei consensi</strong>: per ogni consenso
+                    prestato o revocato, alla newsletter o al solo
+                    tracciamento, la data e l'ora, il testo accettato,
+                    l'indirizzo IP e il tipo di browser, conservati per poter
+                    dimostrare le tue scelte (art. 7 GDPR)
+                  </li>
+                  <li>
+                    <strong>Identificativo di tracciamento</strong>: un codice
+                    casuale e non sequenziale associato al tuo indirizzo, usato
+                    nei pixel al posto della tua email
+                  </li>
+                  <li>
                     <strong>Dati di apertura</strong>: se hai prestato il
                     consenso, i pixel di tracciamento contenuti nel messaggio
                     rilevano l'avvenuta apertura, la data e l'ora, l'indirizzo
@@ -217,6 +236,22 @@ export default function PrivacyPolicy() {
                     disattivarli in qualsiasi momento, continuando a ricevere
                     le nostre comunicazioni, dall'area preferenze raggiungibile
                     dal link presente nel footer di ogni messaggio.
+                  </p>
+                  <p className="text-sm text-gray-800 mt-3 mb-0">
+                    <strong>Cosa succede se li disattivi.</strong> Continui a
+                    ricevere gli stessi messaggi, senza alcuna limitazione: al
+                    momento dell'invio rimuoviamo dalla creatività tutti i
+                    pixel di tracciamento, compresi quelli inseriti dagli
+                    inserzionisti e dalle loro agenzie, lasciando intatto il
+                    resto del contenuto.
+                  </p>
+                  <p className="text-sm text-gray-800 mt-3 mb-0">
+                    <strong>La tua email non arriva agli inserzionisti.</strong>{" "}
+                    Quando una creatività richiede di identificare il
+                    destinatario, al posto del tuo indirizzo inseriamo un
+                    identificativo casuale e non sequenziale. La
+                    corrispondenza tra questo codice e la tua email resta
+                    esclusivamente nei nostri sistemi.
                   </p>
                 </div>
               </div>
@@ -933,6 +968,37 @@ export default function PrivacyPolicy() {
               Ti invitiamo a consultare periodicamente questa pagina per essere
               informato sulle modalità di trattamento dei tuoi dati personali.
             </p>
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 mb-4">
+              <h3 className="font-bold text-gray-900 mb-2">
+                Revisione del 14/10/2026
+              </h3>
+              <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4 m-0">
+                <li>
+                  Specificato che, a chi disattiva il tracciamento, i messaggi
+                  vengono recapitati privi di tutti i pixel, compresi quelli
+                  inseriti da inserzionisti e agenzie
+                </li>
+                <li>
+                  Descritto l'identificativo casuale usato nei pixel al posto
+                  dell'indirizzo email, in attuazione dei principi di privacy
+                  by design (art. 25 GDPR) richiamati dalle Linee Guida del
+                  Garante del 17 aprile 2026
+                </li>
+                <li>
+                  Aggiunto il registro dei consensi tra i dati trattati
+                </li>
+                <li>
+                  Ogni comunicazione riporta nel footer il link a questa
+                  informativa, all'area preferenze e alla disiscrizione
+                </li>
+                <li>
+                  Stiamo inviando a tutti gli iscritti alla newsletter un'email
+                  che riassume questi aggiornamenti e indica come disattivare
+                  il solo tracciamento dall'area preferenze
+                </li>
+              </ul>
+            </div>
+
             <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 mb-4">
               <h3 className="font-bold text-gray-900 mb-2">
                 Revisione del 07/09/2026

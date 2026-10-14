@@ -24,10 +24,10 @@
 
 // DICHIARAZIONE DI CONSENSO: e' l'atto di volonta', accanto alla casella.
 export const NEWSLETTER_CONSENT_TEXT =
-  "Acconsento a ricevere la newsletter di Fuxture, che include " +
-  "comunicazioni promozionali di inserzionisti terzi, e alla misurazione " +
-  "delle aperture tramite pixel di tracciamento nostri e di tali inserzionisti, " +
-  "disattivabile in qualsiasi momento dall'area preferenze.";
+  "Acconsento a ricevere la newsletter di Fuxture, comprese le comunicazioni promozionali di " +
+  "inserzionisti terzi, e all'utilizzo di pixel di tracciamento per misurare individualmente le aperture delle " +
+  "email. Questi strumenti possono raccogliere informazioni sull'apertura del messaggio e dati tecnici " +
+  "correlati. Posso revocare il consenso al marketing oppure disattivare separatamente il tracciamento in qualsiasi momento dall'area preferenze.";
 
 // INFORMATIVA SINTETICA: e' un atto distinto dal consenso e sta sotto la
 // casella, non dentro la frase di consenso. L'EDPB segnala come punto debole
@@ -35,11 +35,7 @@ export const NEWSLETTER_CONSENT_TEXT =
 // Il primo livello dell'informativa e' qui, quello esteso nella Privacy Policy
 // (Linee Guida par. 4, informativa su piu' livelli).
 export const NEWSLETTER_CONSENT_NOTICE =
-  "Le comunicazioni promozionali possono riguardare i settori credito e " +
-  "finanza, energia, assicurazioni, automotive, casa e ristrutturazioni, largo " +
-  "largo consumo, formazione e viaggi. Il consenso è revocabile in ogni " +
-  "consumo, formazione e viaggi. Il consenso è revocabile in ogni" +
-  "momento.";
+  "Le comunicazioni promozionali possono riguardare i settori credito e finanza, energia, assicurazioni, automotive, casa e ristrutturazioni, largo consumo, formazione e viaggi.";
 
 // RIMANDO ALL'INFORMATIVA ESTESA: e' il testo del link, tenuto qui perche'
 // rientra in cio' che l'utente ha letto e quindi nella prova archiviata.

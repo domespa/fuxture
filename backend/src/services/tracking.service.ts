@@ -158,20 +158,78 @@ export const isTrackingImage = (tag: string): boolean => {
   return false;
 };
 
-// RIMUOVE I MARCATORI DALLA CREATIVITA' LASCIANDO INTATTO IL RESTO
+// RIMUOVE I MARCATORI DALLA CREATIVITA' LASCIANDO INTATTO IL RESTO.
+// extraSources sono gli src che l'admin ha indicato come pixel in fase di
+// invio: l'euristica non li riconosce, ma vanno tolti lo stesso a chi ha
+// revocato il consenso.
 export const stripTrackingPixels = (
-  html: string
+  html: string,
+  extraSources: ReadonlySet<string> = new Set()
 ): { html: string; removed: string[] } => {
   const removed: string[] = [];
 
   const cleaned = html.replace(IMG_TAG_PATTERN, (tag) => {
-    if (!isTrackingImage(tag)) return tag;
-    removed.push(getAttribute(tag, "src") ?? "(src assente)");
+    const src = getAttribute(tag, "src");
+    if (!isTrackingImage(tag) && !(src !== null && extraSources.has(src))) {
+      return tag;
+    }
+    removed.push(src ?? "(src assente)");
     return "";
   });
 
   return { html: cleaned, removed };
 };
+
+// ESTENSIONI DI UN'IMMAGINE STATICA: un file grafico ha quasi sempre un nome
+// con estensione, un marcatore e' quasi sempre un endpoint dinamico.
+const STATIC_IMAGE_PATTERN = /\.(?:jpe?g|png|gif|webp|svg|bmp|avif)$/i;
+
+// IMMAGINI ESTERNE CHE L'EURISTICA NON SA CLASSIFICARE.
+// Il riconoscimento dei pixel si basa su un elenco di host e su pattern
+// noti, e il Garante stesso osserva che non esiste una sintassi standard: un
+// marcatore di un host nuovo, senza dimensioni dichiarate, passerebbe
+// inosservato e arriverebbe anche a chi ha revocato il consenso. Qui si
+// raccolgono le immagini remote che non sono riconosciute come pixel ma non
+// hanno nemmeno l'aspetto di un file grafico, perche' l'admin decida prima
+// dell'invio. Sulle creativita' archiviate e' circa il 3% delle immagini.
+export const findUnrecognizedImages = (html: string): string[] => {
+  const found = new Set<string>();
+
+  for (const tag of html.match(IMG_TAG_PATTERN) ?? []) {
+    const src = getAttribute(tag, "src");
+    if (!src || !/^https?:\/\//i.test(src.trim())) continue;
+    if (isTrackingImage(tag)) continue;
+
+    let pathname = "";
+    try {
+      pathname = new URL(src.trim()).pathname;
+    } catch {
+      continue;
+    }
+    if (STATIC_IMAGE_PATTERN.test(pathname)) continue;
+
+    found.add(src);
+  }
+
+  return Array.from(found);
+};
+
+// LINK CHE OGNI CAMPAGNA DEVE CONTENERE NEL FOOTER.
+// Le Linee Guida (par. 6) chiedono un link in ogni messaggio verso l'area in
+// cui revocare la ricezione o il solo tracciamento, e l'informativa deve
+// essere raggiungibile dal messaggio. Il footer viene precompilato
+// nell'editor ma si puo' cancellare incollando una creativita': questo
+// controllo e' cio' che lo rende obbligatorio.
+const REQUIRED_FOOTER_LINKS: { label: string; pattern: RegExp }[] = [
+  { label: "area preferenze ({{preferences_url}})", pattern: /\{\{preferences_url\}\}/ },
+  { label: "disiscrizione ({{unsubscribe_url}})", pattern: /\{\{unsubscribe_url\}\}/ },
+  { label: "informativa privacy (/privacy-policy)", pattern: /href\s*=\s*["']?[^"'\s>]*\/privacy-policy/i },
+];
+
+export const findMissingFooterLinks = (html: string): string[] =>
+  REQUIRED_FOOTER_LINKS.filter(({ pattern }) => !pattern.test(html)).map(
+    ({ label }) => label
+  );
 
 // SOSTITUISCE LE MACRO {email} CON L'IDENTIFICATIVO OPACO DEL DESTINATARIO.
 // Interviene solo dentro src e href, cioe' dove la macro finisce in una
@@ -208,16 +266,26 @@ export const applyTrackingMacros = (html: string, trackingId: string): string =>
 // E' l'unico punto da cui dovrebbe passare la personalizzazione di un invio:
 // applica le macro e, se il destinatario ha revocato il consenso al solo
 // tracciamento, rimuove i marcatori continuando a recapitargli la campagna.
+// La rimozione precede le macro: gli src indicati dall'admin sono quelli
+// della creativita' originale, e dopo la sostituzione non combacerebbero piu'.
 export const personalizeForRecipient = (
   html: string,
-  recipient: { trackingId: string; trackingConsent: boolean }
+  recipient: { trackingId: string; trackingConsent: boolean },
+  extraTrackingSources: ReadonlySet<string> = new Set()
 ): { html: string; strippedPixels: string[] } => {
-  const withMacros = applyTrackingMacros(html, recipient.trackingId);
-
   if (recipient.trackingConsent) {
-    return { html: withMacros, strippedPixels: [] };
+    return {
+      html: applyTrackingMacros(html, recipient.trackingId),
+      strippedPixels: [],
+    };
   }
 
-  const { html: cleaned, removed } = stripTrackingPixels(withMacros);
-  return { html: cleaned, strippedPixels: removed };
+  const { html: cleaned, removed } = stripTrackingPixels(
+    html,
+    extraTrackingSources
+  );
+  return {
+    html: applyTrackingMacros(cleaned, recipient.trackingId),
+    strippedPixels: removed,
+  };
 };

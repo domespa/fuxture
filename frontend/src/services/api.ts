@@ -295,8 +295,12 @@ export const campaignsAPI = {
   // INVIA CAMPAGNA
   // La risposta e' il resoconto dell'invio, non la campagna: era tipizzata
   // come Campaign e chi la usava leggeva campi sempre undefined.
+  // review: esito dell'esame delle immagini che il server non sa
+  // classificare. Va inviato quando il primo tentativo risponde 409
+  // UNRECOGNIZED_IMAGES.
   sendCampaign: async (
     id: string,
+    review?: { reviewedImages: string[]; trackingSources: string[] },
   ): Promise<{
     totalRecipients: number;
     sent: number;
@@ -312,7 +316,7 @@ export const campaignsAPI = {
         failed: number;
         duration: number;
       };
-    }>(`/campaigns/${id}/send`);
+    }>(`/campaigns/${id}/send`, review);
     return response.data.data;
   },
 

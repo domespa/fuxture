@@ -20,7 +20,10 @@ import {
   Mail,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { isAxiosError } from "axios";
 import { utcToLocal } from "@/lib/datetime";
+import { getApiErrorMessage } from "@/lib/apiError";
+import ImageReviewDialog from "@/components/campaigns/ImageReviewDialog";
 
 export default function Campaigns() {
   const navigate = useNavigate();
@@ -28,6 +31,10 @@ export default function Campaigns() {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [sending, setSending] = useState<string | null>(null);
+  const [imageReview, setImageReview] = useState<{
+    id: string;
+    images: string[];
+  } | null>(null);
 
   // FILTRI E PAGINAZIONE
   const [filters, setFilters] = useState<CampaignFilters>({
@@ -115,6 +122,43 @@ export default function Campaigns() {
   };
 
   // INVIA CAMPAGNA
+  // Il server puo' fermare l'invio per due motivi legati alle Linee Guida del
+  // Garante sui tracking pixel: footer GDPR incompleto (400) oppure immagini
+  // che non sa classificare (409), da far esaminare all'admin prima di
+  // riprovare.
+  const performSend = async (
+    id: string,
+    review?: { reviewedImages: string[]; trackingSources: string[] }
+  ) => {
+    try {
+      setSending(id);
+      await campaignsAPI.sendCampaign(id, review);
+      setImageReview(null);
+      toast.success("Campagna in invio!");
+      fetchCampaigns();
+    } catch (error) {
+      const body = isAxiosError(error) ? error.response?.data : undefined;
+
+      if (body?.code === "UNRECOGNIZED_IMAGES" && Array.isArray(body.images)) {
+        setImageReview({ id, images: body.images });
+        return;
+      }
+
+      console.error("Error sending campaign:", error);
+      if (body?.code === "MISSING_FOOTER_LINKS" && Array.isArray(body.missing)) {
+        toast.error(`${body.error}: ${body.missing.join(", ")}`, {
+          duration: 8000,
+        });
+      } else {
+        toast.error(
+          getApiErrorMessage(error, "Errore nell'invio della campagna")
+        );
+      }
+    } finally {
+      setSending(null);
+    }
+  };
+
   const handleSend = async (id: string) => {
     if (
       !confirm(
@@ -123,17 +167,7 @@ export default function Campaigns() {
     )
       return;
 
-    try {
-      setSending(id);
-      await campaignsAPI.sendCampaign(id);
-      toast.success("Campagna in invio!");
-      fetchCampaigns();
-    } catch (error) {
-      console.error("Error sending campaign:", error);
-      toast.error("Errore nell'invio della campagna");
-    } finally {
-      setSending(null);
-    }
+    await performSend(id);
   };
 
   // STATUS BADGE
@@ -379,6 +413,20 @@ export default function Campaigns() {
           </div>
         </div>
       )}
+
+      <ImageReviewDialog
+        open={imageReview !== null}
+        images={imageReview?.images ?? []}
+        sending={sending !== null}
+        onCancel={() => setImageReview(null)}
+        onConfirm={(trackingSources) =>
+          imageReview &&
+          performSend(imageReview.id, {
+            reviewedImages: imageReview.images,
+            trackingSources,
+          })
+        }
+      />
     </div>
   );
 }

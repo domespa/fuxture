@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/database";
 import { emailConfig } from "../config/config.email";
-import { personalizeForRecipient } from "../services/tracking.service";
+import {
+  personalizeForRecipient,
+  findMissingFooterLinks,
+  findUnrecognizedImages,
+} from "../services/tracking.service";
 import { rememberContact } from "./address-book.controller";
 import {
   CreateCampaignRequest,
@@ -17,6 +21,12 @@ import {
   Prisma,
 } from "@prisma/client";
 import { sendBatchEmails, sendEmail } from "../services/email.service";
+
+// ARRAY DI STRINGHE DAL BODY: qualunque altra forma vale come vuoto
+const toStringArray = (value: unknown): string[] =>
+  Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === "string")
+    : [];
 
 // COLONNE SU CUI E' LECITO ORDINARE (il valore arriva dalla query string)
 const SORTABLE_CAMPAIGN_FIELDS = [
@@ -578,6 +588,42 @@ export async function sendCampaign(req: Request, res: Response): Promise<void> {
       return;
     }
 
+    // FOOTER OBBLIGATORIO: senza il link alle preferenze chi riceve non puo'
+    // revocare il solo tracciamento, che e' cio' che le Linee Guida del
+    // Garante del 17/04/2026 chiedono a ogni messaggio (par. 6).
+    const missingLinks = findMissingFooterLinks(campaign.content);
+    if (missingLinks.length > 0) {
+      res.status(400).json({
+        error:
+          "Il contenuto non contiene il footer GDPR completo: mancano i link obbligatori",
+        code: "MISSING_FOOTER_LINKS",
+        missing: missingLinks,
+      });
+      return;
+    }
+
+    // IMMAGINI NON CLASSIFICATE: l'admin deve averle esaminate tutte prima
+    // dell'invio. Quelle che indica come pixel vengono rimosse, insieme ai
+    // marcatori riconosciuti, per chi ha revocato il consenso al tracciamento.
+    const reviewedImages = new Set(
+      toStringArray(req.body?.reviewedImages)
+    );
+    const extraTrackingSources = new Set(
+      toStringArray(req.body?.trackingSources)
+    );
+    const unreviewed = findUnrecognizedImages(campaign.content).filter(
+      (src) => !reviewedImages.has(src)
+    );
+    if (unreviewed.length > 0) {
+      res.status(409).json({
+        error:
+          "La creatività contiene immagini esterne che non è possibile classificare: indica quali sono pixel di tracciamento",
+        code: "UNRECOGNIZED_IMAGES",
+        images: unreviewed,
+      });
+      return;
+    }
+
     // STATO DA RIPRISTINARE SE L'INVIO FALLISCE: prima il rollback riportava
     // sempre a DRAFT, declassando anche le campagne schedulate.
     previousStatus = campaign.status;
@@ -676,7 +722,8 @@ export async function sendCampaign(req: Request, res: Response): Promise<void> {
         {
           trackingId: subscriber.trackingId,
           trackingConsent: subscriber.trackingConsent,
-        }
+        },
+        extraTrackingSources
       );
 
       if (strippedPixels.length > 0) {

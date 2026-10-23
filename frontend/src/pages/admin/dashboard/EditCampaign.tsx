@@ -72,6 +72,7 @@ export const EditCampaign = () => {
       const payload: UpdateCampaignRequest = {
         subject: formData.subject,
         content: formData.content,
+        skipTrackingMacros: formData.skipTrackingMacros,
         status: formData.status,
       };
 

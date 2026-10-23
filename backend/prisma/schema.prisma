@@ -216,6 +216,10 @@ model EmailCampaign {
   subject     String
   content     String         @db.Text
   fromName    String?
+  // CREATIVITA' DA INVIARE SENZA TOCCARE I PIXEL: le macro {email} restano
+  // letterali invece di ricevere il trackingId, per gli inserzionisti che
+  // chiedono di non associare al pixel alcun identificativo del destinatario
+  skipTrackingMacros Boolean @default(false)
   status      CampaignStatus @default(DRAFT)
   scheduledAt DateTime?
   sentAt      DateTime?

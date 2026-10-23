@@ -124,6 +124,7 @@ async function buildCampaignResponse(
     subject: campaign.subject,
     content: campaign.content,
     fromName: campaign.fromName,
+    skipTrackingMacros: campaign.skipTrackingMacros,
     status: campaign.status,
     scheduledAt: campaign.scheduledAt,
     sentAt: campaign.sentAt,
@@ -173,6 +174,7 @@ export async function createCampaign(
       subject: data.subject.trim(),
       content: data.content.trim(),
       fromName: data.fromName?.trim() || null,
+      skipTrackingMacros: data.skipTrackingMacros === true,
       status: data.status || CampaignStatus.DRAFT,
       createdBy: {
         connect: { id: createdById },
@@ -295,6 +297,7 @@ export async function getCampaigns(req: Request, res: Response): Promise<void> {
         subject: campaign.subject,
         content: campaign.content,
         fromName: campaign.fromName,
+        skipTrackingMacros: campaign.skipTrackingMacros,
         status: campaign.status,
         scheduledAt: campaign.scheduledAt,
         sentAt: campaign.sentAt,
@@ -396,6 +399,9 @@ export async function updateCampaign(
       ...(data.content !== undefined && { content: data.content.trim() }),
       ...(data.fromName !== undefined && {
         fromName: data.fromName?.trim() || null,
+      }),
+      ...(data.skipTrackingMacros !== undefined && {
+        skipTrackingMacros: data.skipTrackingMacros,
       }),
       ...(data.status !== undefined && { status: data.status }),
       // Se la campagna esce da SCHEDULED la data va azzerata: restava
@@ -715,15 +721,17 @@ export async function sendCampaign(req: Request, res: Response): Promise<void> {
         .replace(/\{\{preferences_url\}\}/g, preferencesUrl);
 
       // SOSTITUISCE LE MACRO {email} DELLE CREATIVITA' DI TERZI CON
-      // L'IDENTIFICATIVO OPACO E, PER CHI HA REVOCATO IL SOLO CONSENSO AL
-      // TRACCIAMENTO, RIMUOVE I MARCATORI RECAPITANDO COMUNQUE LA CAMPAGNA.
+      // L'IDENTIFICATIVO OPACO, SALVO CHE LA CAMPAGNA CHIEDA DI LASCIARE I
+      // PIXEL INVARIATI, E PER CHI HA REVOCATO IL SOLO CONSENSO AL
+      // TRACCIAMENTO RIMUOVE I MARCATORI RECAPITANDO COMUNQUE LA CAMPAGNA.
       const { html, strippedPixels } = personalizeForRecipient(
         personalizedContent,
         {
           trackingId: subscriber.trackingId,
           trackingConsent: subscriber.trackingConsent,
         },
-        extraTrackingSources
+        extraTrackingSources,
+        { applyMacros: !campaign.skipTrackingMacros }
       );
 
       if (strippedPixels.length > 0) {

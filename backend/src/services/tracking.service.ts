@@ -268,24 +268,26 @@ export const applyTrackingMacros = (html: string, trackingId: string): string =>
 // tracciamento, rimuove i marcatori continuando a recapitargli la campagna.
 // La rimozione precede le macro: gli src indicati dall'admin sono quelli
 // della creativita' originale, e dopo la sostituzione non combacerebbero piu'.
+// Con applyMacros false le macro restano letterali: e' il caso degli
+// inserzionisti che chiedono di inserire il pixel senza associarvi alcun
+// identificativo del destinatario. La rimozione per chi ha revocato il
+// consenso resta comunque, perche' e' un obbligo e non una scelta.
 export const personalizeForRecipient = (
   html: string,
   recipient: { trackingId: string; trackingConsent: boolean },
-  extraTrackingSources: ReadonlySet<string> = new Set()
+  extraTrackingSources: ReadonlySet<string> = new Set(),
+  { applyMacros = true }: { applyMacros?: boolean } = {}
 ): { html: string; strippedPixels: string[] } => {
+  const withMacros = (content: string): string =>
+    applyMacros ? applyTrackingMacros(content, recipient.trackingId) : content;
+
   if (recipient.trackingConsent) {
-    return {
-      html: applyTrackingMacros(html, recipient.trackingId),
-      strippedPixels: [],
-    };
+    return { html: withMacros(html), strippedPixels: [] };
   }
 
   const { html: cleaned, removed } = stripTrackingPixels(
     html,
     extraTrackingSources
   );
-  return {
-    html: applyTrackingMacros(cleaned, recipient.trackingId),
-    strippedPixels: removed,
-  };
+  return { html: withMacros(cleaned), strippedPixels: removed };
 };

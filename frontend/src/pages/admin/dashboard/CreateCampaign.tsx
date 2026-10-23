@@ -24,6 +24,7 @@ export default function CreateCampaign() {
         subject: formData.subject,
         fromName: formData.fromName || "Fuxture",
         content: formData.content,
+        skipTrackingMacros: formData.skipTrackingMacros,
         status: formData.status,
         ...(formData.status === CampaignStatus.SCHEDULED && {
           scheduledAt: localToUtc(formData.scheduledAt).toISOString(),

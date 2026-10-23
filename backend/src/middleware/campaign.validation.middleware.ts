@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { CampaignStatus } from "@prisma/client";
 
+const SKIP_TRACKING_MACROS_ERROR = {
+  field: "skipTrackingMacros",
+  message: "skipTrackingMacros must be a boolean",
+};
+
 // ====================================================================================================== //
 //                                VALIDAZIONE CREAZIONE CAMPAGNA
 // ====================================================================================================== //
@@ -9,8 +14,24 @@ export function validateCreateCampaign(
   res: Response,
   next: NextFunction
 ): void {
-  const { subject, content, fromName, status, scheduledAt, listIds } = req.body;
+  const {
+    subject,
+    content,
+    fromName,
+    skipTrackingMacros,
+    status,
+    scheduledAt,
+    listIds,
+  } = req.body;
   const errors: { field: string; message: string }[] = [];
+
+  // SKIP TRACKING MACROS
+  if (
+    skipTrackingMacros !== undefined &&
+    typeof skipTrackingMacros !== "boolean"
+  ) {
+    errors.push(SKIP_TRACKING_MACROS_ERROR);
+  }
 
   // SUBJECT
   if (!subject || typeof subject !== "string" || subject.trim().length === 0) {
@@ -137,7 +158,8 @@ export function validateUpdateCampaign(
   res: Response,
   next: NextFunction
 ): void {
-  const { subject, content, fromName, status, scheduledAt } = req.body;
+  const { subject, content, fromName, skipTrackingMacros, status, scheduledAt } =
+    req.body;
   const errors: { field: string; message: string }[] = [];
 
   // ALMENO UN CAMPO DEVE ESSERE PRESENTE
@@ -145,6 +167,7 @@ export function validateUpdateCampaign(
     subject === undefined &&
     content === undefined &&
     fromName === undefined &&
+    skipTrackingMacros === undefined &&
     status === undefined &&
     scheduledAt === undefined
   ) {
@@ -152,6 +175,14 @@ export function validateUpdateCampaign(
       error: "At least one field must be provided for update",
     });
     return;
+  }
+
+  // SKIP TRACKING MACROS
+  if (
+    skipTrackingMacros !== undefined &&
+    typeof skipTrackingMacros !== "boolean"
+  ) {
+    errors.push(SKIP_TRACKING_MACROS_ERROR);
   }
 
   // SUBJECT

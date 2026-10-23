@@ -5,6 +5,7 @@ export interface CreateCampaignRequest {
   subject: string;
   content: string;
   fromName?: string;
+  skipTrackingMacros?: boolean;
   status?: CampaignStatus;
   scheduledAt?: string;
   listIds?: string[];
@@ -13,6 +14,7 @@ export interface UpdateCampaignRequest {
   subject?: string;
   content?: string;
   fromName?: string;
+  skipTrackingMacros?: boolean;
   status?: CampaignStatus;
   scheduledAt?: string;
 }
@@ -38,6 +40,7 @@ export interface CampaignResponse {
   subject: string;
   content: string;
   fromName: string | null;
+  skipTrackingMacros: boolean;
   status: CampaignStatus;
   scheduledAt: Date | null;
   sentAt: Date | null;

@@ -29,6 +29,7 @@ export const CampaignForm = ({
     subject: initialData?.subject || "",
     fromName: initialData?.fromName || "Fuxture",
     content: initialData?.content || "",
+    skipTrackingMacros: initialData?.skipTrackingMacros ?? false,
     status: initialData?.status || CampaignStatus.DRAFT,
     scheduledAt: initialData?.scheduledAt
       ? utcToLocal(initialData.scheduledAt)
@@ -156,6 +157,37 @@ export const CampaignForm = ({
         />
         <p className="text-sm text-muted-foreground">
           Se vuoto, verrà usato "Fuxture"
+        </p>
+      </div>
+
+      {/* Pixel invariati */}
+      <div className="space-y-2">
+        <div className="flex items-start gap-2">
+          <input
+            id="skipTrackingMacros"
+            type="checkbox"
+            checked={formData.skipTrackingMacros}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                skipTrackingMacros: e.target.checked,
+              }))
+            }
+            disabled={isLoading}
+            className="mt-1 h-4 w-4 cursor-pointer"
+          />
+          <Label
+            htmlFor="skipTrackingMacros"
+            className="font-normal cursor-pointer"
+          >
+            Lascia invariati i pixel della creatività
+          </Label>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Le macro come {"{email}"} restano così come sono, senza
+          l'identificativo del destinatario. Da attivare per gli inserzionisti
+          che lo richiedono (es. Perform Agency). I pixel vengono comunque
+          rimossi per chi ha disattivato il tracciamento.
         </p>
       </div>
 

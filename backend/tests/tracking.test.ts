@@ -81,6 +81,31 @@ describe("personalizeForRecipient", () => {
     expect(result.html).not.toContain("track.adform.net");
   });
 
+  it("leaves the pixel untouched when the campaign skips the macros", () => {
+    const result = personalizeForRecipient(
+      html,
+      { trackingId: "abc123", trackingConsent: true },
+      new Set(),
+      { applyMacros: false }
+    );
+
+    expect(result.html).toBe(html);
+    expect(result.html).not.toContain("abc123");
+  });
+
+  it("still strips pixels on revoked consent when the macros are skipped", () => {
+    const result = personalizeForRecipient(
+      html,
+      { trackingId: "abc123", trackingConsent: false },
+      new Set([unknown]),
+      { applyMacros: false }
+    );
+
+    expect(result.strippedPixels).toHaveLength(2);
+    expect(result.html).toContain("banner.jpg");
+    expect(result.html).not.toContain("new-tracker");
+  });
+
   it("keeps images the admin marked as graphics", () => {
     const result = personalizeForRecipient(html, {
       trackingId: "abc123",

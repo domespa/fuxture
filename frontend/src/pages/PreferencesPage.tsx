@@ -162,9 +162,10 @@ export default function PreferencesPage() {
                   Pixel di tracciamento
                 </span>
                 <span className="block text-sm text-gray-600">
-                  Consentono a noi e ai nostri inserzionisti di rilevare
-                  l'apertura dei messaggi, per misurare l'efficacia delle
-                  campagne. Puoi disattivarli{" "}
+                  Sono inseriti dagli inserzionisti nelle loro creatività e
+                  consentono loro di rilevare l'apertura dei messaggi, per
+                  misurare l'efficacia delle campagne. Noi non rileviamo le
+                  aperture. Puoi disattivarli{" "}
                   <strong>continuando a ricevere la newsletter</strong>: i
                   messaggi ti arriveranno privi di questi marcatori e senza
                   alcuna altra limitazione.

@@ -26,7 +26,7 @@ export default function PrivacyPolicy() {
             Privacy Policy
           </h1>
           <p className="text-gray-600">
-            Ultimo aggiornamento: <strong>14/10/2026</strong>
+            Ultimo aggiornamento: <strong>23/10/2026</strong>
           </p>
           <p className="text-sm text-gray-600 mt-2">
             Stiamo inviando a tutti gli iscritti alla newsletter un'email che
@@ -218,21 +218,27 @@ export default function PrivacyPolicy() {
                     nei pixel al posto della tua email
                   </li>
                   <li>
-                    <strong>Dati di apertura</strong>: se hai prestato il
-                    consenso, i pixel di tracciamento contenuti nel messaggio
-                    rilevano l'avvenuta apertura, la data e l'ora, l'indirizzo
-                    IP e il tipo di dispositivo o client di posta impiegato
+                    <strong>Dati di apertura</strong>: non li raccogliamo. Non
+                    inseriamo pixel di tracciamento nostri e non rileviamo
+                    l'apertura dei messaggi. Se hai prestato il consenso, i
+                    pixel inseriti dagli inserzionisti nelle creatività possono
+                    rilevare l'avvenuta apertura, la data e l'ora, l'indirizzo
+                    IP e il tipo di dispositivo o client di posta impiegato:
+                    questi dati arrivano direttamente all'inserzionista, non a
+                    noi
                   </li>
                 </ul>
                 <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded mt-4">
                   <p className="text-sm text-gray-800 m-0">
-                    <strong>Pixel di tracciamento.</strong> Le nostre
-                    comunicazioni promozionali contengono pixel di
-                    tracciamento: immagini di dimensioni minime, ospitate su
-                    server esterni, che al momento in cui apri il messaggio
-                    segnalano l'apertura a noi e agli inserzionisti che ci
-                    affidano le creatività. Servono a misurare l'efficacia
-                    delle campagne e ad adattarne frequenza e contenuti. Puoi
+                    <strong>Pixel di tracciamento.</strong> Le comunicazioni
+                    promozionali che inviamo possono contenere pixel di
+                    tracciamento inseriti dagli inserzionisti e dalle loro
+                    agenzie nelle creatività: immagini di dimensioni minime,
+                    ospitate sui loro server, che al momento in cui apri il
+                    messaggio segnalano l'apertura all'inserzionista. Servono
+                    all'inserzionista a misurare l'efficacia delle proprie
+                    campagne. Noi non inseriamo pixel nostri e non rileviamo
+                    le aperture. Puoi
                     disattivarli in qualsiasi momento, continuando a ricevere
                     le nostre comunicazioni, dall'area preferenze raggiungibile
                     dal link presente nel footer di ogni messaggio.
@@ -397,8 +403,9 @@ export default function PrivacyPolicy() {
                     consumo, formazione e viaggi. In questo secondo caso la
                     creatività è predisposta dall'inserzionista e recapitata da
                     noi: restiamo il mittente del messaggio, mentre i dati
-                    rilevati dai pixel presenti nella creatività sono trattati
-                    anche dall'inserzionista per le proprie finalità. Puoi
+                    rilevati dai pixel presenti nella creatività sono raccolti
+                    direttamente dall'inserzionista, che li tratta per le
+                    proprie finalità in qualità di titolare autonomo. Puoi
                     disiscriverti in qualsiasi momento cliccando sul link in
                     fondo a ogni email, oppure disattivare il solo tracciamento
                     dall'area preferenze.
@@ -488,11 +495,12 @@ export default function PrivacyPolicy() {
             <div className="bg-amber-50 border-l-4 border-amber-500 p-5 rounded-lg mt-6">
               <p className="text-gray-800 m-0">
                 <strong>Misurazione delle campagne.</strong> Le comunicazioni
-                promozionali contengono pixel di tracciamento, nostri e degli
+                promozionali possono contenere pixel di tracciamento degli
                 inserzionisti che ci affidano le creatività, che rilevano
-                l'apertura del messaggio e i dati tecnici a essa collegati. Li
-                utilizziamo per misurare l'efficacia degli invii e adattarne
-                frequenza e contenuti. Non effettuiamo processi decisionali
+                l'apertura del messaggio e i dati tecnici a essa collegati e
+                li trasmettono all'inserzionista per misurare l'efficacia delle
+                sue campagne. Noi non inseriamo pixel nostri e non rileviamo le
+                aperture. Non effettuiamo processi decisionali
                 automatizzati ai sensi dell'art. 22 GDPR e non trattiamo
                 categorie particolari di dati (art. 9 GDPR). Puoi opporti al
                 solo tracciamento senza rinunciare a ricevere la newsletter.
@@ -968,6 +976,26 @@ export default function PrivacyPolicy() {
               Ti invitiamo a consultare periodicamente questa pagina per essere
               informato sulle modalità di trattamento dei tuoi dati personali.
             </p>
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 mb-4">
+              <h3 className="font-bold text-gray-900 mb-2">
+                Revisione del 23/10/2026
+              </h3>
+              <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4 m-0">
+                <li>
+                  Corretta l'indicazione secondo cui le comunicazioni
+                  contengono pixel di tracciamento nostri: i pixel presenti
+                  sono esclusivamente quelli inseriti da inserzionisti e
+                  agenzie nelle creatività, e non rileviamo le aperture dei
+                  messaggi
+                </li>
+                <li>
+                  Specificato che i dati rilevati da quei pixel sono raccolti
+                  direttamente dall'inserzionista, che li tratta come titolare
+                  autonomo
+                </li>
+              </ul>
+            </div>
+
             <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 mb-4">
               <h3 className="font-bold text-gray-900 mb-2">
                 Revisione del 14/10/2026

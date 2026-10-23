@@ -386,9 +386,10 @@ export default function CookiePolicy() {
                 <p className="text-sm text-gray-800 m-0">
                   <strong>Le newsletter sono un caso a parte.</strong> Quanto
                   sopra riguarda il Sito. Le nostre comunicazioni di posta
-                  elettronica promozionali contengono invece pixel di
-                  tracciamento, nostri e degli inserzionisti che ci affidano le
-                  creatività, che rilevano l'apertura del messaggio. Sono
+                  elettronica promozionali possono contenere invece pixel di
+                  tracciamento degli inserzionisti che ci affidano le
+                  creatività, che segnalano loro l'apertura del messaggio. Noi
+                  non inseriamo pixel nostri e non rileviamo le aperture. Sono
                   descritti nella{" "}
                   <Link to="/privacy-policy" className="underline">
                     Privacy Policy

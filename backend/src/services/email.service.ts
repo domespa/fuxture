@@ -293,8 +293,9 @@ export const createEmailTemplate = (content: string): string => {
     <div class="email-footer">
       <p>Hai ricevuto questa email perché sei iscritto alla nostra newsletter.</p>
       <p>
-        Questo messaggio può contenere pixel di tracciamento che ci segnalano
-        l'avvenuta apertura. Puoi disattivarli continuando a ricevere la
+        Questo messaggio può contenere pixel di tracciamento inseriti dagli
+        inserzionisti, che segnalano loro l'avvenuta apertura. Noi non
+        rileviamo le aperture. Puoi disattivarli continuando a ricevere la
         newsletter dall'area preferenze.
       </p>
       <p>

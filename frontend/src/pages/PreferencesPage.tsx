@@ -9,6 +9,7 @@ import {
   Save,
 } from "lucide-react";
 import { subscribersAPI } from "@/services/api";
+import { PRIVACY_POLICY_VERSION } from "@/lib/consent";
 
 // ============================================================================
 // AREA PREFERENZE
@@ -73,10 +74,10 @@ export default function PreferencesPage() {
     setError("");
 
     try {
-      const result = await subscribersAPI.updatePreferences(
-        id as string,
-        changes
-      );
+      const result = await subscribersAPI.updatePreferences(id as string, {
+        ...changes,
+        policyVersion: PRIVACY_POLICY_VERSION,
+      });
       setPreferences({ ...preferences, ...result.preferences });
       setSaved(true);
     } catch {

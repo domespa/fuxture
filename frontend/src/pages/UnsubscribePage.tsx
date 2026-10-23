@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Mail, Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { subscribersAPI } from "@/services/api";
+import { PRIVACY_POLICY_VERSION } from "@/lib/consent";
 
 export default function UnsubscribePage() {
   // Il footer delle campagne rimanda a /unsubscribe/:id, cosi' chi arriva dal
@@ -29,6 +30,7 @@ export default function UnsubscribePage() {
     try {
       await subscribersAPI.updatePreferences(id as string, {
         subscribed: false,
+        policyVersion: PRIVACY_POLICY_VERSION,
       });
       setSubmitted(true);
     } catch {

@@ -2,6 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import { SubscriberStatus } from "@prisma/client";
 import { isValidEmail } from "./validation.middleware";
 
+// VERSIONE DELL'INFORMATIVA: facoltativa (gli inserimenti manuali dell'admin
+// non ce l'hanno), ma se presente dev'essere una stringa breve
+const isInvalidPolicyVersion = (value: unknown): boolean =>
+  value !== undefined &&
+  (typeof value !== "string" || !value.trim() || value.length > 32);
+
 // ====================================================================================================== //
 //                                    MIDDLEWARE: VALIDAZIONE SUBSCRIBER
 // ====================================================================================================== //
@@ -12,8 +18,16 @@ export const validateCreateSub = (
   next: NextFunction,
 ): void => {
   const errors: Array<{ field: string; message: string }> = [];
-  const { email, name, firstName, lastName, address, source, consentText } =
-    req.body;
+  const {
+    email,
+    name,
+    firstName,
+    lastName,
+    address,
+    source,
+    consentText,
+    policyVersion,
+  } = req.body;
 
   // EMAIL OBBLIGATORIA
   if (!email) {
@@ -52,6 +66,13 @@ export const validateCreateSub = (
     errors.push({
       field: "consentText",
       message: "Il testo del consenso è obbligatorio",
+    });
+  }
+
+  if (isInvalidPolicyVersion(policyVersion)) {
+    errors.push({
+      field: "policyVersion",
+      message: "policyVersion deve essere una stringa di massimo 32 caratteri",
     });
   }
 
@@ -186,7 +207,7 @@ export const validateUpdatePreferences = (
   next: NextFunction,
 ): void => {
   const errors: Array<{ field: string; message: string }> = [];
-  const { trackingConsent, subscribed } = req.body;
+  const { trackingConsent, subscribed, policyVersion } = req.body;
 
   if (trackingConsent === undefined && subscribed === undefined) {
     errors.push({
@@ -206,6 +227,13 @@ export const validateUpdatePreferences = (
     errors.push({
       field: "subscribed",
       message: "subscribed deve essere un booleano",
+    });
+  }
+
+  if (isInvalidPolicyVersion(policyVersion)) {
+    errors.push({
+      field: "policyVersion",
+      message: "policyVersion deve essere una stringa di massimo 32 caratteri",
     });
   }
 

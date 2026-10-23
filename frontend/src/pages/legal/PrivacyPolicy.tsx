@@ -10,6 +10,7 @@ import {
   FileText,
   AlertCircle,
 } from "lucide-react";
+import { PRIVACY_POLICY_VERSION } from "@/lib/consent";
 
 export default function PrivacyPolicy() {
   useEffect(() => {
@@ -26,7 +27,7 @@ export default function PrivacyPolicy() {
             Privacy Policy
           </h1>
           <p className="text-gray-600">
-            Ultimo aggiornamento: <strong>23/10/2026</strong>
+            Ultimo aggiornamento: <strong>{PRIVACY_POLICY_VERSION}</strong>
           </p>
           <p className="text-sm text-gray-600 mt-2">
             Stiamo inviando a tutti gli iscritti alla newsletter un'email che

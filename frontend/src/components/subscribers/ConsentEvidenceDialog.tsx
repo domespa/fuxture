@@ -54,6 +54,7 @@ export default function ConsentEvidenceDialog({
         "tipo consenso",
         "concesso",
         "testo consenso",
+        "versione informativa",
         "IP",
         "user-agent",
         "data scelta",
@@ -70,6 +71,7 @@ export default function ConsentEvidenceDialog({
         consent.type,
         consent.granted ? "si" : "no",
         consent.text,
+        consent.policyVersion,
         consent.ipAddress,
         consent.userAgent,
         consent.createdAt,
@@ -139,6 +141,10 @@ export default function ConsentEvidenceDialog({
                       IP: {consent.ipAddress || "non disponibile"}
                     </div>
                     <div>Fonte: {consent.source || "-"}</div>
+                    <div>
+                      Versione informativa:{" "}
+                      {consent.policyVersion || "non registrata"}
+                    </div>
                     <p className="mt-2 whitespace-pre-wrap text-muted-foreground">
                       {consent.text || "Nessun testo archiviato"}
                     </p>

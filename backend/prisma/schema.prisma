@@ -167,6 +167,10 @@ model ConsentLog {
   source       String?
   ipAddress    String?
   userAgent    String?
+  // VERSIONE DELL'INFORMATIVA IN VIGORE AL MOMENTO DELLA SCELTA: la data di
+  // revisione della Privacy Policy, null per le scelte registrate prima che
+  // venisse archiviata
+  policyVersion String?
   createdAt    DateTime    @default(now())
 
   @@index([subscriberId, createdAt])

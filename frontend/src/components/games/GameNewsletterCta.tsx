@@ -9,6 +9,7 @@ import {
   NEWSLETTER_CONSENT_NOTICE,
   NEWSLETTER_PRIVACY_LINK_TEXT,
   NEWSLETTER_CONSENT_RECORD,
+  PRIVACY_POLICY_VERSION,
 } from "@/lib/consent";
 import { PANEL_CLASS } from "./theme";
 
@@ -52,6 +53,7 @@ export default function GameNewsletterCta({
         email: email.trim(),
         source: `gioco-${gameSlug}`,
         consentText: NEWSLETTER_CONSENT_RECORD,
+        policyVersion: PRIVACY_POLICY_VERSION,
       });
       setIsDone(true);
       setEmail("");

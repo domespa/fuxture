@@ -67,6 +67,7 @@ const recordConsent = async (params: {
   granted: boolean;
   text?: string | null;
   source?: string | null;
+  policyVersion?: string | null;
   req: Request;
 }): Promise<void> => {
   try {
@@ -77,6 +78,7 @@ const recordConsent = async (params: {
         granted: params.granted,
         text: params.text || null,
         source: params.source || null,
+        policyVersion: params.policyVersion?.trim() || null,
         ipAddress: getClientIp(params.req),
         userAgent: getUserAgent(params.req),
       },
@@ -100,6 +102,7 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
       address,
       source,
       consentText,
+      policyVersion,
     }: CreateSubscriberRequest = req.body;
     const normalizedEmail = email.toLowerCase().trim();
 
@@ -144,6 +147,7 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
         granted: true,
         text: consentText,
         source: source || existingSubscriber.source,
+        policyVersion,
         req,
       });
       await recordConsent({
@@ -152,6 +156,7 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
         granted: true,
         text: consentText,
         source: source || existingSubscriber.source,
+        policyVersion,
         req,
       });
 
@@ -207,6 +212,7 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
       granted: true,
       text: consentText,
       source,
+      policyVersion,
       req,
     });
     await recordConsent({
@@ -215,6 +221,7 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
       granted: true,
       text: consentText,
       source,
+      policyVersion,
       req,
     });
 
@@ -691,7 +698,8 @@ export const updatePreferences = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const { trackingConsent, subscribed }: UpdatePreferencesRequest = req.body;
+    const { trackingConsent, subscribed, policyVersion }: UpdatePreferencesRequest =
+      req.body;
 
     const subscriber = await prisma.subscriber.findUnique({
       where: { id },
@@ -752,6 +760,7 @@ export const updatePreferences = async (
         type: ConsentType.TRACKING,
         granted: updated.trackingConsent,
         source: "centro-preferenze",
+        policyVersion,
         req,
       });
     }
@@ -761,6 +770,7 @@ export const updatePreferences = async (
         type: ConsentType.NEWSLETTER,
         granted: updated.status === "ACTIVE",
         source: "centro-preferenze",
+        policyVersion,
         req,
       });
     }

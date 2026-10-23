@@ -582,6 +582,8 @@ export const subscribersAPI = {
     // Formulazione esatta del consenso accettato, registrata come prova
     // (art. 7 par. 1 GDPR)
     consentText?: string;
+    // Revisione dell'informativa in vigore al momento dell'iscrizione
+    policyVersion?: string;
   }): Promise<{
     success: boolean;
     message: string;
@@ -627,6 +629,7 @@ export const subscribersAPI = {
         source: string | null;
         ipAddress: string | null;
         userAgent: string | null;
+        policyVersion: string | null;
         createdAt: string;
       }>;
     };
@@ -654,7 +657,11 @@ export const subscribersAPI = {
   // CENTRO PREFERENZE - REVOCA, ANCHE GRANULARE
   updatePreferences: async (
     id: string,
-    data: { trackingConsent?: boolean; subscribed?: boolean },
+    data: {
+      trackingConsent?: boolean;
+      subscribed?: boolean;
+      policyVersion?: string;
+    },
   ): Promise<{
     success: boolean;
     message: string;

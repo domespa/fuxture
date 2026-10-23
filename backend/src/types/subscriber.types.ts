@@ -13,6 +13,8 @@ export interface CreateSubscriberRequest {
   // TESTO ESATTO DEL CONSENSO ACCETTATO: serve a dimostrare a quale
   // formulazione l'interessato abbia prestato il consenso (art. 7 par. 1 GDPR)
   consentText?: string;
+  // REVISIONE DELL'INFORMATIVA MOSTRATA ALL'INTERESSATO
+  policyVersion?: string;
 }
 
 // CENTRO PREFERENZE: revoca granulare ex par. 6 delle Linee Guida del
@@ -20,6 +22,7 @@ export interface CreateSubscriberRequest {
 export interface UpdatePreferencesRequest {
   trackingConsent?: boolean;
   subscribed?: boolean;
+  policyVersion?: string;
 }
 
 export interface PreferencesResponse {
@@ -103,6 +106,7 @@ export interface ConsentEvidenceResponse {
     source: string | null;
     ipAddress: string | null;
     userAgent: string | null;
+    policyVersion: string | null;
     createdAt: Date;
   }>;
 }

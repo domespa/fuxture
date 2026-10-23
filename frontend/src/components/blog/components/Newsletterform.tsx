@@ -8,6 +8,7 @@ import {
   NEWSLETTER_CONSENT_NOTICE,
   NEWSLETTER_PRIVACY_LINK_TEXT,
   NEWSLETTER_CONSENT_RECORD,
+  PRIVACY_POLICY_VERSION,
 } from "@/lib/consent";
 
 export interface NewsletterFormProps {
@@ -65,6 +66,7 @@ export default function NewsletterForm({
         address: address.trim(),
         source,
         consentText: NEWSLETTER_CONSENT_RECORD,
+        policyVersion: PRIVACY_POLICY_VERSION,
       });
 
       // Successo!

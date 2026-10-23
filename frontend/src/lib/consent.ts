@@ -22,6 +22,13 @@
 // coincidere (art. 7 par. 1 GDPR), e duplicarle nel JSX le farebbe divergere.
 // ============================================================================
 
+// VERSIONE DELL'INFORMATIVA: la data dell'ultima revisione della Privacy
+// Policy. La pagina la mostra come "Ultimo aggiornamento" e i form la inviano
+// insieme a ogni scelta, cosi' il registro dei consensi dice quale revisione
+// era in vigore. Va aggiornata insieme a ogni nuova voce nello storico delle
+// revisioni della Privacy Policy.
+export const PRIVACY_POLICY_VERSION = "23/10/2026";
+
 // DICHIARAZIONE DI CONSENSO: e' l'atto di volonta', accanto alla casella.
 export const NEWSLETTER_CONSENT_TEXT =
   "Acconsento a ricevere la newsletter di Fuxture, comprese le comunicazioni promozionali di " +
